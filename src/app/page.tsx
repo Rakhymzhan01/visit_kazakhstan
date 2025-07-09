@@ -1,70 +1,16 @@
 import Image from "next/image"
+import Link from "next/link"
 import { Button } from "./components/ui/button"
 import { Card, CardContent } from "./components/ui/card"
 import { Badge } from "./components/ui/badge"
-import { Search, Plus, Star, Instagram } from "lucide-react"
+import { Plus, Star, Instagram } from "lucide-react"
+import Header from "./components/Header"
+import Footer from "./components/Footer"
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Image
-                src="/placeholder.svg?height=40&width=120"
-                alt="Visit Kazakhstan"
-                width={120}
-                height={40}
-                className="h-10 w-auto"
-              />
-            </div>
-            <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-700 hover:text-[#009CBC] font-medium text-sm">
-                CATEGORIES
-              </a>
-              <a href="#" className="text-gray-700 hover:text-[#009CBC] font-medium text-sm">
-                TOURS
-              </a>
-              <a href="#" className="text-gray-700 hover:text-[#009CBC] font-medium text-sm">
-                PLAN YOUR TRIP
-              </a>
-              <a href="#" className="text-gray-700 hover:text-[#009CBC] font-medium text-sm">
-                BLOG
-              </a>
-              <a href="#" className="text-gray-700 hover:text-[#009CBC] font-medium text-sm">
-                EVENTS
-              </a>
-              <a href="#" className="text-gray-700 hover:text-[#009CBC] font-medium text-sm">
-                ABOUT US
-              </a>
-              <a href="#" className="text-gray-700 hover:text-[#009CBC] font-medium text-sm">
-                FOR INVESTORS
-              </a>
-            </nav>
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#009CBC] w-40"
-                />
-              </div>
-              <Button
-                variant="ghost"
-                className="text-white bg-[#009CBC] hover:bg-[#007a9a] rounded-full px-3 py-1 text-sm h-8"
-              >
-                EN
-              </Button>
-              <Button className="bg-[#009CBC] hover:bg-[#007a9a] text-white rounded-full text-sm h-9">
-                Plan your trip
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="relative h-[400px] bg-cover bg-center">
@@ -147,7 +93,7 @@ export default function HomePage() {
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-start mb-8">
-            <h2 className="text-3xl font-bold">
+            <h2 className="text-3xl font-bold text-[#202020]">
               Top Tour <span className="text-[#009CBC]">Themes</span>
             </h2>
             <div className="max-w-md text-right">
@@ -214,7 +160,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-base mb-2">{tour.title}</h3>
+                  <h3 className="font-semibold text-base mb-2 text-[#202020]">{tour.title}</h3>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-3">{tour.description}</p>
                   <div className="flex justify-between items-center">
                     <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
@@ -236,7 +182,7 @@ export default function HomePage() {
       {/* Discover Cities */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold mb-8">
+          <h2 className="text-3xl font-bold mb-8 text-[#202020]">
             Discover <span className="text-[#009CBC]">Cities</span>
           </h2>
 
@@ -321,7 +267,7 @@ export default function HomePage() {
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-[#009CBC]">Blog</h2>
+            <h2 className="text-3xl font-bold text-[#202020]">Blog</h2>
             <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a]">
               Show all blogs
             </Button>
@@ -387,7 +333,7 @@ export default function HomePage() {
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-start mb-8">
-            <h2 className="text-3xl font-bold">
+            <h2 className="text-3xl font-bold text-[#202020]">
               Explore <span className="text-[#009CBC]">Events</span>
             </h2>
             <div className="max-w-md text-right">
@@ -466,7 +412,7 @@ export default function HomePage() {
                   className="h-10 w-auto"
                 />
               </div>
-              <h2 className="text-3xl font-bold mb-6">
+              <h2 className="text-3xl font-bold mb-6 text-[#202020]">
                 About <span className="text-[#009CBC]">us</span>
               </h2>
               <p className="text-gray-600 mb-6 text-sm">
@@ -500,124 +446,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white py-8 border-t">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-            <div>
-              <Image
-                src="/placeholder.svg?height=40&width=120"
-                alt="Visit Kazakhstan"
-                width={120}
-                height={40}
-                className="h-10 w-auto mb-4"
-              />
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4 text-sm">MENU</h4>
-              <ul className="space-y-2 text-gray-600 text-sm">
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    CATEGORIES
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    TOURS
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    PLAN YOUR TRIP
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    BLOG
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    EVENTS
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4 text-sm">COMPANY</h4>
-              <ul className="space-y-2 text-gray-600 text-sm">
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    ABOUT US
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    FOR INVESTORS
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4 text-sm">SOCIAL</h4>
-              <ul className="space-y-2 text-gray-600 text-sm">
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    INSTAGRAM
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    YOUTUBE
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    FACEBOOK
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    TELEGRAM
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-[#009CBC]">
-                    TWITTER
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4 text-sm">ADDRESS</h4>
-              <div className="text-gray-600 space-y-1 text-sm">
-                <p>4517 Washington Ave.</p>
-                <p>Manchester, Kentucky 39495</p>
-                <div className="mt-3">
-                  <p className="font-semibold text-gray-900">+7 7122 000-000</p>
-                  <p>info@visitkazakhstan.com</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-200 mt-8 pt-6 flex justify-between items-center">
-            <p className="text-gray-600 text-sm">©2025 Visit Kazakhstan. All rights reserved.</p>
-            <div className="flex space-x-6">
-              <a href="#" className="text-gray-600 hover:text-[#009CBC] text-sm">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-gray-600 hover:text-[#009CBC] text-sm">
-                Offer
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
