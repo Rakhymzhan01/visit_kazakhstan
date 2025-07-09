@@ -95,32 +95,32 @@ export default function HomePage() {
             {[
               {
                 title: "Silk Road History",
-                image: "/placeholder.svg?height=280&width=220",
+                image: "/desert.jpg",
                 bgColor: "from-blue-400 to-blue-600",
               },
               {
                 title: "Nomadic Soul",
-                image: "/placeholder.svg?height=280&width=220",
+                image: "/shanyrak.jpg",
                 bgColor: "from-amber-600 to-amber-800",
               },
               {
                 title: "Modern Meets Traditional",
-                image: "/placeholder.svg?height=280&width=220",
+                image: "/baiterek.jpg", 
                 bgColor: "from-orange-400 to-orange-600",
               },
               {
-                title: "No Crowds",
-                image: "/placeholder.svg?height=280&width=220",
+                title: "No Crowds, Just Space",
+                image: "/kanatnaya_doroga.jpg",
                 bgColor: "from-red-400 to-red-600",
               },
               {
                 title: "Unspoiled Nature",
-                image: "/placeholder.svg?height=280&width=220",
+                image: "/yurta.jpg",
                 bgColor: "from-green-400 to-green-600",
               },
             ].map((item, index) => (
               <Card key={index} className="relative overflow-hidden h-72 group cursor-pointer">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-transparent z-10"></div>
                 <Image
                   src={item.image || "/placeholder.svg"}
                   alt={item.title}
@@ -128,7 +128,7 @@ export default function HomePage() {
                   height={280}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute bottom-4 left-4 right-4 text-white z-20">
+                <div className="absolute top-4 left-4 right-4 text-white z-20">
                   <h3 className="text-lg font-semibold">{item.title}</h3>
                 </div>
                 <Button
