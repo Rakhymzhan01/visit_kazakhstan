@@ -164,7 +164,7 @@ export default function HomePage() {
                 title: "Charyn Canyon & Kolsai Lakes Tour",
                 description:
                   "A classic multi-day trip from Almaty into the Tian Shan mountains — explore canyons, alpine lakes, and mountain villages.",
-                image: "/placeholder.svg?height=180&width=280",
+                image: "/bao_contras.jpg",
                 date: "20 may 2025",
                 location: "Almaty",
                 rating: 5,
@@ -173,7 +173,7 @@ export default function HomePage() {
                 title: "Mangystau Desert Expedition",
                 description:
                   "Visit Bozzhyra, Sherkala, and Torysh with local guides. Sleep in a yurt under the stars, explore sacred places.",
-                image: "/placeholder.svg?height=180&width=280",
+                image: "/mangystau.jpg",
                 date: "20 may 2025",
                 location: "",
                 rating: 5,
@@ -182,7 +182,7 @@ export default function HomePage() {
                 title: "Turkestan - Taraz - Otrar Route",
                 description:
                   "A historical journey across mausoleums, caravanserais, and ruins — with stories of poets, traders, and pilgrims.",
-                image: "/placeholder.svg?height=180&width=280",
+                image: "/kozha_akhmet_yassaui.jpg",
                 date: "20 may 2025",
                 location: "",
                 rating: 5,
@@ -191,7 +191,7 @@ export default function HomePage() {
                 title: "Almaty",
                 description:
                   "Street art, fashion studios, coffee culture, and live music — explore Almaty's youthful soul.",
-                image: "/placeholder.svg?height=180&width=280",
+                image: "/almaty.jpg",
                 date: "20 may 2025",
                 location: "",
                 rating: 5,
@@ -264,7 +264,7 @@ export default function HomePage() {
           <div className="mt-8">
             <Card className="relative overflow-hidden w-72">
               <Image
-                src="/placeholder.svg?height=160&width=280"
+                src="/turkestan.jpg?height=160&width=280"
                 alt="Turkestan"
                 width={280}
                 height={160}
@@ -296,11 +296,15 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-3 gap-3">
-              {Array.from({ length: 3 }).map((_, index) => (
+              {[
+                { image: "/nomad_girls.png", alt: "Nomad girls" },
+                { image: "/desert.jpg", alt: "Desert landscape" },
+                { image: "/yurta.jpg", alt: "Traditional yurt" }
+              ].map((post, index) => (
                 <div key={index} className="relative aspect-square">
                   <Image
-                    src={`/placeholder.svg?height=160&width=160`}
-                    alt={`Instagram post ${index + 1}`}
+                    src={post.image}
+                    alt={post.alt}
                     width={160}
                     height={160}
                     className="w-full h-full object-cover rounded-lg"
@@ -324,28 +328,53 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 4 }).map((_, index) => (
+            {[
+              {
+                image: "/famile.jpg",
+                title: "Almaty Creative Tour",
+                description: "Street art, fashion studios, coffee culture, and live music — explore Almaty&apos;s youthful soul.",
+                category: "Culture"
+              },
+              {
+                image: "/baiterek.jpg",
+                title: "Nur-Sultan Architecture",
+                description: "Discover the futuristic architecture and modern landmarks of Kazakhstan&apos;s capital city.",
+                category: "Architecture"
+              },
+              {
+                image: "/mangystau.jpg",
+                title: "Mangystau Adventures",
+                description: "Explore the mystical landscapes and ancient formations of the Mangystau region.",
+                category: "Adventure"
+              },
+              {
+                image: "/kozha_akhmet_yassaui.jpg",
+                title: "Historical Heritage",
+                description: "Journey through Kazakhstan&apos;s rich historical sites and cultural monuments.",
+                category: "History"
+              }
+            ].map((post, index) => (
               <Card key={index} className="overflow-hidden">
                 <div className="relative">
                   <Image
-                    src="/placeholder.svg?height=160&width=280"
-                    alt="Almaty Creative Tour"
+                    src={post.image}
+                    alt={post.title}
                     width={280}
                     height={160}
                     className="w-full h-40 object-cover"
                   />
                   <div className="absolute top-3 left-3 flex gap-2">
                     <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 20 may 2025</Badge>
-                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">Culture</Badge>
+                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{post.category}</Badge>
                   </div>
                 </div>
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-base mb-2">Almaty Creative Tour</h3>
+                  <h3 className="font-semibold text-base mb-2 text-[#202020]">{post.title}</h3>
                   <p className="text-gray-600 text-sm mb-3">
-                    Street art, fashion studios, coffee culture, and live music — explore Almaty&apos;s youthful soul.
+                    {post.description}
                   </p>
                   <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
-                    Read more ��
+                    Read more →
                   </Button>
                 </CardContent>
               </Card>
@@ -374,10 +403,10 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { name: "Kolsay & Kayindy", image: "/placeholder.svg?height=240&width=280" },
-              { name: "Charyn Canyon", image: "/placeholder.svg?height=240&width=280" },
-              { name: "Shymbulak", image: "/placeholder.svg?height=240&width=280" },
-              { name: "Charyn", image: "/placeholder.svg?height=240&width=280" },
+              { name: "Kolsay & Kayindy", image: "/bao_contras.jpg?height=240&width=280" },
+              { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
+              { name: "Shymbulak", image: "/kanatnaya_doroga.jpg?height=240&width=280" },
+              { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
             ].map((event, index) => (
               <Card key={index} className="relative overflow-hidden h-60">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
@@ -405,13 +434,13 @@ export default function HomePage() {
       <section className="py-16 relative">
         <div className="absolute inset-0">
           <Image
-            src="/placeholder.svg?height=300&width=1200"
+            src="/expo.jpg?height=300&width=1200"
             alt="City aerial view"
             width={1200}
             height={300}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/60"></div>
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
