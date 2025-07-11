@@ -88,29 +88,29 @@ export const StatsSection = () => {
 export const TeamSection = () => {
   const teamMembers = [
     {
-      name: 'Aida Nazarbayeva',
-      position: 'Tourism Director',
-      image: '/images/team/aida.jpg'
+      name: 'Darlene Robertson',
+      position: 'Marketing Coordinator',
+      image: '/team/4838ebf99f5d3b04e54d4bda4b727af5ea1e799c.png'
     },
     {
-      name: 'Nurlan Suleimenov',
-      position: 'Cultural Guide Expert',
-      image: '/images/team/nurlan.jpg'
+      name: 'Annette Black',
+      position: 'President of Sales',
+      image: '/team/0d57fbe1ccda59febd767fcdce533d97448fc201.png'
     },
     {
-      name: 'Aigerim Tokayeva',
-      position: 'Adventure Tour Specialist',
-      image: '/images/team/aigerim.jpg'
+      name: 'Guy Hawkins',
+      position: 'Nursing Assistant',
+      image: '/team/772ad5a28014d2afa8904da5a2b103415f00c620.png'
     },
     {
-      name: 'Daniyar Bekmuratov',
-      position: 'Photography Coordinator',
-      image: '/images/team/daniyar.jpg'
+      name: 'Jane Cooper',
+      position: 'Medical Assistant',
+      image: '/team/87c4fa29ccd407339492099a0753c544ac923c3d.png'
     },
     {
-      name: 'Saltanat Amanova',
-      position: 'Customer Experience Manager',
-      image: '/images/team/saltanat.jpg'
+      name: 'Arlene McCoy',
+      position: 'Web Designer',
+      image: '/team/ac3097d85855fb2e2d9ee42dceff5f098abc3b17.png'
     }
   ]
 

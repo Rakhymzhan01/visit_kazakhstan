@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
 
 const CulturePage = () => {
   const [activeTab, setActiveTab] = useState('Now')
@@ -111,7 +113,9 @@ const CulturePage = () => {
   const otherCategories = currentCategories.filter(cat => !cat.featured)
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      <Header />
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -247,7 +251,9 @@ const CulturePage = () => {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+      <Footer />
+    </>
   )
 }
 
