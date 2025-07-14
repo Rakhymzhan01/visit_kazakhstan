@@ -268,9 +268,11 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-bold text-[#202020]">Blog</h2>
-            <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a]">
-              Show all blogs
-            </Button>
+            <Link href="/blog">
+              <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a]">
+                Show all blogs
+              </Button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -319,9 +321,11 @@ export default function HomePage() {
                   <p className="text-gray-600 text-sm mb-3">
                     {post.description}
                   </p>
-                  <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
-                    Read more →
-                  </Button>
+                  <Link href="/blog">
+                    <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
+                      Read more →
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}

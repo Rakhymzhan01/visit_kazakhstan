@@ -22,33 +22,33 @@ export const AboutSection = () => {
             </p>
           </div>
 
-          {/* Stats Grid */}
+          {/* Stats Grid - Exact Figma Layout */}
           <div className="grid grid-cols-2 gap-8">
             <div className="text-center">
               <div className="text-5xl font-bold text-[#009CBC] mb-2">2010</div>
-              <p className="text-gray-600">
-                Year we started our journey to showcase Kazakhstan&apos;s beauty.
+              <p className="text-gray-600 text-sm">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               </p>
             </div>
             
             <div className="text-center">
               <div className="text-5xl font-bold text-[#009CBC] mb-2">50+</div>
-              <p className="text-gray-600">
-                Unique destinations across Kazakhstan waiting to be explored.
+              <p className="text-gray-600 text-sm">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               </p>
             </div>
             
             <div className="text-center">
               <div className="text-5xl font-bold text-[#009CBC] mb-2">1000+</div>
-              <p className="text-gray-600">
-                Happy travelers who discovered Kazakhstan with us.
+              <p className="text-gray-600 text-sm">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               </p>
             </div>
             
             <div className="text-center">
               <div className="text-5xl font-bold text-[#009CBC] mb-2">20</div>
-              <p className="text-gray-600">
-                Years of experience in Kazakhstan tourism industry.
+              <p className="text-gray-600 text-sm">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               </p>
             </div>
           </div>
@@ -58,33 +58,7 @@ export const AboutSection = () => {
   )
 }
 
-// Stats Section Component  
-export const StatsSection = () => {
-  const stats = [
-    { number: '2010', label: 'Year Founded', description: 'Started our mission to promote Kazakhstan tourism globally.' },
-    { number: '50+', label: 'Tour Destinations', description: 'Carefully curated destinations showcasing Kazakhstan&apos;s diversity.' },
-    { number: '1000+', label: 'Happy Travelers', description: 'Satisfied customers who experienced Kazakhstan&apos;s wonders.' },
-    { number: '20', label: 'Years Experience', description: 'Two decades of expertise in Kazakhstan travel and tourism.' }
-  ]
-
-  return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="text-5xl font-bold text-[#009CBC] mb-4">{stat.number}</div>
-              <h3 className="text-xl font-semibold text-[#202020] mb-2">{stat.label}</h3>
-              <p className="text-gray-600">{stat.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// Team Section Component
+// Team Section Component - Exact Figma Match
 export const TeamSection = () => {
   const teamMembers = [
     {
@@ -157,14 +131,85 @@ export const TeamSection = () => {
   )
 }
 
+// Visit Kazakhstan Location Section with Map - Exact Figma Match
+export const VisitKazakhstanSection = () => {
+  return (
+    <section className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          
+          {/* Left side - Contact Info */}
+          <div>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#202020] mb-8">
+              Visit <span className="text-[#009CBC]">Kazakhstan</span>
+            </h2>
+            
+            {/* Address Section */}
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold text-[#202020] mb-4">ADDRESS</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  4517 Washington Ave, Manchester,<br />
+                  Kentucky 39495
+                </p>
+              </div>
+
+              {/* Contact Info */}
+              <div className="space-y-4">
+                <div>
+                  <a 
+                    href="tel:+77078005060" 
+                    className="text-[#202020] font-semibold text-xl hover:text-[#009CBC] transition-colors"
+                  >
+                    +77078005060
+                  </a>
+                </div>
+                
+                <div>
+                  <a 
+                    href="mailto:info@visitkazakhstan.com"
+                    className="text-gray-600 hover:text-[#009CBC] transition-colors"
+                  >
+                    info@visitkazakhstan.com
+                  </a>
+                </div>
+              </div>
+
+              {/* Get Directions Button */}
+              <div className="pt-4">
+                <button className="bg-[#009CBC] hover:bg-[#007A9A] text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105">
+                  Get directions
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right side - Map */}
+          <div className="relative">
+            <div className="rounded-2xl overflow-hidden h-96">
+              <Image
+                src="/map.png"
+                alt="Kazakhstan Map"
+                width={600}
+                height={400}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // Main Page Component
 export default function AboutUsPage() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <AboutSection />
-      <StatsSection />
       <TeamSection />
+      <VisitKazakhstanSection />
       <Footer />
     </div>
   )
