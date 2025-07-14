@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 
 // About Section Component
-export const AboutSection = () => {
+const AboutSection = () => {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,7 +59,7 @@ export const AboutSection = () => {
 }
 
 // Team Section Component - Exact Figma Match
-export const TeamSection = () => {
+const TeamSection = () => {
   const teamMembers = [
     {
       name: 'Darlene Robertson',
@@ -132,7 +132,7 @@ export const TeamSection = () => {
 }
 
 // Visit Kazakhstan Location Section with Map - Exact Figma Match
-export const VisitKazakhstanSection = () => {
+const VisitKazakhstanSection = () => {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

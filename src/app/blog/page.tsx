@@ -115,7 +115,7 @@ const TravelWebsite = () => {
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-teal-600">@info.kazakhstan</h2>
             <p className="text-gray-600 mt-2">
-              Kazakhstan is vast and diverse - and so are the ways to experience it. Whether you're chasing landscapes, culture, adventure, or spiritual meaning, there's a route for every traveler.
+              Kazakhstan is vast and diverse - and so are the ways to experience it. Whether you&apos;re chasing landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
             </p>
             <Link href="#" className="text-teal-500 hover:text-teal-600 mt-4 inline-block">
               See Instagram

@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { ChevronDown, Search, Menu, X } from 'lucide-react'
+import VisitKazakhstanLogo from './Logo'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -25,12 +25,6 @@ const Header = () => {
       name: 'TOURS',
       href: '/tours',
       hasDropdown: true,
-      dropdownItems: [
-        { name: 'Weekend Getaways', href: '/tours?category=weekend' },
-        { name: 'Extended Tours', href: '/tours?category=extended' },
-        { name: 'Group Tours', href: '/tours?category=group' },
-        { name: 'Private Tours', href: '/tours?category=private' }
-      ]
     },
     { name: 'PLAN YOUR TRIP', href: '/plan-your-trip' },
     { name: 'BLOG', href: '/blog' },
@@ -45,11 +39,9 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <Image
-              src="/images/logo.png"
-              alt="Visit Kazakhstan"
-              width={120}
-              height={40}
+            <VisitKazakhstanLogo 
+              width={140}
+              height={32}
               className="h-8 w-auto"
             />
           </Link>
