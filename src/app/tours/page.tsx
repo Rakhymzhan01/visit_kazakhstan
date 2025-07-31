@@ -31,19 +31,19 @@ const ToursPage = () => {
       {
         id: 1,
         title: 'Big Almaty Lake / Medeu / Shymbulak Ski Resort',
-        image: '/api/placeholder/300/200',
+        image: '/shym.jpg',
         rating: 5
       },
       {
         id: 2,
         title: 'Borovoe (Burabay) Nature Tour',
-        image: '/api/placeholder/300/200',
+        image: '/kozha_akhmet_yassaui.jpg',
         rating: 4
       },
       {
         id: 3,
         title: 'Aktau to Caspian Coast Road Trips',
-        image: '/api/placeholder/300/200',
+        image: '/aktau.jpg',
         rating: 5
       }
     ],
@@ -52,14 +52,14 @@ const ToursPage = () => {
         id: 4,
         title: 'Almaty Creative Tour',
         description: 'Street art, fashion studios, coffee culture, and live music — explore Almaty\'s youthful soul.',
-        image: '/api/placeholder/300/200',
+        image: '/shym.jpg',
         rating: 5
       },
       {
         id: 5,
         title: 'Astana Architecture Walks',
         description: 'Discover futuristic designs and cultural hubs like Nur Alem and the National Museum.',
-        image: '/api/placeholder/300/200',
+        image: '/kozha_akhmet_yassaui.jpg',
         rating: 4
       }
     ],
@@ -68,14 +68,14 @@ const ToursPage = () => {
         id: 6,
         title: 'Live in a Yurt & Ride a Horse',
         description: 'Stay with local families, learn to cook beshbarmak, try eagle hunting, and sleep in a yurt. Best in Almaty Region and Central Kazakhstan.',
-        image: '/api/placeholder/300/200',
+        image: '/shym.jpg',
         rating: 5
       },
       {
         id: 7,
         title: 'Kazakh Games & Music Tour',
         description: 'Watch kokpar, try archery, and hear traditional music with dombra masters.',
-        image: '/api/placeholder/300/200',
+        image: '/kozha_akhmet_yassaui.jpg',
         rating: 4
       }
     ],
@@ -84,7 +84,7 @@ const ToursPage = () => {
         id: 8,
         title: 'Shymkent Cultural Circle',
         description: 'A historical journey across mausoleums, caravanserais, and ruins — with stories of poets, traders, and pilgrims.',
-        image: '/api/placeholder/300/200',
+        image: '/shym.jpg',
         rating: 5,
         date: '20 may 2025',
         location: 'Shymkent'
@@ -93,7 +93,7 @@ const ToursPage = () => {
         id: 9,
         title: 'Turkestan – Taraz – Otrar Route',
         description: 'A historical journey across mausoleums, caravanserais, and ruins — with stories of poets, traders, and pilgrims.',
-        image: '/api/placeholder/300/200',
+        image: '/kozha_akhmet_yassaui.jpg',
         rating: 4,
         date: '20 may 2025'
       }
@@ -103,7 +103,7 @@ const ToursPage = () => {
         id: 10,
         title: 'Charyn Canyon & Kolsai Lakes Tour',
         description: 'A classic multi-day trip from Almaty into the Tien Shan mountains — explore canyons, alpine lakes, and mountain villages.',
-        image: '/api/placeholder/300/200',
+        image: '/bao_contras.jpg',
         rating: 5,
         date: '20 may 2025',
         location: 'Almaty'
@@ -112,7 +112,7 @@ const ToursPage = () => {
         id: 11,
         title: 'Mangystau Desert Expedition',
         description: 'Visit Bozzhyra, Sherkala, and Torysh with local guides. Sleep in a yurt under the stars, explore sacred places, and enjoy Mars-like scenery.',
-        image: '/api/placeholder/300/200',
+        image: '/mangystau.jpg',
         rating: 5,
         date: '20 may 2025'
       },
@@ -120,7 +120,7 @@ const ToursPage = () => {
         id: 12,
         title: 'Turkestan – Taraz – Otrar Route',
         description: 'A historical journey across mausoleums, caravanserais, and ruins — with stories of poets, traders, and pilgrims.',
-        image: '/api/placeholder/300/200',
+        image: '/kozha_akhmet_yassaui.jpg',
         rating: 5,
         date: '20 may 2025'
       }
@@ -150,7 +150,7 @@ const ToursPage = () => {
           {/* Right Image */}
           <div className="w-1/2">
             <img 
-              src="/api/placeholder/600/400" 
+              src="/tours.jpg" 
               alt="Traveler with backpack taking photo"
               className="w-full h-full object-cover"
             />

@@ -174,7 +174,7 @@ const PlanTripPage = () => {
       <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 text-white">
         <div className="absolute inset-0">
           <img 
-            src="/api/placeholder/1200/500" 
+            src="/plan your trip.jpg" 
             alt="Airplane wing over clouds"
             className="w-full h-full object-cover opacity-60"
           />
