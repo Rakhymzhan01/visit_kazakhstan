@@ -198,7 +198,7 @@ export default function HomePage() {
 
             <div className="relative">
               <Image
-                src="/placeholder.svg?height=300&width=500"
+                src="/kz_map.png"
                 alt="Kazakhstan Map"
                 width={500}
                 height={300}
@@ -409,7 +409,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center mb-6">
                 <Image
-                  src="/placeholder.svg?height=40&width=120"
+                  src="/Logo 2.png"
                   alt="Visit Kazakhstan"
                   width={120}
                   height={40}

@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { Instagram, Youtube, Facebook, Send, Twitter } from 'lucide-react'
-import VisitKazakhstanLogo from './Logo'
+import Image from 'next/image'
 
 const Footer = () => {
   const menuLinks = [
@@ -34,10 +34,11 @@ const Footer = () => {
           {/* Logo and Contact */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center mb-6">
-              <VisitKazakhstanLogo 
+              <Image
+                src="/Logo 2.png"
+                alt="Visit Kazakhstan"
                 width={140}
                 height={32}
-                variant="default"
                 className="h-8 w-auto"
               />
             </Link>

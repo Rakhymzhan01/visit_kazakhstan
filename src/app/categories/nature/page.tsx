@@ -11,7 +11,7 @@ const NaturePage = () => {
       id: 1,
       name: 'Mangystau Region',
       description: 'A surreal desert meets seas region in the west, filled with chalk mountains, underground mosques, and alien-like rock formations. Visit Bozzhyra, Torysh (Valley of Balls), and Sherkala Mountain for a journey into a land that feels untouched by time.',
-      image: '/images/nature/mangystau.jpg',
+      image: '/mangystau.jpg',
       category: 'Nature',
       slug: 'mangystau-region',
       featured: true

@@ -48,13 +48,13 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-white shadow-sm relative z-50">
+      <header className="bg-[#F5F5F5] shadow-sm relative z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center flex-shrink-0 mr-8 lg:mr-12 xl:mr-16">
               <Image
-                src="/images/logo.png"
+                src="/Logo 2.png"
                 alt="Visit Kazakhstan"
                 width={120}
                 height={40}
@@ -63,19 +63,42 @@ const Header = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-8 flex-1 justify-center">
+              <div className="bg-white rounded-full px-6 h-[34px] flex items-center space-x-4 xl:space-x-8">
               {navigation.map((item) => (
                 <div key={item.name} className="relative group">
-                  <Link
-                    href={item.href}
-                    className="flex items-center text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                    style={{fontSize: '14px'}}
-                  >
-                    {item.name}
-                    {item.hasDropdown && (
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    )}
-                  </Link>
+                  {item.name === 'PLAN YOUR TRIP' ? (
+                    <button
+                      onClick={handlePlanTripClick}
+                      className="flex items-center text-gray-700 hover:text-blue-600 font-medium transition-colors uppercase"
+                      style={{
+                        fontSize: '12px',
+                        fontFamily: 'Manrope, sans-serif',
+                        fontWeight: 500,
+                        lineHeight: '100%',
+                        letterSpacing: '0%'
+                      }}
+                    >
+                      {item.name}
+                    </button>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="flex items-center text-gray-700 hover:text-blue-600 font-medium transition-colors uppercase"
+                      style={{
+                        fontSize: '12px',
+                        fontFamily: 'Manrope, sans-serif',
+                        fontWeight: 500,
+                        lineHeight: '100%',
+                        letterSpacing: '0%'
+                      }}
+                    >
+                      {item.name}
+                      {item.hasDropdown && (
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      )}
+                    </Link>
+                  )}
 
                   {/* Dropdown Menu */}
                   {item.hasDropdown && item.dropdownItems && (
@@ -95,12 +118,13 @@ const Header = () => {
                   )}
                 </div>
               ))}
+              </div>
             </nav>
 
             {/* Search and Actions */}
             <div className="flex items-center space-x-4">
               {/* Search */}
-              <div className="hidden md:flex items-center bg-gray-50 rounded-full px-3 py-1.5 max-w-xs">
+              <div className="hidden md:flex items-center bg-white border border-gray-300 rounded-full px-3 py-1.5 min-w-[200px]">
                 <Search className="h-4 w-4 text-gray-400 mr-2" />
                 <input
                   type="text"
@@ -155,13 +179,25 @@ const Header = () => {
               <nav className="space-y-2">
                 {navigation.map((item) => (
                   <div key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="block py-2 text-gray-700 hover:text-blue-600 font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
+                    {item.name === 'PLAN YOUR TRIP' ? (
+                      <button
+                        onClick={(e) => {
+                          handlePlanTripClick(e)
+                          setIsMenuOpen(false)
+                        }}
+                        className="block py-2 text-gray-700 hover:text-blue-600 font-medium"
+                      >
+                        {item.name}
+                      </button>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className="block py-2 text-gray-700 hover:text-blue-600 font-medium"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    )}
                     {item.hasDropdown && item.dropdownItems && (
                       <div className="pl-4 space-y-1">
                         {item.dropdownItems.map((dropdownItem) => (
