@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -149,9 +150,11 @@ const ToursPage = () => {
           
           {/* Right Image */}
           <div className="w-1/2">
-            <img 
+            <Image 
               src="/tours.jpg" 
               alt="Traveler with backpack taking photo"
+              width={800}
+              height={600}
               className="w-full h-full object-cover"
             />
           </div>
@@ -188,9 +191,11 @@ const ToursPage = () => {
           {(toursByTab[activeTab] || []).slice(0, 3).map((tour) => (
             <div key={tour.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="relative">
-                <img 
+                <Image 
                   src={tour.image} 
                   alt={tour.title}
+                  width={400}
+                  height={192}
                   className="w-full h-48 object-cover"
                 />
                 {tour.date && (

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Calendar, Users, X, ChevronDown } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -173,10 +174,11 @@ const PlanTripPage = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 text-white">
         <div className="absolute inset-0">
-          <img 
+          <Image 
             src="/plan your trip.jpg" 
             alt="Airplane wing over clouds"
-            className="w-full h-full object-cover opacity-60"
+            fill
+            className="object-cover opacity-60"
           />
         </div>
         <div className="relative px-6 py-20 text-center">

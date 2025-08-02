@@ -71,34 +71,38 @@ const NaturePage = () => {
       <Header />
       <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/hero/nature-hero.jpg"
-            alt="Kazakhstan Nature"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-black/20" />
-        </div>
-
-        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
-            NATURE
+      <section className="relative">
+        <div className="flex gap-4 p-4">
+          {/* Left Content */}
+          <div className="w-[674px] h-[550px] bg-white rounded-lg shadow-lg px-20 py-16 flex flex-col justify-center">
+            <div className="inline-block bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit">
+              NATURE
+            </div>
+            <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
+              Where Earth Tells Stories —
+              <br />
+              <span className="text-green-600">Discover Kazakhstan&apos;s Wild Beauty</span>
+            </h1>
+            <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
+              From the dramatic cliffs of Mangystau to the turquoise alpine lakes of the Tian 
+              Shan, Kazakhstan&apos;s natural wonders are as vast and varied as the country itself. 
+              Here, landscapes shift from singing sand dunes to ancient canyons, from flower-
+              filled valleys to underwater forests. Whether you&apos;re hiking, stargazing, or simply 
+              soaking in the silence — Kazakhstan&apos;s wild side is unforgettable.
+            </p>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Where Earth Tells Stories —
-            <br />
-            <span className="text-green-400">Discover Kazakhstan&apos;s Wild Beauty</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            From the dramatic cliffs of Mangystau to the turquoise alpine lakes of the Tian 
-            Shan, Kazakhstan&apos;s natural wonders are as vast and varied as the country itself. 
-            Here, landscapes shift from singing sand dunes to ancient canyons, from flower-
-            filled valleys to underwater forests. Whether you&apos;re hiking, stargazing, or simply 
-            soaking in the silence — Kazakhstan&apos;s wild side is unforgettable.
-          </p>
+          
+          {/* Right Image */}
+          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden shadow-lg">
+            <Image
+              src="/mangystau.jpg"
+              alt="Kazakhstan Nature"
+              width={674}
+              height={550}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </div>
         </div>
       </section>
 
@@ -151,35 +155,36 @@ const NaturePage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {destinations.slice(1).map((destination) => (
-              <div key={destination.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                <div className="relative h-64 overflow-hidden">
-                  <Image
-                    src={destination.image}
-                    alt={destination.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-green-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                      {destination.category}
-                    </span>
+              <div key={destination.id} className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-full">
+                  <div className="p-6 lg:p-8 flex flex-col justify-center order-1 lg:order-1">
+                    <div className="mb-4">
+                      <span className="bg-green-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                        {destination.category}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">
+                      {destination.name}
+                    </h3>
+                    <p className="text-gray-600 mb-4 text-sm line-clamp-3">
+                      {destination.description}
+                    </p>
+                    <Link
+                      href={`/nature/${destination.slug}`}
+                      className="text-green-600 hover:text-green-700 font-medium flex items-center gap-1 group w-fit"
+                    >
+                      Explore destination
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    {destination.name}
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">
-                    {destination.description}
-                  </p>
-                  <Link
-                    href={`/nature/${destination.slug}`}
-                    className="text-green-600 hover:text-green-700 font-medium flex items-center gap-1 group"
-                  >
-                    Explore destination
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
+                  <div className="relative h-48 lg:h-auto order-2 lg:order-2 rounded-r-3xl overflow-hidden">
+                    <Image
+                      src={destination.image}
+                      alt={destination.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
                 </div>
               </div>
             ))}

@@ -166,32 +166,36 @@ const ToursPage = () => {
       <Header />
       <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/hero/tours-hero.jpg"
-            alt="Kazakhstan Tours"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
-        </div>
-
-        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
-            TOURS
+      <section className="relative">
+        <div className="flex gap-4 p-4">
+          {/* Left Content */}
+          <div className="w-[674px] h-[550px] bg-white rounded-lg shadow-lg px-20 py-16 flex flex-col justify-center">
+            <div className="inline-block bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit">
+              TOURS
+            </div>
+            <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
+              Find Your Way to Explore
+              <br />
+              <span className="text-teal-600">Kazakhstan</span>
+            </h1>
+            <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
+              Kazakhstan is vast and diverse — and so are the ways to experience it. Whether 
+              you&apos;re chasing landscapes, culture, adventure, or spiritual meaning, there&apos;s a route 
+              for every traveler.
+            </p>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Find Your Way to Explore
-            <br />
-            <span className="text-teal-400">Kazakhstan</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            Kazakhstan is vast and diverse — and so are the ways to experience it. Whether 
-            you&apos;re chasing landscapes, culture, adventure, or spiritual meaning, there&apos;s a route 
-            for every traveler.
-          </p>
+          
+          {/* Right Image */}
+          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden shadow-lg">
+            <Image
+              src="/images/hero/tours-hero.jpg"
+              alt="Kazakhstan Tours"
+              width={674}
+              height={550}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </div>
         </div>
       </section>
 

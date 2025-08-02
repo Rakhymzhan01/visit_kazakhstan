@@ -43,7 +43,7 @@ const Header = () => {
 
   const handlePlanTripClick = (e: React.MouseEvent) => {
     e.preventDefault()
-    setIsPlanTripModalOpen(true)
+    window.location.href = '/plan-your-trip'
   }
 
   return (

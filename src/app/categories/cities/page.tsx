@@ -104,33 +104,37 @@ const CitiesPage = () => {
       <Header />
       <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/hero/cities-hero.jpg"
-            alt="Kazakhstan Cities"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
-        </div>
-
-        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
-            CITIES
+      <section className="relative">
+        <div className="flex gap-4 p-4">
+          {/* Left Content */}
+          <div className="w-[674px] h-[550px] bg-white rounded-lg shadow-lg px-20 py-16 flex flex-col justify-center">
+            <div className="inline-block bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit">
+              CITIES
+            </div>
+            <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
+              From Silk Road Settlements
+              <br />
+              <span className="text-blue-600">to Modern Metropolises</span>
+            </h1>
+            <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
+              Kazakhstan&apos;s cities are a rich tapestry woven from centuries of nomadic life, Silk 
+              Road exchanges, spiritual tradition, and modern innovation. From ancient steppe 
+              settlements to jazz cafes in the city, urban culture here is not just preserved — it&apos;s alive and 
+              evolving.
+            </p>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            From Silk Road Settlements
-            <br />
-            to Modern Metropolises
-          </h1>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            Kazakhstan&apos;s culture is a rich tapestry woven from centuries of nomadic life, Silk 
-            Road exchanges, spiritual tradition, and modern innovation. From ancient steppe 
-            rituals to jazz cafes in the city, culture here is not just preserved — it&apos;s alive and 
-            evolving.
-          </p>
+          
+          {/* Right Image */}
+          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden shadow-lg">
+            <Image
+              src="/images/hero/cities-hero.jpg"
+              alt="Kazakhstan Cities"
+              width={674}
+              height={550}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </div>
         </div>
       </section>
 
