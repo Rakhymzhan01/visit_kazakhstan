@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -78,7 +78,7 @@ const ToursPage = () => {
     return transformed;
   };
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       // Load page content, categories, and tours in parallel
@@ -112,11 +112,11 @@ const ToursPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab]);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   // Filter tours by active category
   const filteredTours = tours.filter(tour => tour.category === activeTab);

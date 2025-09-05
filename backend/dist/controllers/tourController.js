@@ -14,7 +14,16 @@ exports.createTourValidation = [
     (0, express_validator_1.body)('featured').optional().isBoolean(),
     (0, express_validator_1.body)('status').optional().isIn(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
 ];
-exports.updateTourValidation = exports.createTourValidation;
+exports.updateTourValidation = [
+    (0, express_validator_1.body)('title').optional().isLength({ min: 1, max: 200 }).trim(),
+    (0, express_validator_1.body)('category').optional().isLength({ min: 1, max: 100 }).trim(),
+    (0, express_validator_1.body)('image').optional().isURL().withMessage('Image must be a valid URL'),
+    (0, express_validator_1.body)('description').optional().isLength({ max: 2000 }),
+    (0, express_validator_1.body)('rating').optional().isInt({ min: 1, max: 5 }),
+    (0, express_validator_1.body)('price').optional().isFloat({ min: 0 }),
+    (0, express_validator_1.body)('featured').optional().isBoolean(),
+    (0, express_validator_1.body)('status').optional().isIn(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
+];
 exports.getToursValidation = [
     (0, express_validator_1.query)('page').optional().isInt({ min: 1 }),
     (0, express_validator_1.query)('limit').optional().isInt({ min: 1, max: 100 }),
@@ -258,8 +267,14 @@ const updateTour = async (req, res) => {
             tour.category = category;
         if (description !== undefined)
             tour.description = description;
-        if (image !== undefined)
+        if (image !== undefined) {
+            // Additional URL validation for image
+            if (image && !image.startsWith('http://') && !image.startsWith('https://') && !image.startsWith('/')) {
+                res.status(400).json({ error: 'Image URL must be a valid HTTP/HTTPS URL or relative path starting with /' });
+                return;
+            }
             tour.image = image;
+        }
         if (rating !== undefined)
             tour.rating = rating;
         if (date !== undefined)

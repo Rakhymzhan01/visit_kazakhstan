@@ -15,7 +15,16 @@ export const createTourValidation = [
   body('status').optional().isIn(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
 ];
 
-export const updateTourValidation = createTourValidation;
+export const updateTourValidation = [
+  body('title').optional().isLength({ min: 1, max: 200 }).trim(),
+  body('category').optional().isLength({ min: 1, max: 100 }).trim(),
+  body('image').optional().isURL().withMessage('Image must be a valid URL'),
+  body('description').optional().isLength({ max: 2000 }),
+  body('rating').optional().isInt({ min: 1, max: 5 }),
+  body('price').optional().isFloat({ min: 0 }),
+  body('featured').optional().isBoolean(),
+  body('status').optional().isIn(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
+];
 
 export const getToursValidation = [
   query('page').optional().isInt({ min: 1 }),
@@ -325,7 +334,14 @@ export const updateTour = async (req: AuthenticatedRequest, res: Response): Prom
     
     if (category !== undefined) tour.category = category;
     if (description !== undefined) tour.description = description;
-    if (image !== undefined) tour.image = image;
+    if (image !== undefined) {
+      // Additional URL validation for image
+      if (image && !image.startsWith('http://') && !image.startsWith('https://') && !image.startsWith('/')) {
+        res.status(400).json({ error: 'Image URL must be a valid HTTP/HTTPS URL or relative path starting with /' });
+        return;
+      }
+      tour.image = image;
+    }
     if (rating !== undefined) tour.rating = rating;
     if (date !== undefined) tour.date = date;
     if (location !== undefined) tour.location = location;

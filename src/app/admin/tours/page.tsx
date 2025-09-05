@@ -151,9 +151,20 @@ export default function ToursAdmin() {
       setEditingTour(null);
       setShowAddForm(false);
       loadTours();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error saving tour:', error);
-      toast.error('Failed to save tour');
+      
+      // Show specific error message if available
+      const axiosError = error as { response?: { data?: { error?: string; errors?: Array<{ msg: string }> } } };
+      if (axiosError.response?.data?.error) {
+        toast.error(axiosError.response.data.error);
+      } else if (axiosError.response?.data?.errors) {
+        // Handle validation errors
+        const errorMsg = axiosError.response.data.errors.map((err) => err.msg).join(', ');
+        toast.error(`Validation error: ${errorMsg}`);
+      } else {
+        toast.error('Failed to save tour');
+      }
     } finally {
       setSaving(false);
     }
