@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Home,
+  MapPin,
 } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Card } from '@/app/components/ui/card';
@@ -25,6 +26,7 @@ interface AdminLayoutProps {
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Homepage', href: '/admin/homepage', icon: Home },
+  { name: 'Tours', href: '/admin/tours', icon: MapPin },
   { name: 'Blog Posts', href: '/admin/blog', icon: FileText },
   { name: 'Content', href: '/admin/content', icon: Settings },
   { name: 'Media', href: '/admin/media', icon: Upload },

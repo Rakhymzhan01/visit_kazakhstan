@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { body, query, validationResult } from 'express-validator';
-import { prisma } from '../config/database';
+import { BlogPost } from '../models/BlogPost';
 import { AuthenticatedRequest } from '../middleware/auth';
 
 // Validation rules
@@ -42,12 +42,12 @@ const ensureUniqueSlug = async (baseSlug: string, excludeId?: string): Promise<s
   let counter = 1;
 
   while (true) {
-    const existing = await prisma.blogPost.findFirst({
-      where: {
-        slug,
-        ...(excludeId && { id: { not: excludeId } }),
-      },
-    });
+    const query: any = { slug };
+    if (excludeId) {
+      query._id = { $ne: excludeId };
+    }
+    
+    const existing = await BlogPost.findOne(query);
 
     if (!existing) {
       return slug;
@@ -58,11 +58,122 @@ const ensureUniqueSlug = async (baseSlug: string, excludeId?: string): Promise<s
   }
 };
 
-// Helper function to calculate read time
-const calculateReadTime = (content: string): number => {
-  const wordsPerMinute = 200;
-  const wordCount = content.split(/\s+/).length;
-  return Math.ceil(wordCount / wordsPerMinute);
+// Get all blog posts
+export const getBlogs = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const status = req.query.status as string;
+    const featured = req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined;
+    const search = req.query.search as string;
+    const category = req.query.category as string;
+
+    // Build filter object
+    const filter: any = {};
+    
+    if (status) {
+      filter.status = status;
+    }
+    
+    if (featured !== undefined) {
+      filter.featured = featured;
+    }
+    
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } },
+        { excerpt: { $regex: search, $options: 'i' } },
+      ];
+    }
+    
+    if (category) {
+      filter.category = category;
+    }
+
+    // Get blogs with pagination
+    const [blogs, total] = await Promise.all([
+      BlogPost.find(filter)
+        .populate('authorId', 'name email')
+        .select('-content') // Exclude full content for list view
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      BlogPost.countDocuments(filter),
+    ]);
+
+    // Transform blogs to include author info
+    const transformedBlogs = blogs.map(blog => ({
+      ...blog,
+      id: blog._id.toString(),
+      author: blog.authorId,
+      authorId: blog.authorId?._id?.toString(),
+    }));
+
+    res.json({
+      success: true,
+      data: {
+        blogs: transformedBlogs,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit),
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Get blogs error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Get single blog post
+export const getBlog = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    let blog;
+    
+    // Check if it's an ObjectId or slug
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      blog = await BlogPost.findById(id).populate('authorId', 'name email');
+    } else {
+      blog = await BlogPost.findOne({ slug: id }).populate('authorId', 'name email');
+    }
+
+    if (!blog) {
+      res.status(404).json({ error: 'Blog post not found' });
+      return;
+    }
+
+    // Increment view count
+    blog.views += 1;
+    await blog.save();
+
+    res.json({
+      success: true,
+      data: {
+        blog: {
+          ...blog.toObject(),
+          id: (blog._id as any).toString(),
+          author: blog.authorId,
+          authorId: (blog.authorId as any)?._id?.toString(),
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Get blog error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
 
 // Create blog post
@@ -92,185 +203,45 @@ export const createBlog = async (req: AuthenticatedRequest, res: Response): Prom
     const baseSlug = generateSlug(title);
     const slug = await ensureUniqueSlug(baseSlug);
 
-    // Calculate read time
-    const readTime = calculateReadTime(content);
+    // Calculate read time (average reading speed: 200 words per minute)
+    const wordCount = content.split(/\s+/).length;
+    const readTime = Math.ceil(wordCount / 200);
 
     // Create blog post
-    const blogPost = await prisma.blogPost.create({
-      data: {
-        title,
-        slug,
-        content,
-        excerpt,
-        status,
-        featured,
-        tags,
-        category,
-        seoTitle,
-        seoDescription,
-        featuredImage,
-        images,
-        readTime,
-        authorId: req.user!.id,
-        publishedAt: status === 'PUBLISHED' ? new Date() : null,
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
+    const blog = new BlogPost({
+      title,
+      slug,
+      content,
+      excerpt,
+      status,
+      featured,
+      tags,
+      category,
+      seoTitle,
+      seoDescription,
+      featuredImage,
+      images,
+      readTime,
+      authorId: req.user!.id,
+      publishedAt: status === 'PUBLISHED' ? new Date() : null,
     });
 
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        userId: req.user!.id,
-        action: 'CREATE',
-        entityType: 'BlogPost',
-        entityId: blogPost.id,
-        newValues: { title, slug, status },
-        ipAddress: req.ip || req.connection.remoteAddress,
-        userAgent: req.get('User-Agent'),
-      },
-    });
+    await blog.save();
+    await blog.populate('authorId', 'name email');
 
     res.status(201).json({
       success: true,
-      data: { blogPost },
+      data: {
+        blog: {
+          ...blog.toObject(),
+          id: (blog._id as any).toString(),
+          author: blog.authorId,
+          authorId: (blog.authorId as any)._id.toString(),
+        },
+      },
     });
   } catch (error) {
     console.error('Create blog error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-// Get all blog posts with pagination and filtering
-export const getBlogs = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() });
-      return;
-    }
-
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const status = req.query.status as string;
-    const featured = req.query.featured === 'true';
-    const search = req.query.search as string;
-    const category = req.query.category as string;
-
-    const skip = (page - 1) * limit;
-
-    // Build where clause
-    const where: any = {};
-
-    if (status) {
-      where.status = status;
-    }
-
-    if (req.query.featured !== undefined) {
-      where.featured = featured;
-    }
-
-    if (search) {
-      where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { content: { contains: search, mode: 'insensitive' } },
-        { excerpt: { contains: search, mode: 'insensitive' } },
-      ];
-    }
-
-    if (category) {
-      where.category = category;
-    }
-
-    // Get blog posts
-    const [blogPosts, total] = await Promise.all([
-      prisma.blogPost.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
-      }),
-      prisma.blogPost.count({ where }),
-    ]);
-
-    const totalPages = Math.ceil(total / limit);
-
-    res.json({
-      success: true,
-      data: {
-        blogPosts,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages,
-          hasNext: page < totalPages,
-          hasPrev: page > 1,
-        },
-      },
-    });
-  } catch (error) {
-    console.error('Get blogs error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-// Get single blog post by ID or slug
-export const getBlog = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { id } = req.params;
-
-    // Check if id is a valid cuid or try as slug
-    const isId = id.length > 10; // cuid is longer than typical slugs
-
-    const blogPost = await prisma.blogPost.findFirst({
-      where: isId ? { id } : { slug: id },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    if (!blogPost) {
-      res.status(404).json({ error: 'Blog post not found' });
-      return;
-    }
-
-    // Increment view count if accessing by slug (public access)
-    if (!isId) {
-      await prisma.blogPost.update({
-        where: { id: blogPost.id },
-        data: { views: { increment: 1 } },
-      });
-    }
-
-    res.json({
-      success: true,
-      data: { blogPost },
-    });
-  } catch (error) {
-    console.error('Get blog error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -299,81 +270,61 @@ export const updateBlog = async (req: AuthenticatedRequest, res: Response): Prom
       images,
     } = req.body;
 
-    // Check if blog post exists
-    const existingPost = await prisma.blogPost.findUnique({
-      where: { id },
-    });
-
-    if (!existingPost) {
+    const blog = await BlogPost.findById(id);
+    
+    if (!blog) {
       res.status(404).json({ error: 'Blog post not found' });
       return;
     }
 
-    // Prepare update data
-    const updateData: any = {};
-
+    // Update fields
     if (title !== undefined) {
-      updateData.title = title;
-      // Update slug if title changed
-      if (title !== existingPost.title) {
-        const baseSlug = generateSlug(title);
-        updateData.slug = await ensureUniqueSlug(baseSlug, id);
-      }
+      blog.title = title;
+      // Generate new slug if title changed
+      const baseSlug = generateSlug(title);
+      blog.slug = await ensureUniqueSlug(baseSlug, id);
     }
-
+    
     if (content !== undefined) {
-      updateData.content = content;
-      updateData.readTime = calculateReadTime(content);
+      blog.content = content;
+      // Recalculate read time
+      const wordCount = content.split(/\s+/).length;
+      blog.readTime = Math.ceil(wordCount / 200);
     }
+    
+    if (excerpt !== undefined) blog.excerpt = excerpt;
+    if (featured !== undefined) blog.featured = featured;
+    if (tags !== undefined) blog.tags = tags;
+    if (category !== undefined) blog.category = category;
+    if (seoTitle !== undefined) blog.seoTitle = seoTitle;
+    if (seoDescription !== undefined) blog.seoDescription = seoDescription;
+    if (featuredImage !== undefined) blog.featuredImage = featuredImage;
+    if (images !== undefined) blog.images = images;
 
-    if (excerpt !== undefined) updateData.excerpt = excerpt;
+    // Handle status change
     if (status !== undefined) {
-      updateData.status = status;
-      // Set publishedAt if publishing for the first time
-      if (status === 'PUBLISHED' && existingPost.status !== 'PUBLISHED') {
-        updateData.publishedAt = new Date();
+      const oldStatus = blog.status;
+      blog.status = status;
+      
+      // Set publishedAt when publishing for first time
+      if (status === 'PUBLISHED' && oldStatus !== 'PUBLISHED') {
+        blog.publishedAt = new Date();
       }
     }
-    if (featured !== undefined) updateData.featured = featured;
-    if (tags !== undefined) updateData.tags = tags;
-    if (category !== undefined) updateData.category = category;
-    if (seoTitle !== undefined) updateData.seoTitle = seoTitle;
-    if (seoDescription !== undefined) updateData.seoDescription = seoDescription;
-    if (featuredImage !== undefined) updateData.featuredImage = featuredImage;
-    if (images !== undefined) updateData.images = images;
 
-    // Update blog post
-    const updatedPost = await prisma.blogPost.update({
-      where: { id },
-      data: updateData,
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        userId: req.user!.id,
-        action: 'UPDATE',
-        entityType: 'BlogPost',
-        entityId: id,
-        oldValues: { title: existingPost.title, status: existingPost.status },
-        newValues: { title: updateData.title, status: updateData.status },
-        ipAddress: req.ip || req.connection.remoteAddress,
-        userAgent: req.get('User-Agent'),
-      },
-    });
+    await blog.save();
+    await blog.populate('authorId', 'name email');
 
     res.json({
       success: true,
-      data: { blogPost: updatedPost },
+      data: {
+        blog: {
+          ...blog.toObject(),
+          id: (blog._id as any).toString(),
+          author: blog.authorId,
+          authorId: (blog.authorId as any)._id.toString(),
+        },
+      },
     });
   } catch (error) {
     console.error('Update blog error:', error);
@@ -386,33 +337,14 @@ export const deleteBlog = async (req: AuthenticatedRequest, res: Response): Prom
   try {
     const { id } = req.params;
 
-    // Check if blog post exists
-    const existingPost = await prisma.blogPost.findUnique({
-      where: { id },
-    });
-
-    if (!existingPost) {
+    const blog = await BlogPost.findById(id);
+    
+    if (!blog) {
       res.status(404).json({ error: 'Blog post not found' });
       return;
     }
 
-    // Delete blog post
-    await prisma.blogPost.delete({
-      where: { id },
-    });
-
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        userId: req.user!.id,
-        action: 'DELETE',
-        entityType: 'BlogPost',
-        entityId: id,
-        oldValues: { title: existingPost.title, slug: existingPost.slug },
-        ipAddress: req.ip || req.connection.remoteAddress,
-        userAgent: req.get('User-Agent'),
-      },
-    });
+    await BlogPost.findByIdAndDelete(id);
 
     res.json({
       success: true,
@@ -424,44 +356,42 @@ export const deleteBlog = async (req: AuthenticatedRequest, res: Response): Prom
   }
 };
 
-// Get blog statistics
+// Get blog statistics (admin only)
 export const getBlogStats = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    const [
-      totalPosts,
-      publishedPosts,
-      draftPosts,
-      featuredPosts,
-      totalViews,
-      categories,
-    ] = await Promise.all([
-      prisma.blogPost.count(),
-      prisma.blogPost.count({ where: { status: 'PUBLISHED' } }),
-      prisma.blogPost.count({ where: { status: 'DRAFT' } }),
-      prisma.blogPost.count({ where: { featured: true } }),
-      prisma.blogPost.aggregate({
-        _sum: { views: true },
-      }),
-      prisma.blogPost.groupBy({
-        by: ['category'],
-        where: { category: { not: null } },
-        _count: { category: true },
-        orderBy: { _count: { category: 'desc' } },
-      }),
+    const [totalPosts, publishedPosts, draftPosts, featuredPosts, totalViews] = await Promise.all([
+      BlogPost.countDocuments(),
+      BlogPost.countDocuments({ status: 'PUBLISHED' }),
+      BlogPost.countDocuments({ status: 'DRAFT' }),
+      BlogPost.countDocuments({ featured: true }),
+      BlogPost.aggregate([{ $group: { _id: null, totalViews: { $sum: '$views' } } }]),
     ]);
+
+    // Get recent posts
+    const recentPosts = await BlogPost.find()
+      .populate('authorId', 'name')
+      .select('title slug status createdAt views')
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .lean();
+
+    const transformedRecentPosts = recentPosts.map(post => ({
+      ...post,
+      id: post._id.toString(),
+      author: post.authorId,
+    }));
 
     res.json({
       success: true,
       data: {
-        totalPosts,
-        publishedPosts,
-        draftPosts,
-        featuredPosts,
-        totalViews: totalViews._sum.views || 0,
-        categories: categories.map(cat => ({
-          name: cat.category,
-          count: cat._count.category,
-        })),
+        stats: {
+          totalPosts,
+          publishedPosts,
+          draftPosts,
+          featuredPosts,
+          totalViews: totalViews[0]?.totalViews || 0,
+        },
+        recentPosts: transformedRecentPosts,
       },
     });
   } catch (error) {

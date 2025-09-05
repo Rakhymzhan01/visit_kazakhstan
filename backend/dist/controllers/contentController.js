@@ -2,51 +2,80 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getContentHistory = exports.deleteContent = exports.bulkUpdateContent = exports.updateContent = exports.getAllPages = exports.getPageContent = exports.updateContentValidation = void 0;
 const express_validator_1 = require("express-validator");
-const database_1 = require("../config/database");
+const Content_1 = require("../models/Content");
 // Validation rules
 exports.updateContentValidation = [
     (0, express_validator_1.body)('page').isLength({ min: 1, max: 50 }),
-    (0, express_validator_1.body)('section').isLength({ min: 1, max: 50 }),
-    (0, express_validator_1.body)('key').isLength({ min: 1, max: 50 }),
-    (0, express_validator_1.body)('type').isIn(['text', 'image', 'rich_text', 'json']),
-    (0, express_validator_1.body)('value').isLength({ min: 0 }),
-    (0, express_validator_1.body)('metadata').optional().isObject(),
+    (0, express_validator_1.body)('updates').isArray().withMessage('Updates must be an array'),
 ];
 // Get content for a specific page
 const getPageContent = async (req, res) => {
     try {
         const { page } = req.params;
         const { section } = req.query;
-        const where = { page };
-        if (section) {
-            where.section = section;
-        }
-        const content = await database_1.prisma.content.findMany({
-            where,
-            orderBy: [
-                { section: 'asc' },
-                { key: 'asc' },
-            ],
-            select: {
-                id: true,
-                page: true,
-                section: true,
-                key: true,
-                type: true,
-                value: true,
-                metadata: true,
-                updatedAt: true,
-                updatedBy: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
+        let content = await Content_1.Content.findOne({ page }).populate('updatedById', 'id name');
+        if (!content) {
+            // Return empty content structure if page doesn't exist
+            res.json({
+                success: true,
+                data: {
+                    content: [],
+                    page,
+                    pageContent: {}
                 },
-            },
-        });
+            });
+            return;
+        }
+        // If section is specified, filter to that section only
+        if (section && typeof section === 'string') {
+            const sectionContent = content.content[section] || {};
+            res.json({
+                success: true,
+                data: {
+                    content: [{
+                            page: content.page,
+                            section,
+                            content: sectionContent,
+                            updatedAt: content.updatedAt,
+                            updatedBy: content.updatedById
+                        }],
+                    pageContent: { [section]: sectionContent }
+                },
+            });
+            return;
+        }
+        // Transform content to match the expected API format for backward compatibility
+        const transformedContent = [];
+        const flattenContent = (obj, section = '', parentKey = '') => {
+            for (const [key, value] of Object.entries(obj)) {
+                const fullKey = parentKey ? `${parentKey}.${key}` : key;
+                if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    // If it's an object, recurse
+                    flattenContent(value, section || key, section ? fullKey : '');
+                }
+                else {
+                    // If it's a primitive value or array, add it to transformed content
+                    transformedContent.push({
+                        id: `${page}_${section || key}_${fullKey}`,
+                        page: content.page,
+                        section: section || key,
+                        key: section ? fullKey : key,
+                        type: Array.isArray(value) ? 'json' : typeof value === 'string' ? 'text' : 'json',
+                        value: typeof value === 'string' ? value : JSON.stringify(value),
+                        metadata: null,
+                        updatedAt: content.updatedAt,
+                        updatedBy: content.updatedById
+                    });
+                }
+            }
+        };
+        flattenContent(content.content);
         res.json({
             success: true,
-            data: { content },
+            data: {
+                content: transformedContent,
+                pageContent: content.content
+            },
         });
     }
     catch (error) {
@@ -58,35 +87,19 @@ exports.getPageContent = getPageContent;
 // Get all pages with their sections
 const getAllPages = async (req, res) => {
     try {
-        const pages = await database_1.prisma.content.groupBy({
-            by: ['page'],
-            _count: {
-                id: true,
-            },
-            orderBy: {
-                page: 'asc',
-            },
-        });
-        const pagesWithSections = await Promise.all(pages.map(async (page) => {
-            const sections = await database_1.prisma.content.groupBy({
-                by: ['section'],
-                where: { page: page.page },
-                _count: {
-                    id: true,
-                },
-                orderBy: {
-                    section: 'asc',
-                },
-            });
+        const pages = await Content_1.Content.find({}, 'page content updatedAt').lean();
+        const pagesWithSections = pages.map(page => {
+            const sections = Object.keys(page.content || {}).map(sectionName => ({
+                section: sectionName,
+                contentCount: Object.keys(page.content[sectionName] || {}).length,
+            }));
             return {
                 page: page.page,
-                contentCount: page._count.id,
-                sections: sections.map(section => ({
-                    section: section.section,
-                    contentCount: section._count.id,
-                })),
+                contentCount: sections.reduce((total, section) => total + section.contentCount, 0),
+                sections,
+                lastUpdated: page.updatedAt,
             };
-        }));
+        });
         res.json({
             success: true,
             data: { pages: pagesWithSections },
@@ -98,7 +111,7 @@ const getAllPages = async (req, res) => {
     }
 };
 exports.getAllPages = getAllPages;
-// Update or create content
+// Update content (legacy single update - kept for backward compatibility)
 const updateContent = async (req, res) => {
     try {
         const errors = (0, express_validator_1.validationResult)(req);
@@ -107,90 +120,47 @@ const updateContent = async (req, res) => {
             return;
         }
         const { page, section, key, type, value, metadata } = req.body;
-        // Check if content already exists
-        const existingContent = await database_1.prisma.content.findUnique({
-            where: {
-                page_section_key: {
-                    page,
-                    section,
-                    key,
-                },
-            },
-        });
-        let content;
-        let action = 'UPDATE';
-        if (existingContent) {
-            // Update existing content
-            content = await database_1.prisma.content.update({
-                where: {
-                    page_section_key: {
-                        page,
-                        section,
-                        key,
-                    },
-                },
-                data: {
-                    type,
-                    value,
-                    metadata,
-                    updatedById: req.user.id,
-                },
-                include: {
-                    updatedBy: {
-                        select: {
-                            id: true,
-                            name: true,
-                        },
-                    },
-                },
+        // Find or create the page content
+        let content = await Content_1.Content.findOne({ page });
+        if (!content) {
+            content = new Content_1.Content({
+                page,
+                content: {},
+                updatedById: req.user.id,
             });
         }
-        else {
-            // Create new content
-            action = 'CREATE';
-            content = await database_1.prisma.content.create({
-                data: {
-                    page,
-                    section,
-                    key,
-                    type,
-                    value,
-                    metadata,
-                    updatedById: req.user.id,
-                },
-                include: {
-                    updatedBy: {
-                        select: {
-                            id: true,
-                            name: true,
-                        },
-                    },
-                },
-            });
+        // Update the specific section and key
+        if (!content.content[section]) {
+            content.content[section] = {};
         }
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: req.user.id,
-                action,
-                entityType: 'Content',
-                entityId: content.id,
-                oldValues: existingContent ? {
-                    type: existingContent.type,
-                    value: existingContent.value,
-                } : undefined,
-                newValues: {
-                    type,
-                    value: value.length > 500 ? `${value.substring(0, 500)}...` : value,
-                },
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
+        // Handle nested keys (e.g., "hero.title")
+        const keys = key.split('.');
+        let target = content.content[section];
+        for (let i = 0; i < keys.length - 1; i++) {
+            if (!target[keys[i]]) {
+                target[keys[i]] = {};
+            }
+            target = target[keys[i]];
+        }
+        // Set the value (parse JSON if needed)
+        let parsedValue = value;
+        if (type === 'json') {
+            try {
+                parsedValue = JSON.parse(value);
+            }
+            catch (error) {
+                console.warn('Failed to parse JSON value:', value);
+            }
+        }
+        target[keys[keys.length - 1]] = parsedValue;
+        // Update metadata
+        content.updatedById = req.user.id;
+        content.markModified('content');
+        await content.save();
         res.json({
             success: true,
             data: { content },
-            message: `Content ${action.toLowerCase()}d successfully`,
+            message: 'Content updated successfully',
         });
     }
     catch (error) {
@@ -207,7 +177,8 @@ const bulkUpdateContent = async (req, res) => {
             res.status(400).json({ error: 'Updates array is required' });
             return;
         }
-        // Validate each update
+        // Group updates by page
+        const updatesByPage = {};
         for (const update of updates) {
             const { page, section, key, type, value } = update;
             if (!page || !section || !key || !type || value === undefined) {
@@ -216,80 +187,76 @@ const bulkUpdateContent = async (req, res) => {
                 });
                 return;
             }
+            if (!updatesByPage[page]) {
+                updatesByPage[page] = [];
+            }
+            updatesByPage[page].push(update);
         }
         const results = [];
-        // Process each update
-        for (const update of updates) {
-            const { page, section, key, type, value, metadata } = update;
+        // Process each page
+        for (const [page, pageUpdates] of Object.entries(updatesByPage)) {
             try {
-                const content = await database_1.prisma.content.upsert({
-                    where: {
-                        page_section_key: {
-                            page,
-                            section,
-                            key,
-                        },
-                    },
-                    update: {
-                        type,
-                        value,
-                        metadata,
-                        updatedById: req.user.id,
-                    },
-                    create: {
+                // Find or create the page content
+                let content = await Content_1.Content.findOne({ page });
+                if (!content) {
+                    content = new Content_1.Content({
                         page,
-                        section,
-                        key,
-                        type,
-                        value,
-                        metadata,
+                        content: {},
                         updatedById: req.user.id,
-                    },
-                    include: {
-                        updatedBy: {
-                            select: {
-                                id: true,
-                                name: true,
-                            },
-                        },
-                    },
-                });
+                    });
+                }
+                // Apply all updates for this page
+                for (const update of pageUpdates) {
+                    const { section, key, type, value } = update;
+                    // Ensure section exists
+                    if (!content.content[section]) {
+                        content.content[section] = {};
+                    }
+                    // Handle nested keys (e.g., "hero.title")
+                    const keys = key.split('.');
+                    let target = content.content[section];
+                    for (let i = 0; i < keys.length - 1; i++) {
+                        if (!target[keys[i]]) {
+                            target[keys[i]] = {};
+                        }
+                        target = target[keys[i]];
+                    }
+                    // Set the value (parse JSON if needed)
+                    let parsedValue = value;
+                    if (type === 'json') {
+                        try {
+                            parsedValue = JSON.parse(value);
+                        }
+                        catch (error) {
+                            console.warn('Failed to parse JSON value:', value);
+                        }
+                    }
+                    target[keys[keys.length - 1]] = parsedValue;
+                }
+                // Update metadata
+                content.updatedById = req.user.id;
+                content.markModified('content');
+                await content.save();
                 results.push({
                     success: true,
+                    page,
+                    updatesCount: pageUpdates.length,
                     content,
-                });
-                // Create audit log
-                await database_1.prisma.auditLog.create({
-                    data: {
-                        userId: req.user.id,
-                        action: 'BULK_UPDATE',
-                        entityType: 'Content',
-                        entityId: content.id,
-                        newValues: {
-                            page,
-                            section,
-                            key,
-                            type,
-                            value: value.length > 500 ? `${value.substring(0, 500)}...` : value,
-                        },
-                        ipAddress: req.ip || req.connection.remoteAddress,
-                        userAgent: req.get('User-Agent'),
-                    },
                 });
             }
             catch (error) {
-                console.error(`Error updating content ${page}/${section}/${key}:`, error);
+                console.error(`Error updating page ${page}:`, error);
                 results.push({
                     success: false,
-                    error: 'Failed to update content',
-                    content: { page, section, key },
+                    page,
+                    error: 'Failed to update page content',
                 });
             }
         }
         res.json({
             success: true,
             data: { results },
-            message: `Processed ${updates.length} content updates`,
+            message: `Processed ${updates.length} content updates across ${Object.keys(updatesByPage).length} pages`,
         });
     }
     catch (error) {
@@ -298,39 +265,39 @@ const bulkUpdateContent = async (req, res) => {
     }
 };
 exports.bulkUpdateContent = bulkUpdateContent;
-// Delete content
+// Delete content (delete entire page or section)
 const deleteContent = async (req, res) => {
     try {
         const { id } = req.params;
-        // Check if content exists
-        const existingContent = await database_1.prisma.content.findUnique({
-            where: { id },
-        });
-        if (!existingContent) {
+        const { section, key } = req.query;
+        // Parse the page from ID if it's in the format "page_section_key"
+        const parts = id.split('_');
+        const page = parts[0];
+        const content = await Content_1.Content.findOne({ page });
+        if (!content) {
             res.status(404).json({ error: 'Content not found' });
             return;
         }
-        // Delete content
-        await database_1.prisma.content.delete({
-            where: { id },
-        });
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: req.user.id,
-                action: 'DELETE',
-                entityType: 'Content',
-                entityId: id,
-                oldValues: {
-                    page: existingContent.page,
-                    section: existingContent.section,
-                    key: existingContent.key,
-                    type: existingContent.type,
-                },
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
+        if (section && key) {
+            // Delete specific key from section
+            if (content.content[section] && content.content[section][key]) {
+                delete content.content[section][key];
+                content.markModified('content');
+                await content.save();
+            }
+        }
+        else if (section) {
+            // Delete entire section
+            if (content.content[section]) {
+                delete content.content[section];
+                content.markModified('content');
+                await content.save();
+            }
+        }
+        else {
+            // Delete entire page
+            await Content_1.Content.deleteOne({ page });
+        }
         res.json({
             success: true,
             message: 'Content deleted successfully',
@@ -342,58 +309,34 @@ const deleteContent = async (req, res) => {
     }
 };
 exports.deleteContent = deleteContent;
-// Get content history/audit logs
+// Get content history (simplified - just return last updated info)
 const getContentHistory = async (req, res) => {
     try {
         const { page, section, key } = req.query;
-        const where = {
+        const where = {};
+        if (page)
+            where.page = page;
+        const contents = await Content_1.Content.find(where)
+            .populate('updatedById', 'id name')
+            .sort({ updatedAt: -1 })
+            .limit(100);
+        const history = contents.map(content => ({
+            id: content._id,
+            page: content.page,
+            action: 'UPDATE',
             entityType: 'Content',
-        };
-        if (page || section || key) {
-            // If we have specific page/section/key, we need to find the content first
-            const contentWhere = {};
-            if (page)
-                contentWhere.page = page;
-            if (section)
-                contentWhere.section = section;
-            if (key)
-                contentWhere.key = key;
-            const contentItems = await database_1.prisma.content.findMany({
-                where: contentWhere,
-                select: { id: true },
-            });
-            where.entityId = {
-                in: contentItems.map(item => item.id),
-            };
-        }
-        const history = await database_1.prisma.auditLog.findMany({
-            where,
-            orderBy: { timestamp: 'desc' },
-            take: 100, // Limit to last 100 entries
-            select: {
-                id: true,
-                action: true,
-                entityId: true,
-                oldValues: true,
-                newValues: true,
-                timestamp: true,
-                userId: true,
+            entityId: content._id.toString(),
+            timestamp: content.updatedAt,
+            userId: content.updatedById?._id,
+            userName: content.updatedById?.name || 'System',
+            newValues: {
+                page: content.page,
+                sectionsCount: Object.keys(content.content).length,
             },
-        });
-        // Get user details for the history
-        const userIds = [...new Set(history.map(h => h.userId).filter(Boolean))];
-        const users = await database_1.prisma.user.findMany({
-            where: { id: { in: userIds } },
-            select: { id: true, name: true },
-        });
-        const usersMap = new Map(users.map(u => [u.id, u.name]));
-        const historyWithUsers = history.map(h => ({
-            ...h,
-            userName: h.userId ? usersMap.get(h.userId) : 'System',
         }));
         res.json({
             success: true,
-            data: { history: historyWithUsers },
+            data: { history },
         });
     }
     catch (error) {

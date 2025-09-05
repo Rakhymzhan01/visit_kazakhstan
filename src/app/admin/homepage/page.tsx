@@ -7,6 +7,7 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { toast } from 'react-hot-toast';
+import { contentApi } from '@/lib/api';
 
 interface ContentItem {
   id: string;
@@ -124,14 +125,11 @@ export default function HomepageContentEditor() {
   const loadContent = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/content/homepage');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data.content.length > 0) {
-          // Transform API content to our format
-          const transformedContent = transformApiContent(data.data.content);
-          setContent({ ...defaultContent, ...transformedContent });
-        }
+      const response = await contentApi.getPageContent('homepage');
+      if (response.data.success && response.data.data.content.length > 0) {
+        // Transform API content to our format
+        const transformedContent = transformApiContent(response.data.data.content);
+        setContent({ ...defaultContent, ...transformedContent });
       }
     } catch (error) {
       console.error('Error loading content:', error);
@@ -175,8 +173,7 @@ export default function HomepageContentEditor() {
       // Hero section
       updates.push(
         { page: 'homepage', section: 'hero', key: 'title', type: 'text', value: content.hero.title },
-        { page: 'homepage', section: 'hero', key: 'subtitle', type: 'text', value: content.hero.subtitle },
-        { page: 'homepage', section: 'hero', key: 'backgroundImage', type: 'image', value: content.hero.backgroundImage }
+        { page: 'homepage', section: 'hero', key: 'subtitle', type: 'text', value: content.hero.subtitle }
       );
 
       // Why Visit section
@@ -195,15 +192,13 @@ export default function HomepageContentEditor() {
       // Cities section
       updates.push(
         { page: 'homepage', section: 'cities', key: 'title', type: 'text', value: content.cities.title },
-        { page: 'homepage', section: 'cities', key: 'description', type: 'text', value: content.cities.description },
-        { page: 'homepage', section: 'cities', key: 'mapImage', type: 'image', value: content.cities.mapImage }
+        { page: 'homepage', section: 'cities', key: 'description', type: 'text', value: content.cities.description }
       );
 
       // Instagram section
       updates.push(
         { page: 'homepage', section: 'instagram', key: 'handle', type: 'text', value: content.instagram.handle },
-        { page: 'homepage', section: 'instagram', key: 'description', type: 'text', value: content.instagram.description },
-        { page: 'homepage', section: 'instagram', key: 'images', type: 'json', value: JSON.stringify(content.instagram.images) }
+        { page: 'homepage', section: 'instagram', key: 'description', type: 'text', value: content.instagram.description }
       );
 
       // About section
@@ -213,19 +208,8 @@ export default function HomepageContentEditor() {
         { page: 'homepage', section: 'about', key: 'stats', type: 'json', value: JSON.stringify(content.about.stats) }
       );
 
-      const response = await fetch('/api/content/bulk', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ updates }),
-      });
-
-      if (response.ok) {
-        toast.success('Content saved successfully!');
-      } else {
-        throw new Error('Failed to save content');
-      }
+      await contentApi.bulkUpdateContent({ updates });
+      toast.success('Content saved successfully!');
     } catch (error) {
       console.error('Error saving content:', error);
       toast.error('Failed to save content');
@@ -301,15 +285,6 @@ export default function HomepageContentEditor() {
                 onChange={(e) => updateContent('hero', 'subtitle', e.target.value)}
               />
             </div>
-            <div>
-              <Label htmlFor="hero-bg">Background Image</Label>
-              <Input
-                id="hero-bg"
-                value={content.hero.backgroundImage}
-                onChange={(e) => updateContent('hero', 'backgroundImage', e.target.value)}
-                placeholder="/image.png"
-              />
-            </div>
           </CardContent>
         </Card>
 
@@ -336,22 +311,6 @@ export default function HomepageContentEditor() {
                     <Input
                       value={item.title}
                       onChange={(e) => updateArrayItem('whyVisit', 'items', index, 'title', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label>Image</Label>
-                    <Input
-                      value={item.image}
-                      onChange={(e) => updateArrayItem('whyVisit', 'items', index, 'image', e.target.value)}
-                      placeholder="/image.jpg"
-                    />
-                  </div>
-                  <div>
-                    <Label>Background Color Classes</Label>
-                    <Input
-                      value={item.bgColor}
-                      onChange={(e) => updateArrayItem('whyVisit', 'items', index, 'bgColor', e.target.value)}
-                      placeholder="from-blue-400 to-blue-600"
                     />
                   </div>
                 </div>
@@ -407,15 +366,6 @@ export default function HomepageContentEditor() {
                 value={content.cities.description}
                 onChange={(e) => updateContent('cities', 'description', e.target.value)}
                 rows={3}
-              />
-            </div>
-            <div>
-              <Label htmlFor="cities-map">Map Image</Label>
-              <Input
-                id="cities-map"
-                value={content.cities.mapImage}
-                onChange={(e) => updateContent('cities', 'mapImage', e.target.value)}
-                placeholder="/kz_map.png"
               />
             </div>
           </CardContent>

@@ -173,3 +173,67 @@ export const uploadApi = {
   getMediaStats: () =>
     api.get('/upload/media/stats'),
 };
+
+// Tours API
+export const toursApi = {
+  getTours: (params?: {
+    page?: number;
+    limit?: number;
+    category?: string;
+    status?: string;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/tours', { params }),
+
+  getPublicTours: (params?: {
+    page?: number;
+    limit?: number;
+    category?: string;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/tours/public', { params }),
+
+  getToursByCategory: () => api.get('/tours/public/categories'),
+
+  getTour: (id: string) => api.get(`/tours/${id}`),
+
+  getPublicTour: (id: string) => api.get(`/tours/public/${id}`),
+
+  createTour: (data: Record<string, unknown>) => api.post('/tours', data),
+
+  updateTour: (id: string, data: Record<string, unknown>) => api.put(`/tours/${id}`, data),
+
+  deleteTour: (id: string) => api.delete(`/tours/${id}`),
+
+  getTourStats: () => api.get('/tours/stats'),
+};
+
+// Categories API
+export const categoriesApi = {
+  getCategories: (params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/categories', { params }),
+
+  getPublicCategories: (params?: {
+    page?: number;
+    limit?: number;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/categories/public', { params }),
+
+  getCategory: (id: string) => api.get(`/categories/${id}`),
+
+  getPublicCategory: (id: string) => api.get(`/categories/public/${id}`),
+
+  createCategory: (data: Record<string, unknown>) => api.post('/categories', data),
+
+  updateCategory: (id: string, data: Record<string, unknown>) => api.put(`/categories/${id}`, data),
+
+  deleteCategory: (id: string) => api.delete(`/categories/${id}`),
+
+  getCategoryStats: () => api.get('/categories/stats'),
+};

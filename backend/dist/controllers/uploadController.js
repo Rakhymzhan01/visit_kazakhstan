@@ -3,228 +3,125 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMediaStats = exports.deleteMedia = exports.updateMedia = exports.getMedia = exports.uploadFiles = exports.uploadFile = void 0;
-const database_1 = require("../config/database");
+exports.getMediaStats = exports.deleteMedia = exports.updateMedia = exports.getMedia = exports.uploadMultiple = exports.uploadSingle = void 0;
+const Media_1 = require("../models/Media");
 const fs_1 = __importDefault(require("fs"));
-const sharp_1 = __importDefault(require("sharp"));
-// Helper to get image dimensions
-const getImageDimensions = async (filePath) => {
-    try {
-        const metadata = await (0, sharp_1.default)(filePath).metadata();
-        return {
-            width: metadata.width || 0,
-            height: metadata.height || 0,
-        };
-    }
-    catch (error) {
-        console.error('Error getting image dimensions:', error);
-        return null;
-    }
-};
-// Upload single file
-const uploadFile = async (req, res) => {
+// Single file upload
+const uploadSingle = async (req, res) => {
     try {
         if (!req.file) {
-            res.status(400).json({ error: 'No file provided' });
+            res.status(400).json({ error: 'No file uploaded' });
             return;
         }
-        const file = req.file;
         const { alt, caption } = req.body;
-        // Generate URL
-        const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
-        const relativePath = file.path.replace(process.cwd(), '').replace(/\\/g, '/');
-        const url = `${baseUrl}${relativePath}`;
-        // Get image dimensions if it's an image
-        let dimensions = null;
-        if (file.mimetype.startsWith('image/')) {
-            dimensions = await getImageDimensions(file.path);
-        }
-        // Save to database
-        const media = await database_1.prisma.media.create({
+        const file = req.file;
+        // Create media record
+        const media = new Media_1.Media({
+            filename: file.filename,
+            originalName: file.originalname,
+            path: file.path,
+            url: `/uploads/${file.filename}`,
+            mimeType: file.mimetype,
+            size: file.size,
+            alt: alt || null,
+            caption: caption || null,
+            usageCount: 0,
+        });
+        await media.save();
+        res.status(201).json({
+            success: true,
             data: {
+                media: {
+                    ...media.toObject(),
+                    id: media._id.toString(),
+                }
+            },
+        });
+    }
+    catch (error) {
+        console.error('Upload single error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+exports.uploadSingle = uploadSingle;
+// Multiple file upload
+const uploadMultiple = async (req, res) => {
+    try {
+        if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+            res.status(400).json({ error: 'No files uploaded' });
+            return;
+        }
+        const files = req.files;
+        const mediaRecords = [];
+        for (const file of files) {
+            const media = new Media_1.Media({
                 filename: file.filename,
                 originalName: file.originalname,
                 path: file.path,
-                url,
+                url: `/uploads/${file.filename}`,
                 mimeType: file.mimetype,
                 size: file.size,
-                alt: alt || file.originalname,
-                caption,
-                width: dimensions?.width,
-                height: dimensions?.height,
-            },
-        });
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: req.user.id,
-                action: 'UPLOAD',
-                entityType: 'Media',
-                entityId: media.id,
-                newValues: {
-                    filename: file.filename,
-                    originalName: file.originalname,
-                    mimeType: file.mimetype,
-                    size: file.size,
-                },
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
-        res.status(201).json({
-            success: true,
-            data: { media },
-        });
-    }
-    catch (error) {
-        console.error('Upload file error:', error);
-        // Clean up uploaded file if database save failed
-        if (req.file && fs_1.default.existsSync(req.file.path)) {
-            try {
-                fs_1.default.unlinkSync(req.file.path);
-            }
-            catch (unlinkError) {
-                console.error('Error cleaning up uploaded file:', unlinkError);
-            }
-        }
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
-exports.uploadFile = uploadFile;
-// Upload multiple files
-const uploadFiles = async (req, res) => {
-    try {
-        const files = req.files;
-        if (!files || files.length === 0) {
-            res.status(400).json({ error: 'No files provided' });
-            return;
-        }
-        const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
-        const mediaItems = [];
-        for (const file of files) {
-            try {
-                // Generate URL
-                const relativePath = file.path.replace(process.cwd(), '').replace(/\\/g, '/');
-                const url = `${baseUrl}${relativePath}`;
-                // Get image dimensions if it's an image
-                let dimensions = null;
-                if (file.mimetype.startsWith('image/')) {
-                    dimensions = await getImageDimensions(file.path);
-                }
-                // Save to database
-                const media = await database_1.prisma.media.create({
-                    data: {
-                        filename: file.filename,
-                        originalName: file.originalname,
-                        path: file.path,
-                        url,
-                        mimeType: file.mimetype,
-                        size: file.size,
-                        alt: file.originalname,
-                        width: dimensions?.width,
-                        height: dimensions?.height,
-                    },
-                });
-                mediaItems.push(media);
-                // Create audit log
-                await database_1.prisma.auditLog.create({
-                    data: {
-                        userId: req.user.id,
-                        action: 'UPLOAD',
-                        entityType: 'Media',
-                        entityId: media.id,
-                        newValues: {
-                            filename: file.filename,
-                            originalName: file.originalname,
-                            mimeType: file.mimetype,
-                            size: file.size,
-                        },
-                        ipAddress: req.ip || req.connection.remoteAddress,
-                        userAgent: req.get('User-Agent'),
-                    },
-                });
-            }
-            catch (error) {
-                console.error(`Error processing file ${file.originalname}:`, error);
-                // Clean up this file
-                if (fs_1.default.existsSync(file.path)) {
-                    try {
-                        fs_1.default.unlinkSync(file.path);
-                    }
-                    catch (unlinkError) {
-                        console.error('Error cleaning up uploaded file:', unlinkError);
-                    }
-                }
-            }
-        }
-        res.status(201).json({
-            success: true,
-            data: { media: mediaItems },
-            message: `Successfully uploaded ${mediaItems.length} out of ${files.length} files`,
-        });
-    }
-    catch (error) {
-        console.error('Upload files error:', error);
-        // Clean up all uploaded files
-        if (req.files) {
-            const files = req.files;
-            files.forEach(file => {
-                if (fs_1.default.existsSync(file.path)) {
-                    try {
-                        fs_1.default.unlinkSync(file.path);
-                    }
-                    catch (unlinkError) {
-                        console.error('Error cleaning up uploaded file:', unlinkError);
-                    }
-                }
+                usageCount: 0,
+            });
+            await media.save();
+            mediaRecords.push({
+                ...media.toObject(),
+                id: media._id.toString(),
             });
         }
+        res.status(201).json({
+            success: true,
+            data: { media: mediaRecords },
+        });
+    }
+    catch (error) {
+        console.error('Upload multiple error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-exports.uploadFiles = uploadFiles;
-// Get media files with pagination
+exports.uploadMultiple = uploadMultiple;
+// Get media files
 const getMedia = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
-        const mimeType = req.query.type;
-        const search = req.query.search;
         const skip = (page - 1) * limit;
-        // Build where clause
-        const where = {};
-        if (mimeType) {
-            where.mimeType = { startsWith: mimeType };
+        const type = req.query.type;
+        const search = req.query.search;
+        // Build filter
+        const filter = {};
+        if (type) {
+            filter.mimeType = { $regex: type, $options: 'i' };
         }
         if (search) {
-            where.OR = [
-                { originalName: { contains: search, mode: 'insensitive' } },
-                { alt: { contains: search, mode: 'insensitive' } },
-                { caption: { contains: search, mode: 'insensitive' } },
+            filter.$or = [
+                { originalName: { $regex: search, $options: 'i' } },
+                { alt: { $regex: search, $options: 'i' } },
+                { caption: { $regex: search, $options: 'i' } },
             ];
         }
         // Get media files
         const [media, total] = await Promise.all([
-            database_1.prisma.media.findMany({
-                where,
-                skip,
-                take: limit,
-                orderBy: { createdAt: 'desc' },
-            }),
-            database_1.prisma.media.count({ where }),
+            Media_1.Media.find(filter)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+            Media_1.Media.countDocuments(filter),
         ]);
-        const totalPages = Math.ceil(total / limit);
+        const transformedMedia = media.map(item => ({
+            ...item,
+            id: item._id.toString(),
+        }));
         res.json({
             success: true,
             data: {
-                media,
+                media: transformedMedia,
                 pagination: {
                     page,
                     limit,
                     total,
-                    totalPages,
-                    hasNext: page < totalPages,
-                    hasPrev: page > 1,
+                    pages: Math.ceil(total / limit),
                 },
             },
         });
@@ -240,41 +137,24 @@ const updateMedia = async (req, res) => {
     try {
         const { id } = req.params;
         const { alt, caption } = req.body;
-        // Check if media exists
-        const existingMedia = await database_1.prisma.media.findUnique({
-            where: { id },
-        });
-        if (!existingMedia) {
+        const media = await Media_1.Media.findById(id);
+        if (!media) {
             res.status(404).json({ error: 'Media not found' });
             return;
         }
-        // Update media
-        const updatedMedia = await database_1.prisma.media.update({
-            where: { id },
-            data: {
-                alt: alt !== undefined ? alt : existingMedia.alt,
-                caption: caption !== undefined ? caption : existingMedia.caption,
-            },
-        });
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: req.user.id,
-                action: 'UPDATE',
-                entityType: 'Media',
-                entityId: id,
-                oldValues: {
-                    alt: existingMedia.alt,
-                    caption: existingMedia.caption,
-                },
-                newValues: { alt, caption },
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
+        if (alt !== undefined)
+            media.alt = alt;
+        if (caption !== undefined)
+            media.caption = caption;
+        await media.save();
         res.json({
             success: true,
-            data: { media: updatedMedia },
+            data: {
+                media: {
+                    ...media.toObject(),
+                    id: media._id.toString(),
+                }
+            },
         });
     }
     catch (error) {
@@ -283,47 +163,25 @@ const updateMedia = async (req, res) => {
     }
 };
 exports.updateMedia = updateMedia;
-// Delete media file
+// Delete media
 const deleteMedia = async (req, res) => {
     try {
         const { id } = req.params;
-        // Check if media exists
-        const existingMedia = await database_1.prisma.media.findUnique({
-            where: { id },
-        });
-        if (!existingMedia) {
+        const media = await Media_1.Media.findById(id);
+        if (!media) {
             res.status(404).json({ error: 'Media not found' });
             return;
         }
         // Delete file from filesystem
-        if (fs_1.default.existsSync(existingMedia.path)) {
-            try {
-                fs_1.default.unlinkSync(existingMedia.path);
-            }
-            catch (error) {
-                console.error('Error deleting file from filesystem:', error);
+        try {
+            if (fs_1.default.existsSync(media.path)) {
+                fs_1.default.unlinkSync(media.path);
             }
         }
-        // Delete from database
-        await database_1.prisma.media.delete({
-            where: { id },
-        });
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: req.user.id,
-                action: 'DELETE',
-                entityType: 'Media',
-                entityId: id,
-                oldValues: {
-                    filename: existingMedia.filename,
-                    originalName: existingMedia.originalName,
-                    path: existingMedia.path,
-                },
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
+        catch (error) {
+            console.error('Error deleting file:', error);
+        }
+        await Media_1.Media.findByIdAndDelete(id);
         res.json({
             success: true,
             message: 'Media deleted successfully',
@@ -338,39 +196,32 @@ exports.deleteMedia = deleteMedia;
 // Get media statistics
 const getMediaStats = async (req, res) => {
     try {
-        const [totalFiles, totalSize, imageCount, documentCount, recentUploads,] = await Promise.all([
-            database_1.prisma.media.count(),
-            database_1.prisma.media.aggregate({
-                _sum: { size: true },
-            }),
-            database_1.prisma.media.count({
-                where: { mimeType: { startsWith: 'image/' } },
-            }),
-            database_1.prisma.media.count({
-                where: { mimeType: { not: { startsWith: 'image/' } } },
-            }),
-            database_1.prisma.media.findMany({
-                take: 5,
-                orderBy: { createdAt: 'desc' },
-                select: {
-                    id: true,
-                    filename: true,
-                    originalName: true,
-                    mimeType: true,
-                    size: true,
-                    url: true,
-                    createdAt: true,
-                },
-            }),
+        const [totalFiles, totalSize, imageCount, documentCount] = await Promise.all([
+            Media_1.Media.countDocuments(),
+            Media_1.Media.aggregate([{ $group: { _id: null, totalSize: { $sum: '$size' } } }]),
+            Media_1.Media.countDocuments({ mimeType: { $regex: '^image/', $options: 'i' } }),
+            Media_1.Media.countDocuments({ mimeType: { $regex: '^application/', $options: 'i' } }),
         ]);
+        const recentFiles = await Media_1.Media.find()
+            .select('filename originalName mimeType size createdAt')
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .lean();
+        const transformedRecentFiles = recentFiles.map(file => ({
+            ...file,
+            id: file._id.toString(),
+        }));
         res.json({
             success: true,
             data: {
-                totalFiles,
-                totalSize: totalSize._sum.size || 0,
-                imageCount,
-                documentCount,
-                recentUploads,
+                stats: {
+                    totalFiles,
+                    totalSize: totalSize[0]?.totalSize || 0,
+                    imageCount,
+                    documentCount,
+                    otherCount: totalFiles - imageCount - documentCount,
+                },
+                recentFiles: transformedRecentFiles,
             },
         });
     }

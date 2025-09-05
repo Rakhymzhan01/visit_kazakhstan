@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../config/database';
+import { User } from '../models/User';
 
 export interface AuthenticatedRequest extends Request {
   user?: {
@@ -32,27 +32,15 @@ export const authenticateToken = async (
     };
 
     // Verify user still exists and is active
-    const user = await prisma.user.findFirst({
-      where: {
-        id: decoded.id,
-        isActive: true,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        isActive: true,
-      },
-    });
+    const user = await User.findById(decoded.id).select('email name role isActive');
 
-    if (!user) {
+    if (!user || !user.isActive) {
       res.status(401).json({ error: 'Invalid or expired token' });
       return;
     }
 
     req.user = {
-      id: user.id,
+      id: (user._id as any).toString(),
       email: user.email,
       role: user.role,
       name: user.name,

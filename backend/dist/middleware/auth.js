@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requireSuperAdmin = exports.requireAdmin = exports.requireRole = exports.authenticateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const database_1 = require("../config/database");
+const User_1 = require("../models/User");
 const authenticateToken = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
@@ -16,25 +16,13 @@ const authenticateToken = async (req, res, next) => {
         }
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         // Verify user still exists and is active
-        const user = await database_1.prisma.user.findFirst({
-            where: {
-                id: decoded.id,
-                isActive: true,
-            },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                role: true,
-                isActive: true,
-            },
-        });
-        if (!user) {
+        const user = await User_1.User.findById(decoded.id).select('email name role isActive');
+        if (!user || !user.isActive) {
             res.status(401).json({ error: 'Invalid or expired token' });
             return;
         }
         req.user = {
-            id: user.id,
+            id: user._id.toString(),
             email: user.email,
             role: user.role,
             name: user.name,

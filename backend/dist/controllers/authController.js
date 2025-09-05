@@ -7,7 +7,7 @@ exports.logout = exports.createUser = exports.changePassword = exports.updatePro
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const express_validator_1 = require("express-validator");
-const database_1 = require("../config/database");
+const User_1 = require("../models/User");
 // Validation rules
 exports.loginValidation = [
     (0, express_validator_1.body)('email').isEmail().normalizeEmail(),
@@ -39,9 +39,7 @@ const login = async (req, res) => {
         }
         const { email, password } = req.body;
         // Find user
-        const user = await database_1.prisma.user.findUnique({
-            where: { email },
-        });
+        const user = await User_1.User.findOne({ email });
         if (!user || !user.isActive) {
             res.status(401).json({ error: 'Invalid credentials' });
             return;
@@ -53,24 +51,11 @@ const login = async (req, res) => {
             return;
         }
         // Update last login
-        await database_1.prisma.user.update({
-            where: { id: user.id },
-            data: { lastLogin: new Date() },
-        });
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: user.id,
-                action: 'LOGIN',
-                entityType: 'User',
-                entityId: user.id,
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
+        user.lastLogin = new Date();
+        await user.save();
         // Generate token
         const token = generateToken({
-            id: user.id,
+            id: user._id.toString(),
             email: user.email,
             role: user.role,
         });
@@ -79,7 +64,7 @@ const login = async (req, res) => {
             data: {
                 token,
                 user: {
-                    id: user.id,
+                    id: user._id.toString(),
                     email: user.email,
                     name: user.name,
                     role: user.role,
@@ -96,25 +81,24 @@ exports.login = login;
 // Get current user profile
 const getProfile = async (req, res) => {
     try {
-        const user = await database_1.prisma.user.findUnique({
-            where: { id: req.user.id },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                role: true,
-                lastLogin: true,
-                createdAt: true,
-                updatedAt: true,
-            },
-        });
+        const user = await User_1.User.findById(req.user.id).select('-password');
         if (!user) {
             res.status(404).json({ error: 'User not found' });
             return;
         }
         res.json({
             success: true,
-            data: { user },
+            data: {
+                user: {
+                    id: user._id.toString(),
+                    email: user.email,
+                    name: user.name,
+                    role: user.role,
+                    lastLogin: user.lastLogin,
+                    createdAt: user.createdAt,
+                    updatedAt: user.updatedAt,
+                }
+            },
         });
     }
     catch (error) {
@@ -131,33 +115,25 @@ const updateProfile = async (req, res) => {
             res.status(400).json({ error: 'Name must be at least 2 characters long' });
             return;
         }
-        const updatedUser = await database_1.prisma.user.update({
-            where: { id: req.user.id },
-            data: { name: name.trim() },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                role: true,
-                lastLogin: true,
-                updatedAt: true,
-            },
-        });
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: req.user.id,
-                action: 'UPDATE',
-                entityType: 'User',
-                entityId: req.user.id,
-                newValues: { name: name.trim() },
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
+        const user = await User_1.User.findById(req.user.id);
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+        user.name = name.trim();
+        await user.save();
         res.json({
             success: true,
-            data: { user: updatedUser },
+            data: {
+                user: {
+                    id: user._id.toString(),
+                    email: user.email,
+                    name: user.name,
+                    role: user.role,
+                    lastLogin: user.lastLogin,
+                    updatedAt: user.updatedAt,
+                }
+            },
         });
     }
     catch (error) {
@@ -181,9 +157,7 @@ const changePassword = async (req, res) => {
             return;
         }
         // Get current user with password
-        const user = await database_1.prisma.user.findUnique({
-            where: { id: req.user.id },
-        });
+        const user = await User_1.User.findById(req.user.id);
         if (!user) {
             res.status(404).json({ error: 'User not found' });
             return;
@@ -197,21 +171,8 @@ const changePassword = async (req, res) => {
         // Hash new password
         const hashedNewPassword = await bcryptjs_1.default.hash(newPassword, 12);
         // Update password
-        await database_1.prisma.user.update({
-            where: { id: user.id },
-            data: { password: hashedNewPassword },
-        });
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: user.id,
-                action: 'PASSWORD_CHANGE',
-                entityType: 'User',
-                entityId: user.id,
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
+        user.password = hashedNewPassword;
+        await user.save();
         res.json({
             success: true,
             message: 'Password updated successfully',
@@ -233,9 +194,7 @@ const createUser = async (req, res) => {
         }
         const { email, password, name, role = 'ADMIN' } = req.body;
         // Check if user already exists
-        const existingUser = await database_1.prisma.user.findUnique({
-            where: { email },
-        });
+        const existingUser = await User_1.User.findOne({ email });
         if (existingUser) {
             res.status(409).json({ error: 'User with this email already exists' });
             return;
@@ -243,36 +202,24 @@ const createUser = async (req, res) => {
         // Hash password
         const hashedPassword = await bcryptjs_1.default.hash(password, 12);
         // Create user
-        const newUser = await database_1.prisma.user.create({
-            data: {
-                email,
-                password: hashedPassword,
-                name,
-                role,
-            },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                role: true,
-                createdAt: true,
-            },
+        const newUser = new User_1.User({
+            email,
+            password: hashedPassword,
+            name,
+            role,
         });
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: req.user.id,
-                action: 'CREATE',
-                entityType: 'User',
-                entityId: newUser.id,
-                newValues: { email, name, role },
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
+        await newUser.save();
         res.status(201).json({
             success: true,
-            data: { user: newUser },
+            data: {
+                user: {
+                    id: newUser._id.toString(),
+                    email: newUser.email,
+                    name: newUser.name,
+                    role: newUser.role,
+                    createdAt: newUser.createdAt,
+                }
+            },
         });
     }
     catch (error) {
@@ -281,20 +228,9 @@ const createUser = async (req, res) => {
     }
 };
 exports.createUser = createUser;
-// Logout (client-side token removal, server-side audit log)
+// Logout (client-side token removal)
 const logout = async (req, res) => {
     try {
-        // Create audit log
-        await database_1.prisma.auditLog.create({
-            data: {
-                userId: req.user.id,
-                action: 'LOGOUT',
-                entityType: 'User',
-                entityId: req.user.id,
-                ipAddress: req.ip || req.connection.remoteAddress,
-                userAgent: req.get('User-Agent'),
-            },
-        });
         res.json({
             success: true,
             message: 'Logged out successfully',

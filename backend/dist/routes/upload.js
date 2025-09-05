@@ -12,8 +12,8 @@ const router = (0, express_1.Router)();
 router.use(auth_1.authenticateToken);
 router.use(auth_1.requireAdmin);
 // Upload routes
-router.post('/single', upload_1.default.single('file'), uploadController_1.uploadFile);
-router.post('/multiple', upload_1.default.array('files', 10), uploadController_1.uploadFiles);
+router.post('/single', upload_1.default.single('file'), uploadController_1.uploadSingle);
+router.post('/multiple', upload_1.default.array('files', 10), uploadController_1.uploadMultiple);
 // Media management routes
 router.get('/media/stats', uploadController_1.getMediaStats);
 router.get('/media', uploadController_1.getMedia);

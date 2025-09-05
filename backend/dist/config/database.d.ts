@@ -1,7 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import mongoose from 'mongoose';
 declare global {
-    var __prisma: PrismaClient | undefined;
+    var __mongoose: typeof mongoose | undefined;
 }
-export declare const prisma: PrismaClient<import(".prisma/client").Prisma.PrismaClientOptions, never, import("@prisma/client/runtime/library").DefaultArgs>;
-export default prisma;
+declare const connectDB: () => Promise<typeof mongoose>;
+export { connectDB };
+export default mongoose;
 //# sourceMappingURL=database.d.ts.map

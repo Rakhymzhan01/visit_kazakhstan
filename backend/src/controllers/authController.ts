@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
-import { prisma } from '../config/database';
+import { User } from '../models/User';
 import { AuthenticatedRequest } from '../middleware/auth';
 
 // Validation rules
@@ -45,9 +45,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
 
     // Find user
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    const user = await User.findOne({ email });
 
     if (!user || !user.isActive) {
       res.status(401).json({ error: 'Invalid credentials' });
@@ -62,26 +60,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Update last login
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { lastLogin: new Date() },
-    });
-
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        userId: user.id,
-        action: 'LOGIN',
-        entityType: 'User',
-        entityId: user.id,
-        ipAddress: req.ip || req.connection.remoteAddress,
-        userAgent: req.get('User-Agent'),
-      },
-    });
+    user.lastLogin = new Date();
+    await user.save();
 
     // Generate token
     const token = generateToken({
-      id: user.id,
+      id: (user._id as any).toString(),
       email: user.email,
       role: user.role,
     });
@@ -91,7 +75,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       data: {
         token,
         user: {
-          id: user.id,
+          id: (user._id as any).toString(),
           email: user.email,
           name: user.name,
           role: user.role,
@@ -107,18 +91,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 // Get current user profile
 export const getProfile = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user!.id },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        lastLogin: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const user = await User.findById(req.user!.id).select('-password');
 
     if (!user) {
       res.status(404).json({ error: 'User not found' });
@@ -127,7 +100,17 @@ export const getProfile = async (req: AuthenticatedRequest, res: Response): Prom
 
     res.json({
       success: true,
-      data: { user },
+      data: { 
+        user: {
+          id: (user._id as any).toString(),
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          lastLogin: user.lastLogin,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        }
+      },
     });
   } catch (error) {
     console.error('Get profile error:', error);
@@ -145,35 +128,27 @@ export const updateProfile = async (req: AuthenticatedRequest, res: Response): P
       return;
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id: req.user!.id },
-      data: { name: name.trim() },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        lastLogin: true,
-        updatedAt: true,
-      },
-    });
+    const user = await User.findById(req.user!.id);
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
 
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        userId: req.user!.id,
-        action: 'UPDATE',
-        entityType: 'User',
-        entityId: req.user!.id,
-        newValues: { name: name.trim() },
-        ipAddress: req.ip || req.connection.remoteAddress,
-        userAgent: req.get('User-Agent'),
-      },
-    });
+    user.name = name.trim();
+    await user.save();
 
     res.json({
       success: true,
-      data: { user: updatedUser },
+      data: { 
+        user: {
+          id: (user._id as any).toString(),
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          lastLogin: user.lastLogin,
+          updatedAt: user.updatedAt,
+        }
+      },
     });
   } catch (error) {
     console.error('Update profile error:', error);
@@ -199,9 +174,7 @@ export const changePassword = async (req: AuthenticatedRequest, res: Response): 
     }
 
     // Get current user with password
-    const user = await prisma.user.findUnique({
-      where: { id: req.user!.id },
-    });
+    const user = await User.findById(req.user!.id);
 
     if (!user) {
       res.status(404).json({ error: 'User not found' });
@@ -219,22 +192,8 @@ export const changePassword = async (req: AuthenticatedRequest, res: Response): 
     const hashedNewPassword = await bcrypt.hash(newPassword, 12);
 
     // Update password
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { password: hashedNewPassword },
-    });
-
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        userId: user.id,
-        action: 'PASSWORD_CHANGE',
-        entityType: 'User',
-        entityId: user.id,
-        ipAddress: req.ip || req.connection.remoteAddress,
-        userAgent: req.get('User-Agent'),
-      },
-    });
+    user.password = hashedNewPassword;
+    await user.save();
 
     res.json({
       success: true,
@@ -258,9 +217,7 @@ export const createUser = async (req: AuthenticatedRequest, res: Response): Prom
     const { email, password, name, role = 'ADMIN' } = req.body;
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       res.status(409).json({ error: 'User with this email already exists' });
@@ -271,38 +228,26 @@ export const createUser = async (req: AuthenticatedRequest, res: Response): Prom
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Create user
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        name,
-        role,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        createdAt: true,
-      },
+    const newUser = new User({
+      email,
+      password: hashedPassword,
+      name,
+      role,
     });
 
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        userId: req.user!.id,
-        action: 'CREATE',
-        entityType: 'User',
-        entityId: newUser.id,
-        newValues: { email, name, role },
-        ipAddress: req.ip || req.connection.remoteAddress,
-        userAgent: req.get('User-Agent'),
-      },
-    });
+    await newUser.save();
 
     res.status(201).json({
       success: true,
-      data: { user: newUser },
+      data: { 
+        user: {
+          id: (newUser._id as any).toString(),
+          email: newUser.email,
+          name: newUser.name,
+          role: newUser.role,
+          createdAt: newUser.createdAt,
+        }
+      },
     });
   } catch (error) {
     console.error('Create user error:', error);
@@ -310,21 +255,9 @@ export const createUser = async (req: AuthenticatedRequest, res: Response): Prom
   }
 };
 
-// Logout (client-side token removal, server-side audit log)
+// Logout (client-side token removal)
 export const logout = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    // Create audit log
-    await prisma.auditLog.create({
-      data: {
-        userId: req.user!.id,
-        action: 'LOGOUT',
-        entityType: 'User',
-        entityId: req.user!.id,
-        ipAddress: req.ip || req.connection.remoteAddress,
-        userAgent: req.get('User-Agent'),
-      },
-    });
-
     res.json({
       success: true,
       message: 'Logged out successfully',

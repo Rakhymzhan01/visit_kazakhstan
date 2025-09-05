@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
-  uploadFile,
-  uploadFiles,
+  uploadSingle,
+  uploadMultiple,
   getMedia,
   updateMedia,
   deleteMedia,
@@ -17,8 +17,8 @@ router.use(authenticateToken);
 router.use(requireAdmin);
 
 // Upload routes
-router.post('/single', upload.single('file'), uploadFile);
-router.post('/multiple', upload.array('files', 10), uploadFiles);
+router.post('/single', upload.single('file'), uploadSingle);
+router.post('/multiple', upload.array('files', 10), uploadMultiple);
 
 // Media management routes
 router.get('/media/stats', getMediaStats);

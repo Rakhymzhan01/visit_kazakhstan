@@ -16,6 +16,8 @@ const auth_1 = __importDefault(require("./routes/auth"));
 const blog_1 = __importDefault(require("./routes/blog"));
 const content_1 = __importDefault(require("./routes/content"));
 const upload_1 = __importDefault(require("./routes/upload"));
+const tours_1 = __importDefault(require("./routes/tours"));
+const categories_1 = __importDefault(require("./routes/categories"));
 // Load environment variables
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -58,6 +60,8 @@ app.use('/api/auth', auth_1.default);
 app.use('/api/blog', blog_1.default);
 app.use('/api/content', content_1.default);
 app.use('/api/upload', upload_1.default);
+app.use('/api/tours', tours_1.default);
+app.use('/api/categories', categories_1.default);
 // 404 handler
 app.use('*', (req, res) => {
     res.status(404).json({
@@ -73,13 +77,14 @@ app.use((err, req, res, next) => {
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     });
 });
-// Test database connection and start server
+// Connect to database and start server
 async function startServer() {
     try {
-        // Test database connection
-        console.log('🔌 Testing database connection...');
-        await database_1.prisma.$connect();
-        console.log('✅ Database connected successfully');
+        // Connect to MongoDB
+        console.log('🔌 Connecting to MongoDB...');
+        await (0, database_1.connectDB)();
+        // Create admin user if it doesn't exist
+        await createDefaultAdmin();
         // Start server
         app.listen(PORT, () => {
             console.log(`🚀 Server is running on port ${PORT}`);
@@ -91,6 +96,36 @@ async function startServer() {
     catch (error) {
         console.error('❌ Failed to start server:', error);
         process.exit(1);
+    }
+}
+// Function to create default admin user
+async function createDefaultAdmin() {
+    try {
+        const bcrypt = require('bcryptjs');
+        const { User } = require('./models/User');
+        // Check if admin user already exists
+        const existingAdmin = await User.findOne({ email: 'admin@visitkazakhstan.com' });
+        if (existingAdmin) {
+            console.log('✅ Admin user already exists');
+            return;
+        }
+        // Hash password
+        const hashedPassword = await bcrypt.hash('Admin123!', 12);
+        // Create admin user
+        const adminUser = new User({
+            name: 'Admin',
+            email: 'admin@visitkazakhstan.com',
+            password: hashedPassword,
+            role: 'ADMIN',
+            isActive: true
+        });
+        await adminUser.save();
+        console.log('✅ Default admin user created successfully');
+        console.log('📧 Email: admin@visitkazakhstan.com');
+        console.log('🔑 Password: Admin123!');
+    }
+    catch (error) {
+        console.error('❌ Error creating admin user:', error);
     }
 }
 startServer();
