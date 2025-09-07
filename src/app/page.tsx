@@ -13,19 +13,44 @@ export default function HomePage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative h-[400px] bg-cover bg-center">
-        <Image
-          src="/image.png"
-          alt="Kazakhstan Landscape"
-          width={1200}
-          height={400}
+      <section className="relative h-[610px] bg-cover bg-center overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           className="w-full h-full object-cover absolute inset-0"
-        />
+        >
+          <source src="./2496349_Mountain_Water_1920x1080.mp4" type="video/mp4" />
+          <source src="/hero-video.webm" type="video/webm" />
+          {/* Fallback image if video doesn't load */}
+          <Image
+            src="/image.png"
+            alt="Kazakhstan Landscape"
+            width={1200}
+            height={400}
+            className="w-full h-full object-cover absolute inset-0"
+          />
+        </video>
         <div className="absolute inset-0 bg-black/30"></div>
-        <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
-          <div className="text-white max-w-md z-10">
-            <h1 className="text-4xl font-bold mb-2 leading-tight">Your Next Best Trip,</h1>
-            <h1 className="text-4xl font-bold leading-tight">Return Inspired</h1>
+        <div className="absolute inset-0">
+          <div 
+            className="text-white z-10 absolute"
+            style={{
+              width: '504px',
+              height: '98px',
+              top: '340px',
+              left: '120px',
+              fontFamily: 'Montserrat, sans-serif',
+              fontWeight: 600,
+              fontSize: '40px',
+              lineHeight: '100%',
+              letterSpacing: '-3%',
+              opacity: 1
+            }}
+          >
+            <h1>Your Next Best Trip,</h1>
+            <h1>Return Inspired</h1>
           </div>
         </div>
       </section>

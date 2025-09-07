@@ -15,6 +15,8 @@ const Header = () => {
     {
       name: 'CATEGORIES',
       href: '/categories',
+      width: 134,
+      textWidth: 84,
       hasDropdown: true,
       dropdownItems: [
         { name: 'Nature Escapes', href: '/categories/nature' },
@@ -26,6 +28,8 @@ const Header = () => {
     {
       name: 'TOURS',
       href: '/tours',
+      width: 97,
+      textWidth: 47,
       hasDropdown: true,
       dropdownItems: [
         { name: 'Weekend Getaways', href: '/tours?category=weekend' },
@@ -34,11 +38,11 @@ const Header = () => {
         { name: 'Private Tours', href: '/tours?category=private' }
       ]
     },
-    { name: 'PLAN YOUR TRIP', href: '/plan-your-trip' },
-    { name: 'BLOG', href: '/blog' },
-    { name: 'EVENTS', href: '/events' },
-    { name: 'ABOUT US', href: '/about-us' },
-    { name: 'FOR INVESTORS', href: '/for-investors' }
+    { name: 'PLAN YOUR TRIP', href: '/plan-your-trip', width: 139, textWidth: 107 },
+    { name: 'BLOG', href: '/blog', width: 68, textWidth: 36 },
+    { name: 'EVENTS', href: '/events', width: 84, textWidth: 52 },
+    { name: 'ABOUT US', href: '/about-us', width: 99, textWidth: 67 },
+    { name: 'FOR INVESTORS', href: '/for-investors', width: 137, textWidth: 105 }
   ]
 
   const handlePlanTripClick = (e: React.MouseEvent) => {
@@ -48,56 +52,152 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-[#F5F5F5] shadow-sm relative z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+      <header 
+        className="bg-[#F5F5F5] relative z-50 w-full"
+        style={{
+          height: '82px',
+          justifyContent: 'space-between',
+          opacity: 1,
+          borderBottom: '0.7px solid #D3D3D3',
+          paddingTop: '16px',
+          paddingRight: '40px',
+          paddingBottom: '16px',
+          paddingLeft: '40px',
+          backdropFilter: 'blur(50px)'
+        }}
+      >
+          <div className="flex items-center justify-between h-full w-full">
             {/* Logo */}
             <Link href="/" className="flex items-center flex-shrink-0 mr-8 lg:mr-12 xl:mr-16">
               <Image
                 src="/Logo 2.png"
                 alt="Visit Kazakhstan"
-                width={120}
-                height={40}
-                className="h-8 w-auto"
+                width={94}
+                height={38}
+                style={{
+                  width: '94px',
+                  height: '38px',
+                  opacity: 1
+                }}
               />
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-4 xl:space-x-8 flex-1 justify-center">
-              <div className="bg-white rounded-full px-6 h-[34px] flex items-center space-x-4 xl:space-x-8">
+              <div 
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-evenly',
+                  padding: '2px',
+                  width: '740px',
+                  height: '50px',
+                  background: '#FFFFFF',
+                  borderRadius: '99px',
+                  flex: 'none',
+                  order: 0,
+                  alignSelf: 'stretch',
+                  flexGrow: 0
+                }}
+              >
               {navigation.map((item) => (
-                <div key={item.name} className="relative group">
+                <div 
+                  key={item.name} 
+                  className="relative group"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '6px 16px',
+                    gap: '2px',
+                    width: `${item.width}px`,
+                    height: '46px',
+                    borderRadius: '99px',
+                    flex: 'none',
+                    alignSelf: 'stretch',
+                    flexGrow: 0,
+                    margin: '0px -10px'
+                  }}
+                >
                   {item.name === 'PLAN YOUR TRIP' ? (
-                    <button
-                      onClick={handlePlanTripClick}
-                      className="flex items-center text-gray-700 hover:text-blue-600 font-medium transition-colors uppercase"
+                    <div
                       style={{
-                        fontSize: '12px',
-                        fontFamily: 'Manrope, sans-serif',
-                        fontWeight: 500,
-                        lineHeight: '100%',
-                        letterSpacing: '0%'
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '0px',
+                        gap: '10px',
+                        width: `${item.textWidth}px`,
+                        height: '19px',
+                        flex: 'none',
+                        flexGrow: 0
                       }}
                     >
-                      {item.name}
-                    </button>
+                      <button
+                        onClick={handlePlanTripClick}
+                        style={{
+                          width: `${item.textWidth}px`,
+                          height: '19px',
+                          fontFamily: 'Manrope',
+                          fontStyle: 'normal',
+                          fontWeight: 500,
+                          fontSize: '14px',
+                          lineHeight: '19px',
+                          textTransform: 'uppercase',
+                          color: '#333333',
+                          flex: 'none',
+                          flexGrow: 0,
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {item.name}
+                      </button>
+                    </div>
                   ) : (
-                    <Link
-                      href={item.href}
-                      className="flex items-center text-gray-700 hover:text-blue-600 font-medium transition-colors uppercase"
+                    <div
                       style={{
-                        fontSize: '12px',
-                        fontFamily: 'Manrope, sans-serif',
-                        fontWeight: 500,
-                        lineHeight: '100%',
-                        letterSpacing: '0%'
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '0px',
+                        gap: '10px',
+                        width: `${item.textWidth}px`,
+                        height: '19px',
+                        flex: 'none',
+                        flexGrow: 0
                       }}
                     >
-                      {item.name}
+                      <Link
+                        href={item.href}
+                        style={{
+                          width: `${item.textWidth}px`,
+                          height: '19px',
+                          fontFamily: 'Manrope',
+                          fontStyle: 'normal',
+                          fontWeight: 500,
+                          fontSize: '14px',
+                          lineHeight: '19px',
+                          textTransform: 'uppercase',
+                          color: '#333333',
+                          flex: 'none',
+                          flexGrow: 0,
+                          textDecoration: 'none',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {item.name}
+                      </Link>
                       {item.hasDropdown && (
                         <ChevronDown className="ml-1 h-4 w-4" />
                       )}
-                    </Link>
+                    </div>
                   )}
 
                   {/* Dropdown Menu */}
@@ -121,10 +221,26 @@ const Header = () => {
               </div>
             </nav>
 
-            {/* Search and Actions */}
-            <div className="flex items-center space-x-4">
+            {/* Search and Language Container */}
+            <div 
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: '2px',
+                gap: '2px',
+                width: '140px',
+                height: '50px',
+                background: '#009CBC',
+                borderRadius: '99px',
+                flex: 'none',
+                order: 1,
+                alignSelf: 'stretch',
+                flexGrow: 0
+              }}
+            >
               {/* Search */}
-              <div className="hidden md:flex items-center bg-white border border-gray-300 rounded-full px-3 py-1.5 min-w-[200px]">
+              <div className="hidden md:flex items-center bg-white rounded-full px-3 py-1.5 flex-1">
                 <Search className="h-4 w-4 text-gray-400 mr-2" />
                 <input
                   type="text"
@@ -136,14 +252,28 @@ const Header = () => {
               </div>
 
               {/* Language Toggle */}
-              <button className="bg-teal-500 text-white px-3 py-2 rounded-full text-sm font-medium hover:bg-teal-600 transition-colors">
+              <button className="text-white text-sm font-medium">
                 EN
               </button>
+            </div>
 
+            {/* Actions Container */}
+            <div className="flex items-center space-x-4">
               {/* Plan Your Trip Button */}
               <button
                 onClick={handlePlanTripClick}
-                className="bg-[#009CBC] hover:bg-[#007a9a] text-white rounded-full text-sm h-9 px-4 flex items-center font-medium whitespace-nowrap"
+                className="bg-[#009CBC] hover:bg-[#007a9a] text-white flex items-center font-medium whitespace-nowrap"
+                style={{
+                  width: '137px',
+                  height: '50px',
+                  opacity: 1,
+                  paddingTop: '13px',
+                  paddingRight: '26px',
+                  paddingBottom: '13px',
+                  paddingLeft: '26px',
+                  gap: '10px',
+                  borderRadius: '99px'
+                }}
               >
                 Plan your trip
               </button>
@@ -157,7 +287,6 @@ const Header = () => {
               </button>
             </div>
           </div>
-        </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
