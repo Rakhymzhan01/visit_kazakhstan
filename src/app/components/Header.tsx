@@ -3,8 +3,11 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronDown, Search, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import PlanTripModal from './PlanTripModal'
+import SearchIcon from './SearchIcon'
+import DropdownArrowIcon from './DropdownArrowIcon'
+import DiagonalArrowIcon from './DiagonalArrowIcon'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -141,7 +144,7 @@ const Header = () => {
                         style={{
                           width: `${item.textWidth}px`,
                           height: '19px',
-                          fontFamily: 'Manrope',
+                          fontFamily: 'var(--font-manrope), Manrope, sans-serif',
                           fontStyle: 'normal',
                           fontWeight: 500,
                           fontSize: '14px',
@@ -167,19 +170,16 @@ const Header = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         padding: '0px',
-                        gap: '10px',
-                        width: `${item.textWidth}px`,
+                        gap: '8px',
+                        width: 'auto',
                         height: '19px',
                         flex: 'none',
                         flexGrow: 0
                       }}
                     >
-                      <Link
-                        href={item.href}
+                      <span
                         style={{
-                          width: `${item.textWidth}px`,
-                          height: '19px',
-                          fontFamily: 'Manrope',
+                          fontFamily: 'var(--font-manrope), Manrope, sans-serif',
                           fontStyle: 'normal',
                           fontWeight: 500,
                           fontSize: '14px',
@@ -192,10 +192,29 @@ const Header = () => {
                           whiteSpace: 'nowrap'
                         }}
                       >
-                        {item.name}
-                      </Link>
+                        <Link
+                          href={item.href}
+                          style={{
+                            color: 'inherit',
+                            textDecoration: 'none'
+                          }}
+                        >
+                          {item.name}
+                        </Link>
+                      </span>
                       {item.hasDropdown && (
-                        <ChevronDown className="ml-1 h-4 w-4" />
+                        <DiagonalArrowIcon 
+                          size={16} 
+                          color="#009CBC"
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            opacity: 1,
+                            minWidth: '16px',
+                            minHeight: '16px',
+                            display: 'block'
+                          }}
+                        />
                       )}
                     </div>
                   )}
@@ -240,8 +259,26 @@ const Header = () => {
               }}
             >
               {/* Search */}
-              <div className="hidden md:flex items-center bg-white rounded-full px-3 py-1.5 flex-1">
-                <Search className="h-4 w-4 text-gray-400 mr-2" />
+              <div 
+                className="hidden md:flex items-center bg-white"
+                style={{
+                  width: '86px',
+                  height: '46px',
+                  opacity: 1,
+                  paddingTop: '6px',
+                  paddingRight: '12px',
+                  paddingBottom: '6px',
+                  paddingLeft: '6px',
+                  gap: '3px',
+                  borderRadius: '99px'
+                }}
+              >
+                <SearchIcon 
+                  size={16} 
+                  color="#6B7280" 
+                  strokeWidth={2}
+                  style={{ minWidth: '16px', minHeight: '16px' }}
+                />
                 <input
                   type="text"
                   placeholder="Search"
@@ -252,8 +289,19 @@ const Header = () => {
               </div>
 
               {/* Language Toggle */}
-              <button className="text-white text-sm font-medium">
+              <button className="text-white text-sm font-medium flex items-center gap-1">
                 EN
+                <DropdownArrowIcon 
+                  size={16} 
+                  color="white"
+                  strokeWidth={2}
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    transform: 'rotate(0deg)',
+                    opacity: 1
+                  }}
+                />
               </button>
             </div>
 
@@ -262,7 +310,7 @@ const Header = () => {
               {/* Plan Your Trip Button */}
               <button
                 onClick={handlePlanTripClick}
-                className="bg-[#009CBC] hover:bg-[#007a9a] text-white flex items-center font-medium whitespace-nowrap"
+                className="bg-[#009CBC] hover:bg-[#007a9a] text-white flex items-center justify-center font-medium whitespace-nowrap"
                 style={{
                   width: '137px',
                   height: '50px',
@@ -294,7 +342,13 @@ const Header = () => {
             <div className="px-4 py-2">
               {/* Mobile Search */}
               <div className="flex items-center bg-gray-50 rounded-full px-3 py-1.5 mb-4">
-                <Search className="h-4 w-4 text-gray-400 mr-2" />
+                <SearchIcon 
+                  size={16} 
+                  color="#6B7280" 
+                  strokeWidth={2} 
+                  className="mr-2"
+                  style={{ minWidth: '16px', minHeight: '16px' }}
+                />
                 <input
                   type="text"
                   placeholder="Search"
