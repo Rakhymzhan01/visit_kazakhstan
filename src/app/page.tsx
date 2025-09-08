@@ -1,13 +1,25 @@
+'use client'
+
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "./components/ui/button"
 import { Card, CardContent } from "./components/ui/card"
 import { Badge } from "./components/ui/badge"
-import { Plus, Star, Instagram } from "lucide-react"
+import { Plus, Star, Instagram, Minus } from "lucide-react"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
+import { useState } from "react"
 
 export default function HomePage() {
+  const [expandedCards, setExpandedCards] = useState<number[]>([])
+
+  const toggleCard = (index: number) => {
+    setExpandedCards(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    )
+  }
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -58,58 +70,159 @@ export default function HomePage() {
       {/* Why Visit Kazakhstan */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold mb-8">
-            <span className="text-[#202020]">Why</span> <span className="text-[#009CBC]">Visit Kazakhstan</span>
+          <h2 className="mb-8">
+            <span className="text-[#202020]" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontWeight: 700,
+              fontSize: '48px',
+              lineHeight: '100%',
+              letterSpacing: '-4%'
+            }}>Why</span> <span 
+              className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+              style={{
+                background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 400,
+                fontSize: '48px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}
+            >Visit Kazakhstan</span>
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {[
-              {
-                title: "Silk Road History",
-                image: "/desert.jpg",
-                bgColor: "from-blue-400 to-blue-600",
-              },
-              {
-                title: "Nomadic Soul",
-                image: "/shanyrak.jpg",
-                bgColor: "from-amber-600 to-amber-800",
-              },
-              {
-                title: "Modern Meets Traditional",
-                image: "/baiterek.jpg", 
-                bgColor: "from-orange-400 to-orange-600",
-              },
-              {
-                title: "No Crowds, Just Space",
-                image: "/kanatnaya_doroga.jpg",
-                bgColor: "from-red-400 to-red-600",
-              },
-              {
-                title: "Unspoiled Nature",
-                image: "/yurta.jpg",
-                bgColor: "from-green-400 to-green-600",
-              },
-            ].map((item, index) => (
-              <Card key={index} className="relative overflow-hidden h-72 group cursor-pointer">
-                <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-transparent z-10"></div>
-                <Image
-                  src={item.image || "/placeholder.svg"}
-                  alt={item.title}
-                  width={220}
-                  height={280}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-4 left-4 right-4 text-white z-20">
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
-                </div>
-                <Button
-                  size="sm"
-                  className="absolute bottom-4 right-4 bg-white/20 hover:bg-white/30 text-white border-white/30 rounded-full w-8 h-8 p-0 z-20"
-                >
-                  <Plus className="w-4 h-4" />
-                </Button>
-              </Card>
-            ))}
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+              {[
+                {
+                  title: "Silk Road History",
+                  image: "/desert.jpg",
+                  bgColor: "from-blue-400 to-blue-600",
+                },
+                {
+                  title: "Nomadic Soul",
+                  image: "/shanyrak.jpg",
+                  bgColor: "from-amber-600 to-amber-800",
+                },
+                {
+                  title: "Modern Meets Traditional",
+                  image: "/baiterek.jpg", 
+                  bgColor: "from-orange-400 to-orange-600",
+                },
+                {
+                  title: "No Crowds, Just Space",
+                  image: "/kanatnaya_doroga.jpg",
+                  bgColor: "from-red-400 to-red-600",
+                },
+                {
+                  title: "Unspoiled Nature",
+                  image: "/yurta.jpg",
+                  bgColor: "from-green-400 to-green-600",
+                },
+              ].map((item, index) => {
+                const isExpanded = expandedCards.includes(index)
+                return (
+                  <Card key={index} className="relative overflow-hidden group cursor-pointer flex-shrink-0 p-0 border-0" style={{
+                    width: '384px',
+                    height: '500px',
+                    justifyContent: 'space-between',
+                    transform: 'rotate(0deg)',
+                    opacity: 1,
+                    borderRadius: '8px'
+                  }}>
+                    <Image
+                      src={item.image || "/placeholder.svg"}
+                      alt={item.title}
+                      width={384}
+                      height={500}
+                      className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${isExpanded ? 'scale-90' : 'scale-100'}`}
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-b from-black/70 to-transparent transition-opacity duration-500 ${isExpanded ? 'opacity-0' : 'opacity-100'}`}></div>
+                    <div className={`absolute inset-0 transition-all duration-500 ${isExpanded ? 'bg-[#009CBC] opacity-90' : 'bg-transparent opacity-0'}`}></div>
+                    
+                    <div className="absolute top-10 left-10 right-10 text-white z-20">
+                      <h3 className="text-lg font-semibold">{item.title}</h3>
+                      {isExpanded && (
+                        <p className="text-sm mt-4 opacity-90 transition-all duration-500 animate-in slide-in-from-top-2">
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                        </p>
+                      )}
+                    </div>
+                    
+                    <Button
+                      size="sm"
+                      onClick={() => toggleCard(index)}
+                      className="absolute bottom-10 right-10 hover:bg-white/90 border-0 z-20 flex justify-center items-center p-0 transition-all duration-300 hover:scale-105"
+                      style={{
+                        width: '50px',
+                        height: '50px',
+                        transform: 'rotate(0deg)',
+                        opacity: 1,
+                        borderRadius: '999px',
+                        background: '#FFFFFF'
+                      }}
+                    >
+                      {isExpanded ? (
+                        <Minus 
+                          className="text-[#009CBC]"
+                          style={{
+                            width: '24px',
+                            height: '24px'
+                          }}
+                          strokeWidth={2}
+                        />
+                      ) : (
+                        <div
+                          className="relative"
+                          style={{
+                            width: '30px',
+                            height: '30px'
+                          }}
+                        >
+                          {/* Plus icon container */}
+                          <div
+                            className="absolute"
+                            style={{
+                              width: '21px',
+                              height: '21px',
+                              transform: 'rotate(0deg)',
+                              opacity: 1,
+                              top: '4.5px',
+                              left: '4.5px'
+                            }}
+                          >
+                            {/* Vertical rectangle */}
+                            <div
+                              className="absolute"
+                              style={{
+                                left: '45%',
+                                right: '45%',
+                                top: '15%',
+                                bottom: '15%',
+                                background: '#009CBC'
+                              }}
+                            />
+                            {/* Horizontal rectangle */}
+                            <div
+                              className="absolute"
+                              style={{
+                                left: '15%',
+                                right: '15%',
+                                top: '45%',
+                                bottom: '45%',
+                                background: '#009CBC'
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </Button>
+                  </Card>
+                )
+              })}
+            </div>
           </div>
         </div>
       </section>
