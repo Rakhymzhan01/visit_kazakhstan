@@ -5,13 +5,15 @@ interface DropdownArrowIconProps {
   color?: string;
   className?: string;
   strokeWidth?: number;
+  style?: React.CSSProperties;
 }
 
 const DropdownArrowIcon: React.FC<DropdownArrowIconProps> = ({ 
   size = 16, 
   color = 'white', 
   className = '',
-  strokeWidth = 1.5
+  strokeWidth = 1.5,
+  style
 }) => {
   return (
     <svg
@@ -21,6 +23,7 @@ const DropdownArrowIcon: React.FC<DropdownArrowIconProps> = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      style={style}
     >
       {/* Chevron down - two lines forming a "V" pointing down */}
       <path

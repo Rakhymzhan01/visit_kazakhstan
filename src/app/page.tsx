@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "./components/ui/button"
 import { Card, CardContent } from "./components/ui/card"
 import { Badge } from "./components/ui/badge"
-import { Plus, Star, Instagram, Minus } from "lucide-react"
+import { Star, Instagram, Minus } from "lucide-react"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
 import { useState } from "react"
@@ -228,24 +228,82 @@ export default function HomePage() {
       </section>
 
       {/* Top Tour Themes */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-start mb-8">
-            <h2 className="text-3xl font-bold text-[#202020]">
-              Top Tour <span className="text-[#009CBC]">Themes</span>
+            <h2 className="mb-8">
+              <span className="text-[#202020]" style={{
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 700,
+                fontSize: '48px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>Top Tour</span> <span 
+                className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '48px',
+                  lineHeight: '100%',
+                  letterSpacing: '-4%'
+                }}
+              >Themes</span>
             </h2>
-            <div className="max-w-md text-right">
-              <p className="text-gray-600 text-sm">
-                Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
-                landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
-              </p>
+            <div className="text-left">
+              <div style={{
+                width: '588px',
+                height: '72px'
+              }}>
+                <p style={{
+                  transform: 'rotate(0deg)',
+                  opacity: 1,
+                  fontFamily: 'Manrope, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '16px',
+                  lineHeight: '150%',
+                  letterSpacing: '-1%',
+                  color: '#333333'
+                }}>
+                  Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
+                  landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
+                </p>
+              </div>
+              
+              <Link href="/tours">
+                <Button
+                  className="border-0 hover:bg-white hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
+                  style={{
+                    width: '142px',
+                    height: '50px',
+                    transform: 'rotate(0deg)',
+                    opacity: 1,
+                    paddingTop: '13px',
+                    paddingRight: '26px',
+                    paddingBottom: '13px',
+                    paddingLeft: '26px',
+                    gap: '10px',
+                    borderRadius: '99px',
+                    background: '#FFFFFF',
+                    color: '#009CBC',
+                    marginTop: '16px',
+                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)'
+                  }}
+                >
+                  Show all tours
+                </Button>
+              </Link>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                title: "Charyn Canyon & Kolsai Lakes Tour",
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+              {[
+                {
+                  title: "Charyn Canyon & Kolsai Lakes Tour",
                 description:
                   "A classic multi-day trip from Almaty into the Tian Shan mountains — explore canyons, alpine lakes, and mountain villages.",
                 image: "/bao_contras.jpg",
@@ -280,16 +338,23 @@ export default function HomePage() {
                 location: "",
                 rating: 5,
               },
-            ].map((tour, index) => (
-              <Card key={index} className="overflow-hidden">
-                <div className="relative">
-                  <Image
-                    src={tour.image || "/placeholder.svg"}
-                    alt={tour.title}
-                    width={280}
-                    height={180}
-                    className="w-full h-44 object-cover"
-                  />
+              ].map((tour, index) => (
+                <Card key={index} className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md" style={{
+                  width: '384px',
+                  height: '506px'
+                }}>
+                  <div className="relative">
+                    <Image
+                      src={tour.image || "/placeholder.svg"}
+                      alt={tour.title}
+                      width={368}
+                      height={260}
+                      className="w-full object-cover rounded-lg"
+                      style={{
+                        width: '368px',
+                        height: '260px'
+                      }}
+                    />
                   <div className="absolute top-3 left-3 flex gap-2">
                     <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 {tour.date}</Badge>
                     {tour.location && (
@@ -298,8 +363,20 @@ export default function HomePage() {
                   </div>
                 </div>
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-base mb-2 text-[#202020]">{tour.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-3">{tour.description}</p>
+                  <h3 className="mb-2 text-[#202020]" style={{
+                    fontFamily: 'Manrope, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '24px',
+                    lineHeight: '100%',
+                    letterSpacing: '-2%'
+                  }}>{tour.title}</h3>
+                  <p className="text-gray-600 mb-3 line-clamp-3" style={{
+                    fontFamily: 'Manrope, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '14px',
+                    lineHeight: '24px',
+                    letterSpacing: '-1%'
+                  }}>{tour.description}</p>
                   <div className="flex justify-between items-center">
                     <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
                       Read more →
@@ -312,7 +389,8 @@ export default function HomePage() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
