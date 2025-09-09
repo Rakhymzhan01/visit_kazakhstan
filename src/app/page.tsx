@@ -8,6 +8,7 @@ import { Badge } from "./components/ui/badge"
 import { Star, Instagram, Minus } from "lucide-react"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
+import FigmaDestinationCard from "./components/FigmaDestinationCard"
 import { useState } from "react"
 
 export default function HomePage() {
@@ -338,11 +339,14 @@ export default function HomePage() {
                 location: "",
                 rating: 5,
               },
-              ].map((tour, index) => (
-                <Card key={index} className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md" style={{
-                  width: '384px',
-                  height: '506px'
-                }}>
+              ].map((tour, index) => {
+                const slug = tour.title.toLowerCase().replace(/\s+/g, '-').replace(/[&]/g, '')
+                return (
+                  <Link key={index} href={`/tours/${slug}`}>
+                    <Card className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200" style={{
+                      width: '384px',
+                      height: '506px'
+                    }}>
                   <div className="relative">
                     <Image
                       src={tour.image || "/placeholder.svg"}
@@ -388,8 +392,10 @@ export default function HomePage() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-              ))}
+                    </Card>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         </div>
