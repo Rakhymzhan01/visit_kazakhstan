@@ -40,15 +40,11 @@ const defaultDestinations: DestinationItem[] = [
 ];
 
 const FigmaDestinationCard: React.FC<FigmaDestinationCardProps> = ({
-  variant = 'horizontal',
   location = 'Almaty',
   type = 'Nature',
   destinations = defaultDestinations,
   className = ''
 }) => {
-  
-  const isVertical = variant === 'vertical';
-  const imageSize = isVertical ? 120 : 80;
   
   return (
     <div className={`w-[384px] space-y-4 ${className}`}>

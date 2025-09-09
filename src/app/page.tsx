@@ -8,7 +8,6 @@ import { Badge } from "./components/ui/badge"
 import { Star, Instagram, Minus } from "lucide-react"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import FigmaDestinationCard from "./components/FigmaDestinationCard"
 import { useState } from "react"
 
 export default function HomePage() {
