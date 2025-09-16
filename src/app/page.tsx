@@ -538,18 +538,14 @@ export default function HomePage() {
           </div>
 
           {/* Instagram Photos Overlay */}
-          <div className="absolute z-20 overflow-hidden" style={{ top: '0px', right: '-200px', width: '800px', height: '282px' }}>
+          <div className="absolute z-20 overflow-x-auto scrollbar-hide" style={{ top: '0px', left: '570px', right: '0px', height: '282px' }}>
             <div 
               className="flex gap-6" 
               style={{ 
-                width: 'max-content', 
-                transform: `translateX(${scrollX}px)`
+                width: 'max-content'
               }}
             >
               {[
-                { image: "/nomad_girls.png", alt: "Nomad girls" },
-                { image: "/desert.jpg", alt: "Desert landscape" },
-                { image: "/yurta.jpg", alt: "Traditional yurt" },
                 { image: "/nomad_girls.png", alt: "Nomad girls" },
                 { image: "/desert.jpg", alt: "Desert landscape" },
                 { image: "/yurta.jpg", alt: "Traditional yurt" }
@@ -562,7 +558,7 @@ export default function HomePage() {
                     height={282}
                     className="w-full h-full object-cover rounded-lg"
                   />
-                  <Instagram className="absolute top-3 right-3 w-5 h-5 text-white" />
+                  <Instagram className="absolute top-3 left-3 w-8 h-8 text-white" />
                 </div>
               ))}
             </div>
