@@ -8,10 +8,11 @@ import { Badge } from "./components/ui/badge"
 import { Star, Instagram, Minus } from "lucide-react"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function HomePage() {
   const [expandedCards, setExpandedCards] = useState<number[]>([])
+  const [scrollX, setScrollX] = useState(0)
 
   const toggleCard = (index: number) => {
     setExpandedCards(prev => 
@@ -20,6 +21,17 @@ export default function HomePage() {
         : [...prev, index]
     )
   }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY
+      const scrollProgress = scrollY * 0.5 // Adjust speed here
+      setScrollX(-scrollProgress)
+    }
+
+    //window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -403,18 +415,52 @@ export default function HomePage() {
       {/* Discover Cities */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold mb-8 text-[#202020]">
-            Discover <span className="text-[#009CBC]">Cities</span>
+          <h2 className="mb-8">
+            <span className="text-[#202020]" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontWeight: 700,
+              fontSize: '48px',
+              lineHeight: '100%',
+              letterSpacing: '-4%'
+            }}>Discover</span> <span 
+              className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+              style={{
+                background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 400,
+                fontSize: '48px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}
+            >Cities</span>
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div>
-              <p className="text-gray-600 mb-6 text-sm">
+              <p className="text-gray-600 mb-6" style={{
+                fontFamily: 'Manrope, sans-serif',
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '150%',
+                letterSpacing: '-1%'
+              }}>
                 Kazakhstan&apos;s cities reflect the country&apos;s past, present, and future — from ancient Silk Road stops to
                 futuristic capitals, sleepy desert towns to cultural and academic centers. Each has its own character,
                 rhythm, and reason to explore.
               </p>
-              <Button className="bg-[#009CBC] hover:bg-[#007a9a] text-white rounded-full">Discover</Button>
+              <Button 
+                className="bg-[#009CBC] hover:bg-[#007a9a] text-white border-0 hover:scale-105 transition-all duration-200"
+                style={{
+                  width: '108px',
+                  height: '50px',
+                  borderRadius: '99px'
+                }}
+              >
+                Discover
+              </Button>
             </div>
 
             <div className="relative">
@@ -448,35 +494,75 @@ export default function HomePage() {
       </section>
 
       {/* Instagram Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-3xl font-bold text-[#009CBC] mb-4">@into.kazakhstan</h2>
-              <p className="text-gray-600 mb-6 text-sm">
+      <section className="py-12 bg-gray-50 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="flex items-start" style={{ gap: '50px' }}>
+            <div style={{ 
+              width: '486px', 
+              height: '282px',
+              paddingTop: '50px',
+              opacity: 1,
+              transform: 'rotate(0deg)'
+            }}>
+              <h2 className="mb-4">
+                <span 
+                  className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                  style={{
+                    background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '48px',
+                    lineHeight: '100%',
+                    letterSpacing: '-4%'
+                  }}
+                >@into.kazakhstan</span>
+              </h2>
+              <p className="text-gray-600 mb-6 text-sm" style={{ width: '486px' }}>
                 Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
                 landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
               </p>
-              <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0">
+              <Button 
+                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200"
+                style={{
+                  width: '145px',
+                  height: '50px',
+                  borderRadius: '99px'
+                }}
+              >
                 See Instagram
               </Button>
             </div>
+          </div>
 
-            <div className="grid grid-cols-3 gap-3">
+          {/* Instagram Photos Overlay */}
+          <div className="absolute z-20 overflow-hidden" style={{ top: '0px', right: '-200px', width: '800px', height: '282px' }}>
+            <div 
+              className="flex gap-6" 
+              style={{ 
+                width: 'max-content', 
+                transform: `translateX(${scrollX}px)`
+              }}
+            >
               {[
+                { image: "/nomad_girls.png", alt: "Nomad girls" },
+                { image: "/desert.jpg", alt: "Desert landscape" },
+                { image: "/yurta.jpg", alt: "Traditional yurt" },
                 { image: "/nomad_girls.png", alt: "Nomad girls" },
                 { image: "/desert.jpg", alt: "Desert landscape" },
                 { image: "/yurta.jpg", alt: "Traditional yurt" }
               ].map((post, index) => (
-                <div key={index} className="relative aspect-square">
+                <div key={index} className="relative flex-shrink-0" style={{ width: '282px', height: '282px' }}>
                   <Image
                     src={post.image}
                     alt={post.alt}
-                    width={160}
-                    height={160}
+                    width={282}
+                    height={282}
                     className="w-full h-full object-cover rounded-lg"
                   />
-                  <Instagram className="absolute top-2 right-2 w-4 h-4 text-white" />
+                  <Instagram className="absolute top-3 right-3 w-5 h-5 text-white" />
                 </div>
               ))}
             </div>
