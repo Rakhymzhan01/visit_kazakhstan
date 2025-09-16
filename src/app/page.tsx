@@ -569,69 +569,108 @@ export default function HomePage() {
       {/* Blog Section */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-[#202020]">Blog</h2>
+          <div className="flex items-center gap-6 mb-8">
+            <h2>
+              <span 
+                className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '48px',
+                  lineHeight: '100%',
+                  letterSpacing: '-4%'
+                }}
+              >Blog</span>
+            </h2>
             <Link href="/blog">
-              <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a]">
+              <Button 
+                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200"
+                style={{
+                  width: '144px',
+                  height: '50px',
+                  borderRadius: '99px'
+                }}
+              >
                 Show all blogs
               </Button>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                image: "/famile.jpg",
-                title: "Almaty Creative Tour",
-                description: "Street art, fashion studios, coffee culture, and live music — explore Almaty&apos;s youthful soul.",
-                category: "Culture"
-              },
-              {
-                image: "/baiterek.jpg",
-                title: "Nur-Sultan Architecture",
-                description: "Discover the futuristic architecture and modern landmarks of Kazakhstan&apos;s capital city.",
-                category: "Architecture"
-              },
-              {
-                image: "/mangystau.jpg",
-                title: "Mangystau Adventures",
-                description: "Explore the mystical landscapes and ancient formations of the Mangystau region.",
-                category: "Adventure"
-              },
-              {
-                image: "/kozha_akhmet_yassaui.jpg",
-                title: "Historical Heritage",
-                description: "Journey through Kazakhstan&apos;s rich historical sites and cultural monuments.",
-                category: "History"
-              }
-            ].map((post, index) => (
-              <Card key={index} className="overflow-hidden">
-                <div className="relative">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    width={280}
-                    height={160}
-                    className="w-full h-40 object-cover"
-                  />
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 20 may 2025</Badge>
-                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{post.category}</Badge>
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+              {[
+                {
+                  image: "/famile.jpg",
+                  title: "Almaty Creative Tour",
+                  description: "Street art, fashion studios, coffee culture, and live music — explore Almaty&apos;s youthful soul.",
+                  category: "Culture"
+                },
+                {
+                  image: "/baiterek.jpg",
+                  title: "Nur-Sultan Architecture",
+                  description: "Discover the futuristic architecture and modern landmarks of Kazakhstan&apos;s capital city.",
+                  category: "Architecture"
+                },
+                {
+                  image: "/mangystau.jpg",
+                  title: "Mangystau Adventures",
+                  description: "Explore the mystical landscapes and ancient formations of the Mangystau region.",
+                  category: "Adventure"
+                },
+                {
+                  image: "/kozha_akhmet_yassaui.jpg",
+                  title: "Historical Heritage",
+                  description: "Journey through Kazakhstan&apos;s rich historical sites and cultural monuments.",
+                  category: "History"
+                }
+              ].map((post, index) => (
+                <Card key={index} className="overflow-hidden flex-shrink-0 p-2 flex flex-col" style={{ width: '384px', height: '506px' }}>
+                  <div className="relative">
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      width={368}
+                      height={260}
+                      className="w-full object-cover rounded-lg"
+                      style={{ width: '368px', height: '260px' }}
+                    />
+                    <div className="absolute top-3 left-3 flex gap-2">
+                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 20 may 2025</Badge>
+                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{post.category}</Badge>
+                    </div>
                   </div>
-                </div>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-base mb-2 text-[#202020]">{post.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3">
-                    {post.description}
-                  </p>
-                  <Link href="/blog">
-                    <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
-                      Read more →
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent className="p-4 flex flex-col flex-1">
+                    <h3 className="mb-2 text-[#202020]" style={{
+                      fontFamily: 'Manrope, sans-serif',
+                      fontWeight: 600,
+                      fontSize: '24px',
+                      lineHeight: '100%',
+                      letterSpacing: '-2%'
+                    }}>{post.title}</h3>
+                    <p className="text-gray-600 mb-3 flex-1" style={{
+                      fontFamily: 'Manrope, sans-serif',
+                      fontWeight: 400,
+                      fontSize: '14px',
+                      lineHeight: '24px',
+                      letterSpacing: '-1%'
+                    }}>
+                      {post.description}
+                    </p>
+                    <div className="mt-auto">
+                      <Link href="/blog">
+                        <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
+                          Read more →
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </section>
