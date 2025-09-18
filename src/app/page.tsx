@@ -628,7 +628,7 @@ export default function HomePage() {
                   category: "History"
                 }
               ].map((post, index) => (
-                <Card key={index} className="overflow-hidden flex-shrink-0 p-2 flex flex-col" style={{ width: '384px', height: '506px' }}>
+                <Card key={index} className="overflow-hidden flex-shrink-0 p-2 flex flex-col border-0" style={{ width: '384px', height: '506px' }}>
                   <div className="relative">
                     <Image
                       src={post.image}
@@ -676,48 +676,76 @@ export default function HomePage() {
       </section>
 
       {/* Explore Events */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-start mb-8">
-            <h2 className="text-3xl font-bold text-[#202020]">
-              Explore <span className="text-[#009CBC]">Events</span>
+            <h2>
+              <span className="text-[#202020]" style={{
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 700,
+                fontSize: '48px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>Explore</span> <span 
+                className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '48px',
+                  lineHeight: '100%',
+                  letterSpacing: '-4%'
+                }}
+              >Events</span>
             </h2>
-            <div className="max-w-md text-right">
+            <div className="max-w-md text-left">
               <p className="text-gray-600 text-sm mb-4">
                 Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
                 landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
               </p>
-              <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0">
+              <Button 
+                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200"
+                style={{
+                  width: '152px',
+                  height: '50px',
+                  borderRadius: '99px'
+                }}
+              >
                 Show all Events
               </Button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { name: "Kolsay & Kayindy", image: "/bao_contras.jpg?height=240&width=280" },
-              { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
-              { name: "Shymbulak", image: "/kanatnaya_doroga.jpg?height=240&width=280" },
-              { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
-            ].map((event, index) => (
-              <Card key={index} className="relative overflow-hidden h-60">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
-                <Image
-                  src={event.image || "/placeholder.svg"}
-                  alt={event.name}
-                  width={280}
-                  height={240}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-3 left-3 z-20">
-                  <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1 mr-2">📅 20 may 2025</Badge>
-                  <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">Nature</Badge>
-                </div>
-                <div className="absolute bottom-4 left-4 text-white z-20">
-                  <h3 className="text-lg font-semibold">{event.name}</h3>
-                </div>
-              </Card>
-            ))}
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+              {[
+                { name: "Kolsay & Kayindy", image: "/bao_contras.jpg?height=240&width=280" },
+                { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
+                { name: "Shymbulak", image: "/kanatnaya_doroga.jpg?height=240&width=280" },
+                { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
+              ].map((event, index) => (
+                <Card key={index} className="relative overflow-hidden flex-shrink-0 border-0" style={{ width: '384px', height: '400px' }}>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+                  <Image
+                    src={event.image || "/placeholder.svg"}
+                    alt={event.name}
+                    width={384}
+                    height={400}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-3 left-3 z-20">
+                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1 mr-2">📅 20 may 2025</Badge>
+                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">Nature</Badge>
+                  </div>
+                  <div className="absolute bottom-4 left-4 text-white z-20">
+                    <h3 className="text-lg font-semibold">{event.name}</h3>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </section>
