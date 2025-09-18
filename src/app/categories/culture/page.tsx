@@ -17,7 +17,7 @@ const CulturePage = () => {
         id: 1,
         name: 'Astana — The Bold & Futuristic Capital',
         description: 'Sleek skyscrapers and avant-garde architecture define Astana. Visit the Astana Opera, National Museum, and Nur Alem Sphere from EXPO 2017. The city hosts cultural forums, design events, and digital art festivals.',
-        image: '/images/culture/astana-modern.jpg',
+        image: '/baiterek.jpg',
         category: 'Culture',
         slug: 'astana-culture',
         featured: true
@@ -26,7 +26,7 @@ const CulturePage = () => {
         id: 2,
         name: 'Almaty — The Creative Soul',
         description: 'Street art, fashion studios, coffee culture, and live music — explore Almaty\'s youthful soul.',
-        image: '/images/culture/almaty-creative.jpg',
+        image: '/almaty.jpg',
         category: 'Culture',
         slug: 'almaty-creative'
       },
@@ -34,7 +34,7 @@ const CulturePage = () => {
         id: 3,
         name: 'Art, Fashion & Media',
         description: 'Contemporary galleries, fashion weeks, and media production hubs across major cities.',
-        image: '/images/culture/art-fashion.jpg',
+        image: '/expo.jpg',
         category: 'Culture',
         slug: 'art-fashion-media'
       },
@@ -42,7 +42,7 @@ const CulturePage = () => {
         id: 4,
         name: 'Theater & Cinema',
         description: 'Modern theater productions, film festivals, and cinematic experiences.',
-        image: '/images/culture/theater-cinema.jpg',
+        image: '/city.png',
         category: 'Culture',
         slug: 'theater-cinema'
       },
@@ -50,7 +50,7 @@ const CulturePage = () => {
         id: 5,
         name: 'Modern Spirituality & Identity',
         description: 'Contemporary expressions of faith and cultural identity in modern Kazakhstan.',
-        image: '/images/culture/modern-spirituality.jpg',
+        image: '/kozha_akhmet_yassaui.jpg',
         category: 'Culture',
         slug: 'modern-spirituality'
       }
@@ -60,7 +60,7 @@ const CulturePage = () => {
         id: 6,
         name: 'Life in the Steppe',
         description: 'The heart of Kazakh culture beats in the rhythms of nomadic life — yurt living, horse racing, eagle hunting, and deep-rooted hospitality.',
-        image: '/images/culture/steppe-life.jpg',
+        image: '/yurta.jpg',
         category: 'Culture',
         slug: 'life-in-steppe',
         featured: true
@@ -69,7 +69,7 @@ const CulturePage = () => {
         id: 7,
         name: 'Music & Instruments',
         description: 'Traditional dombra music, epic songs, and the rich musical heritage of the nomadic peoples.',
-        image: '/images/culture/music-instruments.jpg',
+        image: '/nomad_girls.png',
         category: 'Culture',
         slug: 'music-instruments'
       },
@@ -77,7 +77,7 @@ const CulturePage = () => {
         id: 8,
         name: 'Cuisine',
         description: 'Traditional Kazakh dishes like beshbarmak, kumys, and the art of nomadic cooking.',
-        image: '/images/culture/cuisine.jpg',
+        image: '/famile.jpg',
         category: 'Culture',
         slug: 'cuisine'
       },
@@ -85,7 +85,7 @@ const CulturePage = () => {
         id: 9,
         name: 'Spiritual & Festive Life',
         description: 'Ancient traditions, seasonal festivals, and spiritual practices of the Kazakh people.',
-        image: '/images/culture/spiritual-life.jpg',
+        image: '/shanyrak.jpg',
         category: 'Culture',
         slug: 'spiritual-life'
       },
@@ -93,7 +93,7 @@ const CulturePage = () => {
         id: 10,
         name: 'Crafts & Textiles',
         description: 'Traditional handicrafts, carpet weaving, and the intricate artistry of nomadic design.',
-        image: '/images/culture/crafts-textiles.jpg',
+        image: '/kanatka.jpg',
         category: 'Culture',
         slug: 'crafts-textiles'
       },
@@ -101,7 +101,7 @@ const CulturePage = () => {
         id: 11,
         name: 'Tulip Heritage',
         description: 'The ancient connection between Kazakhstan and tulips, celebrated in spring festivals.',
-        image: '/images/culture/tulip-heritage.jpg',
+        image: '/couple-photo.jpg',
         category: 'Culture',
         slug: 'tulip-heritage'
       }
@@ -115,13 +115,13 @@ const CulturePage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative">
-        <div className="flex gap-4 p-4">
+      <section className="relative flex justify-center py-8">
+        <div className="flex gap-2 items-center">
           {/* Left Content */}
-          <div className="w-[674px] h-[550px] bg-white rounded-lg shadow-lg px-20 py-16 flex flex-col justify-center">
-            <div className="inline-block bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit">
+          <div className="w-[678px] h-[550px] bg-white rounded-lg px-20 py-16 flex flex-col justify-center">
+            <div className="inline-block text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit" style={{ backgroundColor: '#2563EB' }}>
               CULTURE
             </div>
             <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
@@ -129,7 +129,7 @@ const CulturePage = () => {
               <br />
               From Nomadic Roots to
               <br />
-              <span className="text-purple-600">Modern Expression</span>
+              <span className="text-gray-900">Modern Expression</span>
             </h1>
             <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
               Kazakhstan&apos;s culture is a rich tapestry woven from centuries of nomadic life, Silk 
@@ -140,9 +140,9 @@ const CulturePage = () => {
           </div>
           
           {/* Right Image */}
-          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden shadow-lg">
+          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden">
             <Image
-              src="/images/hero/culture-hero.jpg"
+              src="/turkestan.jpg"
               alt="Kazakhstan Culture"
               width={674}
               height={550}
@@ -156,24 +156,73 @@ const CulturePage = () => {
       {/* Modern Urban Culture Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
-              Modern <span className="text-teal-500">Urban Culture</span>
+          <div className="flex justify-between items-center mb-12">
+            <h2 className="mb-4">
+              {activeTab === 'Now' ? (
+                <>
+                  <span className="text-[#202020]" style={{
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: 700,
+                    fontSize: '48px',
+                    lineHeight: '100%',
+                    letterSpacing: '-4%'
+                  }}>Modern</span> <span 
+                    className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                    style={{
+                      background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                      fontFamily: 'Montserrat, sans-serif',
+                      fontWeight: 400,
+                      fontSize: '48px',
+                      lineHeight: '100%',
+                      letterSpacing: '-4%'
+                    }}
+                  >Urban Culture</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-[#202020]" style={{
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: 700,
+                    fontSize: '48px',
+                    lineHeight: '100%',
+                    letterSpacing: '-4%'
+                  }}>Nomadic Heritage &</span> <span 
+                    className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                    style={{
+                      background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                      fontFamily: 'Montserrat, sans-serif',
+                      fontWeight: 400,
+                      fontSize: '48px',
+                      lineHeight: '100%',
+                      letterSpacing: '-4%'
+                    }}
+                  >Ancient Traditions</span>
+                </>
+              )}
             </h2>
             
             {/* Tab Navigation */}
-            <div className="flex justify-center gap-2 mb-12">
+            <div className="flex gap-8">
               {tabs.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-8 py-3 rounded-full text-lg font-medium transition-all duration-300 ${
+                  className={`pb-2 text-lg font-medium transition-all duration-300 relative ${
                     activeTab === tab
-                      ? 'bg-purple-600 text-white shadow-lg'
-                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                      ? 'text-gray-900'
+                      : 'text-gray-400 hover:text-gray-600'
                   }`}
                 >
                   {tab}
+                  {activeTab === tab && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-500"></div>
+                  )}
                 </button>
               ))}
             </div>
@@ -181,76 +230,102 @@ const CulturePage = () => {
 
           {/* Featured Category */}
           {featuredCategory && (
-            <div className="mb-16">
-              <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                  <div className="relative h-64 lg:h-auto">
-                    <Image
-                      src={featuredCategory.image}
-                      alt={featuredCategory.name}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                        {featuredCategory.category}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-8 lg:p-12 flex flex-col justify-center">
-                    <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                      {featuredCategory.name}
-                    </h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">
-                      {featuredCategory.description}
-                    </p>
-                    <Link
-                      href={`/culture/${featuredCategory.slug}`}
-                      className="inline-flex items-center bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 w-fit"
-                    >
-                      Plan your trip
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </div>
+            <div className="flex gap-6 mb-12">
+              {/* Large landscape photo */}
+              <div className="relative overflow-hidden rounded-2xl" style={{ width: '792px', height: '400px' }}>
+                <Image
+                  src={featuredCategory.image}
+                  alt={featuredCategory.name}
+                  width={792}
+                  height={400}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                <div className="absolute top-4 left-4">
+                  <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#2563EB' }}>
+                    {featuredCategory.category}
+                  </span>
                 </div>
+                <div className="absolute bottom-6 left-6 right-6">
+                  <h3 className="text-white text-3xl font-bold leading-tight">
+                    {featuredCategory.name}
+                  </h3>
+                </div>
+              </div>
+
+              {/* Text box on the right */}
+              <div className="bg-white rounded-2xl flex flex-col" style={{ width: '384px', height: '400px', padding: '32px' }}>
+                <h3 className="font-montserrat" style={{
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  lineHeight: '130%',
+                  letterSpacing: '-2%',
+                  color: '#202020',
+                  marginBottom: '32px'
+                }}>
+                  {featuredCategory.name}
+                </h3>
+                <p className="font-manrope flex-1" style={{
+                  fontWeight: 400,
+                  fontSize: '14px',
+                  lineHeight: '24px',
+                  letterSpacing: '-1%',
+                  color: '#4F504F',
+                  marginBottom: '48px'
+                }}>
+                  {featuredCategory.description}
+                </p>
+                <button 
+                  className="text-white font-manrope rounded-full self-start flex items-center justify-center"
+                  style={{
+                    width: '160px',
+                    height: '50px',
+                    backgroundColor: '#009CBC',
+                    padding: '13px 30px',
+                    borderRadius: '99px',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    lineHeight: '1',
+                    letterSpacing: '-2%'
+                  }}
+                >
+                  Plan your trip
+                </button>
               </div>
             </div>
           )}
 
           {/* Culture Categories Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {otherCategories.map((category) => (
-              <div key={category.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                <div className="relative h-64 overflow-hidden">
+              <Link key={category.id} href={`/culture/${category.slug}`}>
+                <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300" style={{ width: '384px', height: '400px' }}>
                   <Image
                     src={category.image}
                     alt={category.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    width={384}
+                    height={400}
+                    className="w-full h-full object-cover"
                   />
+                  
+                  {/* Dark gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                  
+                  {/* Culture badge */}
                   <div className="absolute top-4 left-4">
-                    <span className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                    <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#2563EB' }}>
                       {category.category}
                     </span>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Title at bottom */}
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <h3 className="text-white text-2xl font-bold leading-tight">
+                      {category.name}
+                    </h3>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    {category.name}
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">
-                    {category.description}
-                  </p>
-                  <Link
-                    href={`/culture/${category.slug}`}
-                    className="text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1 group"
-                  >
-                    Explore culture
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
