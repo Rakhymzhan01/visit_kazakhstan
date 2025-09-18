@@ -106,7 +106,7 @@ const defaultContent: HomepageContent = {
     images: ["/nomad_girls.png", "/desert.jpg", "/yurta.jpg"]
   },
   about: {
-    title: "About us",
+    title: "About  us",
     description: "Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you're chasing landscapes, culture, adventure, or spiritual meaning, there's a route for every traveler.",
     stats: [
       { value: "2010", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },

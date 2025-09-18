@@ -142,7 +142,6 @@ const CitiesPage = () => {
                   stroke="#0891b2" 
                   strokeWidth="2" 
                   className="hover:fill-cyan-300 transition-colors cursor-pointer"
-                  onClick={() => console.log('Clicked Kazakhstan')}
                 />
                 
                 {/* City markers with better positioning */}

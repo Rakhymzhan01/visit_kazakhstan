@@ -28,48 +28,45 @@ const Footer = () => {
   return (
     <footer className="bg-white text-[#333333]">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
+        <div className="grid gap-2" style={{ gridTemplateColumns: '140px 1fr 1fr 1fr 1fr 250px' }}>
           
-          {/* Logo and Contact */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center mb-6">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link href="/" className="flex items-center">
               <Image
                 src="/Logo 2.png"
                 alt="Visit Kazakhstan"
-                width={140}
-                height={32}
-                className="h-8 w-auto"
+                width={117}
+                height={48}
+                className="w-[117px] h-[48px] -ml-8"
               />
             </Link>
-            
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-semibold text-lg mb-2">Contact</h4>
-                <p className="text-[#333333] text-lg">+7 7122 000-000</p>
-                <p className="text-[#333333]">info@visitkazakhstan.com</p>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-2">Address</h4>
-                <p className="text-[#333333]">
-                  4517 Washington Ave.<br />
-                  Manchester, Kentucky<br />
-                  39495
-                </p>
-              </div>
-            </div>
           </div>
 
           {/* Menu Links */}
           <div>
-            <h4 className="font-semibold text-lg mb-6">MENU</h4>
+            <h4 className="font-manrope mb-6" style={{
+              fontWeight: 400,
+              fontSize: '12px',
+              lineHeight: '150%',
+              letterSpacing: '-1%',
+              color: '#929292'
+            }}>MENU</h4>
             <ul className="space-y-3">
               {menuLinks.map((link) => (
                 <li key={link.title}>
                   <Link
                     href={link.href}
-                    className="text-[#333333] hover:text-[#009CBC] transition-colors duration-200"
+                    className="font-manrope hover:text-[#009CBC] transition-colors duration-200"
+                    style={{
+                      fontWeight: 500,
+                      fontSize: '14px',
+                      lineHeight: '100%',
+                      letterSpacing: '0%',
+                      textTransform: 'uppercase',
+                      color: '#333333'
+                    }}
                   >
                     {link.title}
                   </Link>
@@ -80,13 +77,27 @@ const Footer = () => {
 
           {/* Company Links */}
           <div>
-            <h4 className="font-semibold text-lg mb-6">COMPANY</h4>
+            <h4 className="font-manrope mb-6" style={{
+              fontWeight: 400,
+              fontSize: '12px',
+              lineHeight: '150%',
+              letterSpacing: '-1%',
+              color: '#929292'
+            }}>COMPANY</h4>
             <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.title}>
                   <Link
                     href={link.href}
-                    className="text-[#333333] hover:text-[#009CBC] transition-colors duration-200"
+                    className="font-manrope hover:text-[#009CBC] transition-colors duration-200"
+                    style={{
+                      fontWeight: 500,
+                      fontSize: '14px',
+                      lineHeight: '100%',
+                      letterSpacing: '0%',
+                      textTransform: 'uppercase',
+                      color: '#333333'
+                    }}
                   >
                     {link.title}
                   </Link>
@@ -97,25 +108,72 @@ const Footer = () => {
 
           {/* Social Links */}
           <div>
-            <h4 className="font-semibold text-lg mb-6">SOCIAL</h4>
+            <h4 className="font-manrope mb-6" style={{
+              fontWeight: 400,
+              fontSize: '12px',
+              lineHeight: '150%',
+              letterSpacing: '-1%',
+              color: '#929292'
+            }}>SOCIAL</h4>
             <ul className="space-y-3">
-              {socialLinks.map((social) => {
-                const IconComponent = social.icon
-                return (
-                  <li key={social.label}>
-                    <a
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-[#333333] hover:text-[#009CBC] transition-colors duration-200"
-                    >
-                      <IconComponent className="h-4 w-4 mr-2" />
-                      {social.label.toUpperCase()}
-                    </a>
-                  </li>
-                )
-              })}
+              {socialLinks.map((social) => (
+                <li key={social.label}>
+                  <Link
+                    href={social.href}
+                    className="font-manrope hover:text-[#009CBC] transition-colors duration-200"
+                    style={{
+                      fontWeight: 500,
+                      fontSize: '14px',
+                      lineHeight: '100%',
+                      letterSpacing: '0%',
+                      textTransform: 'uppercase',
+                      color: '#333333'
+                    }}
+                  >
+                    {social.label.toUpperCase()}
+                  </Link>
+                </li>
+              ))}
             </ul>
+          </div>
+
+          {/* Address Column */}
+          <div>
+            <h4 className="font-manrope mb-6" style={{
+              fontWeight: 400,
+              fontSize: '12px',
+              lineHeight: '150%',
+              letterSpacing: '-1%',
+              color: '#929292'
+            }}>ADRESS</h4>
+            <div className="font-manrope" style={{
+              fontWeight: 500,
+              fontSize: '14px',
+              lineHeight: '100%',
+              letterSpacing: '0%',
+              textTransform: 'uppercase',
+              color: '#333333'
+            }}>
+              <p>4517 Washington Ave.</p>
+              <p>Manchester, Kentucky</p>
+              <p>39495</p>
+            </div>
+          </div>
+
+          {/* Contact Info Column */}
+          <div className="text-left space-y-2">
+            <p className="text-[#333333] font-montserrat" style={{
+              fontWeight: 600,
+              fontSize: '24px',
+              lineHeight: '130%',
+              letterSpacing: '-2%'
+            }}>+7 7122 000-000</p>
+            <p className="text-[#333333] font-manrope" style={{
+              fontWeight: 400,
+              fontSize: '20px',
+              lineHeight: '100%',
+              letterSpacing: '-2%'
+            }}>info@visitkazakhstan.com</p>
           </div>
         </div>
       </div>
@@ -125,7 +183,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-white text-sm">
-              ©2025 Visit Qazaqstan. All rights reserved.
+              ©2025 Visit Kazakhstan. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link
