@@ -24,8 +24,7 @@ const Header = () => {
       dropdownItems: [
         { name: 'Nature Escapes', href: '/categories/nature' },
         { name: 'Cultural Tours', href: '/categories/culture' },
-        { name: 'City Breaks', href: '/categories/cities' },
-        { name: 'Adventure Tours', href: '/categories/adventure' }
+        { name: 'City Breaks', href: '/categories/cities' }
       ]
     },
     {
@@ -34,12 +33,7 @@ const Header = () => {
       width: 97,
       textWidth: 47,
       hasDropdown: true,
-      dropdownItems: [
-        { name: 'Weekend Getaways', href: '/tours?category=weekend' },
-        { name: 'Extended Tours', href: '/tours?category=extended' },
-        { name: 'Group Tours', href: '/tours?category=group' },
-        { name: 'Private Tours', href: '/tours?category=private' }
-      ]
+      dropdownItems: []
     },
     { name: 'PLAN YOUR TRIP', href: '/plan-your-trip', width: 139, textWidth: 107 },
     { name: 'BLOG', href: '/blog', width: 68, textWidth: 36 },

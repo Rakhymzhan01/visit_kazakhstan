@@ -1,7 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 
@@ -79,9 +78,8 @@ const NaturePage = () => {
               NATURE
             </div>
             <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
-              Where Earth Tells Stories —
+              Where Earth Tells Stories — Discover Kazakhstan&apos;s Wild Beauty
               <br />
-              <span className="text-green-600">Discover Kazakhstan&apos;s Wild Beauty</span>
             </h1>
             <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
               From the dramatic cliffs of Mangystau to the turquoise alpine lakes of the Tian 

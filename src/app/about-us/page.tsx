@@ -12,8 +12,27 @@ const AboutSection = () => {
           
           {/* Text Content */}
           <div>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#202020] mb-6">
-              About <span className="text-[#009CBC]">us</span>
+            <h2 className="mb-6">
+              <span className="text-[#202020]" style={{
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 700,
+                fontSize: '48px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>About</span> <span 
+                className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '48px',
+                  lineHeight: '100%',
+                  letterSpacing: '-4%'
+                }}
+              >us</span>
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed">
               Kazakhstan is vast and diverse — and so are the ways to experience 
@@ -22,34 +41,92 @@ const AboutSection = () => {
             </p>
           </div>
 
-          {/* Stats Grid - Exact Figma Layout */}
-          <div className="grid grid-cols-2 gap-8">
-            <div className="text-center">
-              <div className="text-5xl font-bold text-[#009CBC] mb-2">2010</div>
-              <p className="text-gray-600 text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
+          {/* Stats Grid - Same as Home Page */}
+          <div style={{ 
+            width: '588px', 
+            height: '476px',
+            position: 'relative'
+          }}>
+            {/* Staggered layout */}
+            <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
+              position: 'absolute',
+              top: '0px',
+              left: '0px',
+              width: '282px', 
+              height: '196px' 
+            }}>
+              <div className="text-[#009CBC] mb-3 font-montserrat" style={{
+                fontWeight: 600,
+                fontSize: '50px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>2010</div>
+              <p className="text-gray-600 font-manrope" style={{
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '150%',
+                letterSpacing: '-1%'
+              }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-            
-            <div className="text-center">
-              <div className="text-5xl font-bold text-[#009CBC] mb-2">50+</div>
-              <p className="text-gray-600 text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
+            <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
+              position: 'absolute',
+              top: '60px',
+              left: '306px',
+              width: '282px', 
+              height: '196px' 
+            }}>
+              <div className="text-[#009CBC] mb-3 font-montserrat" style={{
+                fontWeight: 600,
+                fontSize: '50px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>50+</div>
+              <p className="text-gray-600 font-manrope" style={{
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '150%',
+                letterSpacing: '-1%'
+              }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-            
-            <div className="text-center">
-              <div className="text-5xl font-bold text-[#009CBC] mb-2">1000+</div>
-              <p className="text-gray-600 text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
+            <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
+              position: 'absolute',
+              top: '220px',
+              left: '0px',
+              width: '282px', 
+              height: '196px' 
+            }}>
+              <div className="text-[#009CBC] mb-3 font-montserrat" style={{
+                fontWeight: 600,
+                fontSize: '50px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>1000+</div>
+              <p className="text-gray-600 font-manrope" style={{
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '150%',
+                letterSpacing: '-1%'
+              }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-            
-            <div className="text-center">
-              <div className="text-5xl font-bold text-[#009CBC] mb-2">20</div>
-              <p className="text-gray-600 text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
+            <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
+              position: 'absolute',
+              top: '280px',
+              left: '306px',
+              width: '282px', 
+              height: '196px' 
+            }}>
+              <div className="text-[#009CBC] mb-3 font-montserrat" style={{
+                fontWeight: 600,
+                fontSize: '50px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>20</div>
+              <p className="text-gray-600 font-manrope" style={{
+                fontWeight: 400,
+                fontSize: '16px',
+                lineHeight: '150%',
+                letterSpacing: '-1%'
+              }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
           </div>
         </div>
@@ -94,28 +171,59 @@ const TeamSection = () => {
         
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#202020] mb-4">
-            Our <span className="text-[#009CBC]">Team</span>
+          <h2 className="mb-4">
+            <span className="text-[#202020]" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontWeight: 700,
+              fontSize: '48px',
+              lineHeight: '100%',
+              letterSpacing: '-4%'
+            }}>Our</span> <span 
+              className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+              style={{
+                background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 400,
+                fontSize: '48px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}
+            >Team</span>
           </h2>
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-          {teamMembers.map((member, index) => (
-            <div key={index} className="text-center group">
-              <div className="relative mb-4 overflow-hidden rounded-2xl">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  width={250}
-                  height={300}
-                  className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+        <div className="overflow-x-auto scrollbar-hide mb-12">
+          <div className="flex gap-8 pb-4" style={{ width: 'max-content' }}>
+            {teamMembers.map((member, index) => (
+              <div key={index} className="group cursor-pointer flex-shrink-0">
+                <div className="relative overflow-hidden rounded-2xl">
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    width={300}
+                    height={400}
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    style={{ width: '300px', height: '400px' }}
+                  />
+                  {/* Overlay with name and position */}
+                  <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl p-4">
+                    <h3 className="text-[#202020] mb-1" style={{
+                      fontFamily: 'Manrope, sans-serif',
+                      fontWeight: 600,
+                      fontSize: '20px',
+                      lineHeight: '100%',
+                      letterSpacing: '-2%'
+                    }}>{member.name}</h3>
+                    <p className="text-gray-600 text-sm">{member.position}</p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-[#202020] mb-1">{member.name}</h3>
-              <p className="text-gray-600">{member.position}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Description */}
