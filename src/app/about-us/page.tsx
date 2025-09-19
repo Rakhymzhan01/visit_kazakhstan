@@ -6,7 +6,7 @@ import Footer from '../components/Footer'
 // About Section Component
 const AboutSection = () => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
@@ -166,7 +166,7 @@ const TeamSection = () => {
   ]
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -242,7 +242,7 @@ const TeamSection = () => {
 // Visit Kazakhstan Location Section with Map - Exact Figma Match
 const VisitKazakhstanSection = () => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           
@@ -313,7 +313,7 @@ const VisitKazakhstanSection = () => {
 // Main Page Component
 export default function AboutUsPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       <AboutSection />
       <TeamSection />
