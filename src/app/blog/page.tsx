@@ -7,7 +7,9 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/app/components/ui/card';
 import { Badge } from '@/app/components/ui/badge';
-import { Calendar, Clock, User, ArrowRight, Search } from 'lucide-react';
+import { Calendar, Clock, User, ArrowRight, Search, Instagram } from 'lucide-react';
+import { Button } from '@/app/components/ui/button';
+import Image from 'next/image';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -92,52 +94,33 @@ export default function BlogPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-4">
+      <section className="relative flex justify-center py-8 bg-gray-50">
+        <div className="flex gap-2 items-center">
+          {/* Left Content */}
+          <div className="w-[678px] h-[550px] bg-white rounded-lg px-20 py-16 flex flex-col justify-center">
+            <div className="inline-block text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit" style={{ backgroundColor: '#FFE700', color: '#000' }}>
               BLOG
-            </Badge>
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Discover Kazakhstan
+            </div>
+            <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </h1>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Explore stories, guides, and insights about Kazakhstan&apos;s culture, nature, and adventures from our travel experts.
+            <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et 
+              velit interdum, ac aliquet odio mattis.
             </p>
           </div>
-
-          {/* Search and Filters */}
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="flex flex-col sm:flex-row gap-4 mb-6">
-              {/* Search */}
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search articles..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              {/* Category Filter */}
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[150px]"
-              >
-                <option value="">All Categories</option>
-                {(categories as string[]).map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </div>
+          
+          {/* Right Image */}
+          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden">
+            <img 
+              src="/couple-photo.jpg" 
+              alt="Travel planning"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </section>
+
 
       {/* Featured Post */}
       {featuredPost && (
@@ -334,6 +317,79 @@ export default function BlogPage() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Instagram Section */}
+      <section className="py-12 bg-gray-50 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="flex items-start" style={{ gap: '50px' }}>
+            <div style={{ 
+              width: '486px', 
+              height: '282px',
+              paddingTop: '50px',
+              opacity: 1,
+              transform: 'rotate(0deg)'
+            }}>
+              <h2 className="mb-4">
+                <span 
+                  className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                  style={{
+                    background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '48px',
+                    lineHeight: '100%',
+                    letterSpacing: '-4%'
+                  }}
+                >@into.kazakhstan</span>
+              </h2>
+              <p className="text-gray-600 mb-6 text-sm" style={{ width: '486px' }}>
+                Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
+                landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
+              </p>
+              <Button 
+                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200"
+                style={{
+                  width: '145px',
+                  height: '50px',
+                  borderRadius: '99px'
+                }}
+              >
+                See Instagram
+              </Button>
+            </div>
+          </div>
+
+          {/* Instagram Photos Overlay */}
+          <div className="absolute z-20 overflow-x-auto scrollbar-hide" style={{ top: '0px', left: '570px', right: '0px', height: '282px' }}>
+            <div 
+              className="flex gap-6" 
+              style={{ 
+                width: 'max-content'
+              }}
+            >
+              {[
+                { image: "/nomad_girls.png", alt: "Nomad girls" },
+                { image: "/desert.jpg", alt: "Desert landscape" },
+                { image: "/yurta.jpg", alt: "Traditional yurt" }
+              ].map((post, index) => (
+                <div key={index} className="relative flex-shrink-0" style={{ width: '282px', height: '282px' }}>
+                  <Image
+                    src={post.image}
+                    alt={post.alt}
+                    width={282}
+                    height={282}
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                  <Instagram className="absolute top-3 left-3 w-8 h-8 text-white" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
