@@ -58,9 +58,9 @@ export default function AdminDashboard() {
     );
   }
 
-  const stats = blogStats?.data?.data || {};
+  const stats = blogStats?.data?.stats || {};
   const media = mediaStats?.data?.data || {};
-  const blogs = recentBlogs?.data?.data?.blogPosts || [];
+  const blogs = recentBlogs?.data?.blogs || [];
 
   const quickStats = [
     {

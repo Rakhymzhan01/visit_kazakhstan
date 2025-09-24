@@ -66,7 +66,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (credentials: { email: string; password: string }): Promise<boolean> => {
     try {
+      console.log('AuthContext: Attempting login with:', credentials.email);
       const response = await authApi.login(credentials);
+      console.log('AuthContext: Login response:', response.data);
+      
       const { token, user: userData } = response.data.data;
 
       localStorage.setItem('admin_token', token);
@@ -75,6 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success('Logged in successfully!');
       return true;
     } catch (error: unknown) {
+      console.error('AuthContext: Login error:', error);
       const errorMessage = (error as { response?: { data?: { error?: string } } }).response?.data?.error || 'Login failed';
       toast.error(errorMessage);
       return false;

@@ -40,10 +40,17 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     try {
+      console.log('Login form submitted with:', data);
       const success = await login(data);
+      console.log('Login result:', success);
       if (success) {
+        console.log('Login successful, redirecting to /admin');
         router.push('/admin');
+      } else {
+        console.log('Login failed');
       }
+    } catch (error) {
+      console.error('Login form error:', error);
     } finally {
       setIsLoading(false);
     }

@@ -14,8 +14,10 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     console.log('API Request:', config.method?.toUpperCase(), config.url, config.data);
+    console.log('API Request - Full URL:', config.baseURL + config.url);
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('admin_token');
+      console.log('API Request - Token:', token ? 'present' : 'missing');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

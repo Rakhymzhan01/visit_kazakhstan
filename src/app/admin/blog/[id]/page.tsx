@@ -20,6 +20,43 @@ import {
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
+// Helper function to strip HTML tags for editing
+const stripHtmlTags = (html: string): string => {
+  if (!html) return '';
+  return html
+    .replace(/<h([1-6])>/g, '\n# ') // Convert headings to markdown-style
+    .replace(/<\/h[1-6]>/g, '\n')
+    .replace(/<p>/g, '\n')
+    .replace(/<\/p>/g, '\n')
+    .replace(/<br\s*\/?>/g, '\n')
+    .replace(/<li>/g, '• ')
+    .replace(/<\/li>/g, '\n')
+    .replace(/<ul>|<\/ul>|<ol>|<\/ol>/g, '\n')
+    .replace(/<strong>(.*?)<\/strong>/g, '**$1**') // Bold text
+    .replace(/<[^>]*>/g, '') // Remove all remaining HTML tags
+    .replace(/\n\s*\n/g, '\n\n') // Clean up multiple newlines
+    .trim();
+};
+
+// Helper function to convert simple text back to HTML
+const textToHtml = (text: string): string => {
+  if (!text) return '';
+  return text
+    .split('\n\n') // Split by paragraphs
+    .map(paragraph => {
+      if (paragraph.startsWith('# ')) {
+        return `<h2>${paragraph.substring(2)}</h2>`;
+      }
+      if (paragraph.includes('• ')) {
+        const items = paragraph.split('\n').filter(line => line.trim());
+        const listItems = items.map(item => `<li>${item.replace('• ', '')}</li>`).join('');
+        return `<ul>${listItems}</ul>`;
+      }
+      return `<p>${paragraph.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</p>`;
+    })
+    .join('\n');
+};
+
 const blogPostSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
   slug: z.string().min(1, 'Slug is required').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers and hyphens'),
@@ -55,7 +92,10 @@ export default function EditBlogPostPage() {
     enabled: !!postId,
   });
 
-  const post = postData?.data?.data;
+  const post = postData?.data?.data?.blog;
+  
+  // Debug the post data loading (can be removed later)
+  console.log('Edit Page - post loaded:', !!post, post?.title);
 
   const {
     register,
@@ -70,18 +110,19 @@ export default function EditBlogPostPage() {
   // Set form data when post loads
   useEffect(() => {
     if (post) {
-      reset({
+      const formData = {
         title: post.title,
         slug: post.slug,
         excerpt: post.excerpt || '',
-        content: post.content,
+        content: stripHtmlTags(post.content), // Clean HTML for editing
         category: post.category || '',
         tags: post.tags?.join(', ') || '',
         status: post.status,
         featured: post.featured,
         seoTitle: post.seoTitle || '',
         seoDescription: post.seoDescription || '',
-      });
+      };
+      reset(formData);
       setFeaturedImage(post.featuredImage || null);
     }
   }, [post, reset]);
@@ -165,7 +206,14 @@ export default function EditBlogPostPage() {
 
   const onSubmit = async (data: BlogPostForm) => {
     try {
-      await updateMutation.mutateAsync({ ...data, featuredImage: featuredImage || undefined });
+      // Convert clean text back to HTML for saving
+      const dataWithHtml = {
+        ...data,
+        content: textToHtml(data.content),
+        featuredImage: featuredImage || undefined
+      };
+      console.log('Saving with HTML content:', dataWithHtml.content);
+      await updateMutation.mutateAsync(dataWithHtml);
     } catch {
       // Error handled in mutation
     }
@@ -246,7 +294,7 @@ export default function EditBlogPostPage() {
                   <input
                     {...register('title')}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="Enter post title..."
                   />
                   {errors.title && (
@@ -261,7 +309,7 @@ export default function EditBlogPostPage() {
                   <input
                     {...register('slug')}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="post-url-slug"
                   />
                   {errors.slug && (
@@ -281,7 +329,7 @@ export default function EditBlogPostPage() {
                   <textarea
                     {...register('excerpt')}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="Brief description of the post..."
                   />
                   {errors.excerpt && (
@@ -300,14 +348,14 @@ export default function EditBlogPostPage() {
                 <textarea
                   {...register('content')}
                   rows={15}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
-                  placeholder="Write your post content in HTML or Markdown..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-900"
+                  placeholder="Write your post content..."
                 />
                 {errors.content && (
                   <p className="text-red-600 text-sm mt-1">{errors.content.message}</p>
                 )}
                 <p className="text-xs text-gray-500 mt-1">
-                  You can use HTML tags for formatting
+                  Use simple formatting: # for headings, **bold text**, • for bullet points
                 </p>
               </CardContent>
             </Card>
@@ -324,7 +372,7 @@ export default function EditBlogPostPage() {
                   <input
                     {...register('seoTitle')}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="SEO optimized title..."
                   />
                   {errors.seoTitle && (
@@ -339,7 +387,7 @@ export default function EditBlogPostPage() {
                   <textarea
                     {...register('seoDescription')}
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="Meta description for search engines..."
                   />
                   {errors.seoDescription && (
@@ -363,7 +411,7 @@ export default function EditBlogPostPage() {
                   </label>
                   <select
                     {...register('status')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                   >
                     <option value="DRAFT">Draft</option>
                     <option value="PUBLISHED">Published</option>
@@ -491,7 +539,7 @@ export default function EditBlogPostPage() {
                   <input
                     {...register('category')}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="Travel, Culture, Adventure..."
                   />
                 </div>
@@ -503,7 +551,7 @@ export default function EditBlogPostPage() {
                   <input
                     {...register('tags')}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                     placeholder="kazakhstan, travel, adventure"
                   />
                   <p className="text-xs text-gray-500 mt-1">

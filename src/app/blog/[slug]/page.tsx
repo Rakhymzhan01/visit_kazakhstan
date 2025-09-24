@@ -43,8 +43,8 @@ const publicBlogApi = {
     const data = await response.json();
     
     // Filter out current post
-    const posts = data?.data?.blogPosts?.filter((post: BlogPost) => post.slug !== currentSlug) || [];
-    return { data: { blogPosts: posts } };
+    const posts = data?.data?.blogs?.filter((post: BlogPost) => post.slug !== currentSlug) || [];
+    return { data: { blogs: posts } };
   }
 };
 
@@ -86,7 +86,7 @@ export default function BlogPostPage() {
     enabled: !!slug,
   });
 
-  const post: BlogPost = postData?.data?.blogPost;
+  const post: BlogPost = postData?.data?.blog;
 
   // Fetch related posts
   const { data: relatedData } = useQuery({
@@ -95,7 +95,7 @@ export default function BlogPostPage() {
     enabled: !!post,
   });
 
-  const relatedPosts = relatedData?.data?.blogPosts || [];
+  const relatedPosts = relatedData?.data?.blogs || [];
 
   const handleShare = async (platform: 'facebook' | 'twitter' | 'copy') => {
     const url = window.location.href;
@@ -121,7 +121,7 @@ export default function BlogPostPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         <Header />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="animate-pulse space-y-6">
@@ -142,7 +142,7 @@ export default function BlogPostPage() {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         <Header />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
@@ -166,7 +166,7 @@ export default function BlogPostPage() {
   // Only show published posts to public
   if (post.status !== 'PUBLISHED') {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         <Header />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
@@ -188,213 +188,250 @@ export default function BlogPostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Header />
 
-      {/* Article Content */}
-      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Back Button */}
-        <div className="mb-8">
-          <Link href="/blog">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Blog
-            </Button>
-          </Link>
-        </div>
 
-        {/* Article Header */}
-        <header className="mb-8">
-          {post.category && (
-            <Badge className="mb-4 bg-blue-600">
-              {post.category}
-            </Badge>
+      {/* Hero Image with Title Overlay */}
+      <div className="relative w-full px-4 sm:px-6 lg:px-8 py-8">
+        <div className="relative w-full h-[453px] rounded-lg overflow-hidden bg-gray-900">
+          {post.featuredImage ? (
+            <img
+              src={post.featuredImage}
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+              <span className="text-white text-xl">No image available</span>
+            </div>
           )}
           
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            {post.title}
-          </h1>
-
-          {post.excerpt && (
-            <p className="text-xl text-gray-600 mb-6">
-              {post.excerpt}
-            </p>
-          )}
-
-          {/* Meta Info */}
-          <div className="flex flex-wrap items-center gap-6 text-gray-500 border-b border-gray-200 pb-6">
-            <div className="flex items-center">
-              <User className="h-5 w-5 mr-2" />
-              <span>By {post.author.name}</span>
-            </div>
-            <div className="flex items-center">
-              <Calendar className="h-5 w-5 mr-2" />
-              <span>{new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}</span>
-            </div>
-            {post.readTime && (
-              <div className="flex items-center">
-                <Clock className="h-5 w-5 mr-2" />
-                <span>{post.readTime} min read</span>
-              </div>
-            )}
-            {post.views > 0 && (
-              <div className="flex items-center">
-                <Eye className="h-5 w-5 mr-2" />
-                <span>{post.views} views</span>
-              </div>
-            )}
+          {/* Strong dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30"></div>
+          
+          {/* Title overlay with strong contrast */}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <h1 className="text-4xl lg:text-6xl font-black text-white text-center leading-tight px-8 max-w-5xl" style={{
+              textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
+            }}>
+              {post.title}
+            </h1>
           </div>
-        </header>
+        </div>
+      </div>
 
-        {/* Featured Image */}
-        {post.featuredImage && (
-          <div className="mb-8">
-            <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
-              <img
-                src={post.featuredImage}
-                alt={post.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Article Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-3">
+      {/* Content Layout */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            {post.excerpt && (
+              <p className="text-xl text-black mb-8 leading-relaxed">
+                {post.excerpt}
+              </p>
+            )}
+            
             <div 
-              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900"
+              className="prose prose-lg max-w-none prose-headings:!text-black prose-p:!text-black prose-a:text-blue-600 prose-strong:!text-black prose-li:!text-black prose-ul:!text-black prose-ol:!text-black"
+              style={{ color: '#000000' }}
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
-            {/* Tags */}
-            {post.tags.length > 0 && (
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">Tags:</h3>
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary">
-                      #{tag}
-                    </Badge>
-                  ))}
+          </div>
+
+          {/* Sidebar - Information Panel */}
+          <div className="lg:col-span-1">
+            <div className="bg-gray-50 rounded-lg p-6 sticky top-8">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">Information</h3>
+              
+              <div className="space-y-6">
+                {/* Author */}
+                <div>
+                  <div className="flex items-center text-gray-600 mb-1">
+                    <User className="h-5 w-5 mr-2 text-blue-600" />
+                    <span className="text-sm font-medium">Author</span>
+                  </div>
+                  <p className="text-lg font-semibold text-gray-900">{post.author.name}</p>
+                </div>
+
+                {/* Category */}
+                {post.category && (
+                  <div>
+                    <div className="flex items-center text-gray-600 mb-1">
+                      <svg className="h-5 w-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      </svg>
+                      <span className="text-sm font-medium">Category</span>
+                    </div>
+                    <p className="text-lg font-semibold text-gray-900">{post.category}</p>
+                  </div>
+                )}
+
+                {/* Date */}
+                <div>
+                  <div className="flex items-center text-gray-600 mb-1">
+                    <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                    <span className="text-sm font-medium">Published</span>
+                  </div>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </p>
+                </div>
+
+                {/* Read Time */}
+                {post.readTime && (
+                  <div>
+                    <div className="flex items-center text-gray-600 mb-1">
+                      <Clock className="h-5 w-5 mr-2 text-blue-600" />
+                      <span className="text-sm font-medium">Read Time</span>
+                    </div>
+                    <p className="text-lg font-semibold text-gray-900">{post.readTime} minutes</p>
+                  </div>
+                )}
+
+                {/* Views */}
+                <div>
+                  <div className="flex items-center text-gray-600 mb-1">
+                    <Eye className="h-5 w-5 mr-2 text-blue-600" />
+                    <span className="text-sm font-medium">Views</span>
+                  </div>
+                  <p className="text-lg font-semibold text-gray-900">{post.views.toLocaleString()}</p>
+                </div>
+
+                {/* Share Section */}
+                <div className="pt-6 border-t border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Share Article</h4>
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => handleShare('facebook')}
+                      className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      <Facebook className="h-4 w-4 mr-2" />
+                      Share on Facebook
+                    </button>
+                    <button
+                      onClick={() => handleShare('twitter')}
+                      className="w-full flex items-center justify-center px-4 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition-colors"
+                    >
+                      <Twitter className="h-4 w-4 mr-2" />
+                      Share on Twitter
+                    </button>
+                    <button
+                      onClick={() => handleShare('copy')}
+                      className="w-full flex items-center justify-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                      <Copy className="h-4 w-4 mr-2" />
+                      Copy Link
+                    </button>
+                  </div>
                 </div>
               </div>
-            )}
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Share */}
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  <Share2 className="h-5 w-5 inline mr-2" />
-                  Share Article
-                </h3>
-                <div className="space-y-3">
-                  <button
-                    onClick={() => handleShare('facebook')}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <Facebook className="h-4 w-4 mr-2" />
-                    Share on Facebook
-                  </button>
-                  <button
-                    onClick={() => handleShare('twitter')}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition-colors"
-                  >
-                    <Twitter className="h-4 w-4 mr-2" />
-                    Share on Twitter
-                  </button>
-                  <button
-                    onClick={() => handleShare('copy')}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                  >
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy Link
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Author Info */}
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">About the Author</h3>
-                <div className="flex items-center space-x-3">
-                  <div className="flex-shrink-0">
-                    <div className="h-12 w-12 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-medium">
-                        {post.author.name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">{post.author.name}</p>
-                    <p className="text-sm text-gray-500">Travel Writer</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            </div>
           </div>
         </div>
-      </article>
+      </div>
 
       {/* Related Articles */}
       {relatedPosts.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Articles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {relatedPosts.slice(0, 3).map((relatedPost: BlogPost) => (
-              <Card key={relatedPost.id} className="hover:shadow-lg transition-shadow group">
-                <div className="relative h-48 overflow-hidden">
-                  {relatedPost.featuredImage ? (
-                    <img
-                      src={relatedPost.featuredImage}
-                      alt={relatedPost.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">No image</span>
-                    </div>
-                  )}
-                  {relatedPost.category && (
-                    <Badge className="absolute top-4 left-4 bg-white text-gray-900">
-                      {relatedPost.category}
-                    </Badge>
-                  )}
-                </div>
-                
-                <CardContent className="p-6">
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      <Link href={`/blog/${relatedPost.slug}`}>
-                        {relatedPost.title}
-                      </Link>
-                    </h3>
-                    
-                    {relatedPost.excerpt && (
-                      <p className="text-gray-600 text-sm line-clamp-2">
-                        {relatedPost.excerpt}
-                      </p>
-                    )}
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="mb-8">
+              <span className="text-[#202020]" style={{
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 700,
+                fontSize: '48px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>Related</span> <span 
+                className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '48px',
+                  lineHeight: '100%',
+                  letterSpacing: '-4%'
+                }}
+              >Articles</span>
+            </h2>
 
-                    <div className="flex items-center text-xs text-gray-500">
-                      <span>{relatedPost.author.name}</span>
-                      <span className="mx-2">•</span>
-                      <span>
-                        {new Date(relatedPost.publishedAt || relatedPost.createdAt).toLocaleDateString()}
-                      </span>
+            <div className="flex gap-6">
+              {relatedPosts.slice(0, 3).map((relatedPost: BlogPost) => (
+                <Link key={relatedPost.id} href={`/blog/${relatedPost.slug}`}>
+                  <Card className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200" style={{
+                    width: '384px',
+                    height: '506px'
+                  }}>
+                    <div className="relative">
+                      {relatedPost.featuredImage ? (
+                        <img
+                          src={relatedPost.featuredImage}
+                          alt={relatedPost.title}
+                          className="w-full object-cover rounded-lg"
+                          style={{
+                            width: '368px',
+                            height: '260px'
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full bg-gray-200 flex items-center justify-center rounded-lg" style={{
+                          width: '368px',
+                          height: '260px'
+                        }}>
+                          <span className="text-gray-400">No image</span>
+                        </div>
+                      )}
+                      <div className="absolute top-3 left-3 flex gap-2">
+                        <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">
+                          📅 {new Date(relatedPost.publishedAt || relatedPost.createdAt).toLocaleDateString()}
+                        </Badge>
+                        {relatedPost.category && (
+                          <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">
+                            {relatedPost.category}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <CardContent className="p-4">
+                      <h3 className="mb-2 text-[#202020]" style={{
+                        fontFamily: 'Manrope, sans-serif',
+                        fontWeight: 600,
+                        fontSize: '24px',
+                        lineHeight: '100%',
+                        letterSpacing: '-2%'
+                      }}>{relatedPost.title}</h3>
+                      <p className="text-gray-600 mb-3 line-clamp-3" style={{
+                        fontFamily: 'Manrope, sans-serif',
+                        fontWeight: 400,
+                        fontSize: '14px',
+                        lineHeight: '24px',
+                        letterSpacing: '-1%'
+                      }}>{relatedPost.excerpt}</p>
+                      <div className="flex justify-between items-center">
+                        <span className="text-[#009CBC] hover:text-[#007a9a] text-sm">
+                          Read more →
+                        </span>
+                        <div className="flex">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <svg key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       )}

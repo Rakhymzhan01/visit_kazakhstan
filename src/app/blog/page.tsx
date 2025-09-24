@@ -75,7 +75,7 @@ export default function BlogPage() {
     queryKey: ['blogCategories'],
     queryFn: () => publicBlogApi.getBlogs({ limit: 100 }),
     select: (data) => {
-      const posts = data?.data?.blogPosts || [];
+      const posts = data?.data?.blogs || [];
       const categories = [...new Set(posts
         .map((post: BlogPost) => post.category)
         .filter(Boolean)
@@ -84,7 +84,7 @@ export default function BlogPage() {
     }
   });
 
-  const blogs = blogsData?.data?.blogPosts || [];
+  const blogs = blogsData?.data?.blogs || [];
   const categories = categoriesData || [];
   const featuredPost = blogs.find((post: BlogPost) => post.featured);
   const regularPosts = blogs.filter((post: BlogPost) => !post.featured);
@@ -102,11 +102,10 @@ export default function BlogPage() {
               BLOG
             </div>
             <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Discover Kazakhstan Through Stories — Travel Guides & Adventures
             </h1>
             <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et 
-              velit interdum, ac aliquet odio mattis.
+              From hidden gems in ancient cities to breathtaking natural wonders, explore Kazakhstan through our curated collection of travel stories, guides, and insider tips that bring this incredible country to life.
             </p>
           </div>
           
@@ -122,107 +121,163 @@ export default function BlogPage() {
       </section>
 
 
-      {/* Featured Post */}
-      {featuredPost && (
-        <section className="py-8 bg-white border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Featured Article</h2>
-            </div>
-            
-            <Card className="overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                <div className="relative h-64 lg:h-auto">
-                  {featuredPost.featuredImage ? (
-                    <img
-                      src={featuredPost.featuredImage}
-                      alt={featuredPost.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">No image</span>
-                    </div>
-                  )}
-                  {featuredPost.category && (
-                    <Badge className="absolute top-4 left-4 bg-blue-600">
-                      {featuredPost.category}
-                    </Badge>
-                  )}
-                </div>
-                
-                <CardContent className="p-8 flex flex-col justify-center">
-                  <div className="space-y-4">
-                    <h3 className="text-3xl font-bold text-gray-900 leading-tight">
-                      {featuredPost.title}
-                    </h3>
-                    
-                    {featuredPost.excerpt && (
-                      <p className="text-gray-600 text-lg">
-                        {featuredPost.excerpt}
-                      </p>
-                    )}
-
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <div className="flex items-center">
-                        <User className="h-4 w-4 mr-1" />
-                        {featuredPost.author.name}
-                      </div>
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        {new Date(featuredPost.publishedAt || featuredPost.createdAt).toLocaleDateString()}
-                      </div>
-                      {featuredPost.readTime && (
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-1" />
-                          {featuredPost.readTime} min read
-                        </div>
-                      )}
-                    </div>
-
-                    <Link 
-                      href={`/blog/${featuredPost.slug}`}
-                      className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
-                    >
-                      Read Article
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Link>
-                  </div>
-                </CardContent>
-              </div>
-            </Card>
-          </div>
-        </section>
-      )}
-
-      {/* Blog Posts Grid */}
+      {/* Featured Article Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {searchTerm || selectedCategory ? 'Search Results' : 'Latest Articles'}
+          <div className="text-left mb-12">
+            <h2 className="mb-4">
+              <span className="text-[#202020]" style={{
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 700,
+                fontSize: '48px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>Featured</span> <span 
+                className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '48px',
+                  lineHeight: '100%',
+                  letterSpacing: '-4%'
+                }}
+              >Article</span>
             </h2>
-            <p className="text-gray-600 mt-2">
-              {searchTerm || selectedCategory 
-                ? `${regularPosts.length} article${regularPosts.length !== 1 ? 's' : ''} found`
-                : 'Discover our latest travel guides and stories'
-              }
-            </p>
+          </div>
+
+          {featuredPost && (
+            <div className="flex gap-6 mb-12">
+              {/* Large featured image */}
+              <div className="relative overflow-hidden rounded-2xl" style={{ width: '792px', height: '400px' }}>
+                {featuredPost.featuredImage ? (
+                  <img
+                    src={featuredPost.featuredImage}
+                    alt={featuredPost.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-400">No image</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-blue-600 text-white text-sm px-4 py-2 rounded-full font-medium">
+                    {featuredPost.category || 'Blog'}
+                  </span>
+                </div>
+                <div className="absolute bottom-6 left-6 right-6">
+                  <h3 className="text-white text-3xl font-bold leading-tight">
+                    {featuredPost.title}
+                  </h3>
+                </div>
+              </div>
+
+              {/* Text box on the right */}
+              <div className="bg-white rounded-2xl flex flex-col" style={{ width: '384px', height: '400px', padding: '32px' }}>
+                <h3 className="font-montserrat" style={{
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  lineHeight: '130%',
+                  letterSpacing: '-2%',
+                  color: '#202020',
+                  marginBottom: '16px'
+                }}>
+                  {featuredPost.title}
+                </h3>
+                
+                <div className="flex items-center space-x-4 text-sm text-gray-500 mb-6">
+                  <div className="flex items-center">
+                    <User className="h-4 w-4 mr-1" />
+                    {featuredPost.author.name}
+                  </div>
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    {new Date(featuredPost.publishedAt || featuredPost.createdAt).toLocaleDateString()}
+                  </div>
+                  {featuredPost.readTime && (
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
+                      {featuredPost.readTime} min
+                    </div>
+                  )}
+                </div>
+
+                {featuredPost.excerpt && (
+                  <p className="font-manrope flex-1" style={{
+                    fontWeight: 400,
+                    fontSize: '14px',
+                    lineHeight: '24px',
+                    letterSpacing: '-1%',
+                    color: '#4F504F',
+                    marginBottom: '32px'
+                  }}>
+                    {featuredPost.excerpt}
+                  </p>
+                )}
+                
+                <Link href={`/blog/${featuredPost.slug}`}>
+                  <button 
+                    className="text-white font-manrope rounded-full self-start flex items-center justify-center"
+                    style={{
+                      width: '140px',
+                      height: '50px',
+                      backgroundColor: '#009CBC',
+                      padding: '13px 30px',
+                      borderRadius: '99px',
+                      fontWeight: 600,
+                      fontSize: '14px',
+                      lineHeight: '1',
+                      letterSpacing: '-2%'
+                    }}
+                  >
+                    Read Article
+                  </button>
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Latest Articles Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-left mb-12">
+            <h2 className="mb-4">
+              <span className="text-[#202020]" style={{
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 700,
+                fontSize: '48px',
+                lineHeight: '100%',
+                letterSpacing: '-4%'
+              }}>Latest</span> <span 
+                className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
+                style={{
+                  background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '48px',
+                  lineHeight: '100%',
+                  letterSpacing: '-4%'
+                }}
+              >Articles</span>
+            </h2>
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <Card key={i} className="animate-pulse">
-                  <div className="h-48 bg-gray-200"></div>
-                  <CardContent className="p-6">
-                    <div className="space-y-3">
-                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                      <div className="h-16 bg-gray-200 rounded"></div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <div key={i} className="animate-pulse">
+                  <div className="h-[400px] bg-gray-200 rounded-2xl"></div>
+                </div>
               ))}
             </div>
           ) : error ? (
@@ -257,63 +312,56 @@ export default function BlogPage() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {regularPosts.map((post: BlogPost) => (
-                <Card key={post.id} className="hover:shadow-lg transition-shadow group">
-                  <div className="relative h-48 overflow-hidden">
+                <Link key={post.id} href={`/blog/${post.slug}`}>
+                  <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300" style={{ width: '384px', height: '400px' }}>
                     {post.featuredImage ? (
                       <img
                         src={post.featuredImage}
                         alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                         <span className="text-gray-400">No image</span>
                       </div>
                     )}
-                    {post.category && (
-                      <Badge className="absolute top-4 left-4 bg-white text-gray-900">
-                        {post.category}
-                      </Badge>
-                    )}
-                  </div>
-                  
-                  <CardContent className="p-6">
-                    <div className="space-y-3">
-                      <h3 className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    
+                    {/* Dark gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                    
+                    {/* Category badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-blue-600 text-white text-sm px-4 py-2 rounded-full font-medium">
+                        {post.category || 'Blog'}
+                      </span>
+                    </div>
+                    
+                    {/* Content at bottom */}
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <h3 className="text-white text-2xl font-bold leading-tight mb-2">
                         {post.title}
                       </h3>
-                      
-                      {post.excerpt && (
-                        <p className="text-gray-600 text-sm line-clamp-3">
-                          {post.excerpt}
-                        </p>
-                      )}
-
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <div className="flex items-center space-x-3">
-                          <span>{post.author.name}</span>
-                          <span>•</span>
-                          <span>
-                            {new Date(post.publishedAt || post.createdAt).toLocaleDateString()}
-                          </span>
+                      <div className="flex items-center space-x-4 text-white/80 text-sm">
+                        <div className="flex items-center">
+                          <User className="h-4 w-4 mr-1" />
+                          {post.author.name}
+                        </div>
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-1" />
+                          {new Date(post.publishedAt || post.createdAt).toLocaleDateString()}
                         </div>
                         {post.readTime && (
-                          <span>{post.readTime} min</span>
+                          <div className="flex items-center">
+                            <Clock className="h-4 w-4 mr-1" />
+                            {post.readTime} min
+                          </div>
                         )}
                       </div>
-
-                      <Link 
-                        href={`/blog/${post.slug}`}
-                        className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium mt-2"
-                      >
-                        Read More
-                        <ArrowRight className="h-3 w-3 ml-1" />
-                      </Link>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </Link>
               ))}
             </div>
           )}

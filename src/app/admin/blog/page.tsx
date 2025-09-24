@@ -41,24 +41,45 @@ interface BlogPost {
 }
 
 export default function BlogManagementPage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'>('ALL');
   const queryClient = useQueryClient();
 
-  // Fetch blogs
+  // Debug auth status
+  console.log('Admin Blog Page - isAuthenticated:', isAuthenticated);
+  console.log('Admin Blog Page - User:', user);
+  console.log('Admin Blog Page - Loading:', loading);
+  console.log('Admin Blog Page - Component mounted');
+
+  // Fetch blogs using blogApi with enhanced debugging
   const { 
     data: blogsData, 
     isLoading, 
     error 
   } = useQuery({
     queryKey: ['blogs', { search: searchTerm, status: statusFilter }],
-    queryFn: () => blogApi.getBlogs({
-      search: searchTerm || undefined,
-      status: statusFilter === 'ALL' ? undefined : statusFilter,
-      limit: 50
-    }),
-    enabled: isAuthenticated,
+    queryFn: async () => {
+      console.log('Admin Blog Page - Making blogApi call to get blogs');
+      console.log('Admin Blog Page - Search term:', searchTerm);
+      console.log('Admin Blog Page - Status filter:', statusFilter);
+      
+      try {
+        const result = await blogApi.getBlogs({
+          search: searchTerm || undefined,
+          status: statusFilter === 'ALL' ? undefined : statusFilter,
+          limit: 50
+        });
+        console.log('blogApi response:', result);
+        console.log('blogApi response data:', result.data);
+        return result;
+      } catch (err) {
+        console.error('blogApi error:', err);
+        throw err;
+      }
+    },
+    enabled: !loading, // Run when auth loading is complete
+    retry: false, // Disable retry to see errors faster
   });
 
   // Delete mutation
@@ -75,8 +96,25 @@ export default function BlogManagementPage() {
     },
   });
 
-  const blogs = blogsData?.data?.data?.blogPosts || [];
-  const totalPosts = blogsData?.data?.data?.total || 0;
+  const blogs = blogsData?.data?.data?.blogs || [];
+  const totalPosts = blogsData?.data?.data?.pagination?.total || 0;
+  
+  // Extra debugging for data structure
+  console.log('Data path check:');
+  console.log('- blogsData exists:', !!blogsData);
+  console.log('- blogsData.data exists:', !!blogsData?.data);
+  console.log('- blogsData.data.blogs exists:', !!blogsData?.data?.blogs);
+  console.log('- blogsData structure keys:', blogsData ? Object.keys(blogsData) : 'no blogsData');
+
+  // Debug logging
+  console.log('Admin Blog Page - Raw blogs data:', blogsData);
+  console.log('Admin Blog Page - Parsed blogs:', blogs);
+  console.log('Admin Blog Page - Total posts:', totalPosts);
+  console.log('Admin Blog Page - Is loading:', isLoading);
+  console.log('Admin Blog Page - Error:', error);
+  console.log('Admin Blog Page - Blogs array length:', blogs.length);
+  console.log('Admin Blog Page - Query enabled:', !loading);
+  console.log('Admin Blog Page - Status filter:', statusFilter);
 
   const handleDelete = async (id: string, title: string) => {
     if (window.confirm(`Are you sure you want to delete "${title}"?`)) {
@@ -115,6 +153,10 @@ export default function BlogManagementPage() {
       </div>
     );
   };
+
+  if (loading) {
+    return <div>Loading auth...</div>;
+  }
 
   if (!isAuthenticated) {
     return <div>Please login to access this page.</div>;
@@ -182,7 +224,8 @@ export default function BlogManagementPage() {
             </div>
           ) : error ? (
             <div className="p-8 text-center text-red-600">
-              <p>Error loading posts. Please try again.</p>
+              <p>Error loading posts: {error.message}</p>
+              <p>Check console for details.</p>
             </div>
           ) : blogs.length === 0 ? (
             <div className="p-8 text-center">
