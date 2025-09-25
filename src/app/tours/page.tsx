@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { contentApi, toursApi, categoriesApi } from '@/lib/api';
@@ -10,6 +11,7 @@ import { contentApi, toursApi, categoriesApi } from '@/lib/api';
 interface Tour {
   id: string;
   title: string;
+  slug: string;
   image: string;
   rating: number;
   description?: string;
@@ -190,17 +192,21 @@ const ToursPage = () => {
             >Themes</span>
           </h2>
           
-          {/* Tab Navigation */}
-          <div className="flex space-x-8 border-b border-gray-200">
+          {/* Category Tabs Navigation */}
+          <div className="flex space-x-8 mb-12">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setActiveTab(category.name)}
-                className={`pb-4 px-1 text-sm font-medium border-b-2 transition-colors ${
+                className={`pb-2 px-1 text-lg font-medium transition-colors border-b-2 ${
                   activeTab === category.name
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-[#009CBC] text-[#009CBC]'
+                    : 'border-transparent text-gray-600 hover:text-gray-800'
                 }`}
+                style={{
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: activeTab === category.name ? 600 : 400,
+                }}
               >
                 {category.name}
               </button>
@@ -209,60 +215,84 @@ const ToursPage = () => {
         </div>
 
         {/* Tour Cards */}
-        <div className="grid grid-cols-3 gap-8">
-          {filteredTours.slice(0, 3).map((tour) => (
-            <div key={tour.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredTours.slice(0, 3).map((tour, index) => (
+            <div key={tour.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="relative">
                 <Image 
                   src={tour.image} 
                   alt={tour.title}
                   width={400}
-                  height={192}
-                  className="w-full h-48 object-cover"
+                  height={300}
+                  className="w-full h-[300px] object-cover"
                 />
-                {tour.date && (
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <span className="bg-gray-800 text-white px-3 py-1 rounded-md text-xs font-medium">
-                      {tour.date}
-                    </span>
-                    {tour.location && (
-                      <span className="bg-green-500 text-white px-3 py-1 rounded-md text-xs font-medium">
-                        {tour.location}
-                      </span>
-                    )}
-                  </div>
-                )}
+                
+                {/* Date and Location Badges */}
+                <div className="absolute top-4 left-4 flex gap-2">
+                  {tour.date && (
+                    <div className="flex items-center bg-black/80 text-white px-3 py-1.5 rounded-md">
+                      <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-sm font-medium">{tour.date}</span>
+                    </div>
+                  )}
+                  {tour.location && (
+                    <div className={`flex items-center text-white px-3 py-1.5 rounded-md ${
+                      index === 0 ? 'bg-blue-600' : index === 1 ? 'bg-blue-500' : 'bg-green-600'
+                    }`}>
+                      <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-sm font-medium">{tour.location}</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Heart Icon (favorites) */}
+                <div className="absolute top-4 right-4">
+                  <button className="p-2 bg-white/90 rounded-full hover:bg-white transition-colors">
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </button>
+                </div>
               </div>
               
               <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3 leading-tight">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3 leading-tight" style={{
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 600
+                }}>
                   {tour.title}
                 </h3>
+                
                 {tour.description && (
-                  <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                  <p className="text-gray-600 mb-6 text-sm leading-relaxed" style={{
+                    fontFamily: 'Manrope, sans-serif',
+                    lineHeight: '1.6'
+                  }}>
                     {tour.description}
                   </p>
                 )}
                 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    {tour.price && (
-                      <span className="text-lg font-semibold text-green-600">
-                        ${tour.price}
-                      </span>
-                    )}
-                    {tour.duration && (
-                      <span className="text-sm text-gray-500">
-                        {tour.duration}
-                      </span>
-                    )}
-                  </div>
+                  <Link href={`/tours/${tour.slug}`} className="text-[#009CBC] hover:text-[#007a9a] font-medium text-sm transition-colors flex items-center" style={{
+                    fontFamily: 'Manrope, sans-serif',
+                    fontWeight: 500
+                  }}>
+                    Read more 
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </Link>
                   
+                  {/* Star Rating */}
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <svg 
                         key={i} 
-                        className={`w-4 h-4 ${i < tour.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                        className="w-4 h-4 text-yellow-400"
                         fill="currentColor" 
                         viewBox="0 0 20 20"
                       >
@@ -271,10 +301,6 @@ const ToursPage = () => {
                     ))}
                   </div>
                 </div>
-                
-                <button className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors">
-                  View Details
-                </button>
               </div>
             </div>
           ))}

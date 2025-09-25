@@ -15,7 +15,6 @@ import {
   User, 
   ArrowLeft, 
   Eye,
-  Share2,
   Facebook,
   Twitter,
   Copy

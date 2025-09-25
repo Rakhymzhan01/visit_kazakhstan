@@ -179,8 +179,9 @@ const NaturePage = () => {
               }}>
                 A surreal desert-meets-sea region in the west, filled with chalk mountains, underground mosques, and alien-like rock formations. Visit Bozzhyra, Torysh (Valley of Balls), and Sherkala Mountain for a journey into a land that feels untouched by time.
               </p>
-              <button 
-                className="text-white font-manrope rounded-full self-start flex items-center justify-center"
+              <Link 
+                href="/plan-your-trip"
+                className="text-white font-manrope rounded-full self-start flex items-center justify-center hover:bg-[#007a9a] transition-colors"
                 style={{
                   width: '160px',
                   height: '50px',
@@ -194,7 +195,7 @@ const NaturePage = () => {
                 }}
               >
                 Plan your trip
-              </button>
+              </Link>
             </div>
           </div>
 

@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronDown, Calendar } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 

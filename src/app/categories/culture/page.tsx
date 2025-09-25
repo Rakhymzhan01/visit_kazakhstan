@@ -274,8 +274,9 @@ const CulturePage = () => {
                 }}>
                   {featuredCategory.description}
                 </p>
-                <button 
-                  className="text-white font-manrope rounded-full self-start flex items-center justify-center"
+                <Link 
+                  href="/plan-your-trip"
+                  className="text-white font-manrope rounded-full self-start flex items-center justify-center hover:bg-[#007a9a] transition-colors"
                   style={{
                     width: '160px',
                     height: '50px',
@@ -289,7 +290,7 @@ const CulturePage = () => {
                   }}
                 >
                   Plan your trip
-                </button>
+                </Link>
               </div>
             </div>
           )}

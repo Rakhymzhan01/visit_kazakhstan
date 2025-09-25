@@ -5,9 +5,7 @@ export const dynamic = 'force-dynamic';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent } from '@/app/components/ui/card';
-import { Badge } from '@/app/components/ui/badge';
-import { Calendar, Clock, User, ArrowRight, Search, Instagram } from 'lucide-react';
+import { Calendar, Clock, User, Instagram } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import Image from 'next/image';
 import Header from '../components/Header';
@@ -70,22 +68,8 @@ export default function BlogPage() {
     }),
   });
 
-  // Fetch categories (get all published posts and extract unique categories)
-  const { data: categoriesData } = useQuery({
-    queryKey: ['blogCategories'],
-    queryFn: () => publicBlogApi.getBlogs({ limit: 100 }),
-    select: (data) => {
-      const posts = data?.data?.blogs || [];
-      const categories = [...new Set(posts
-        .map((post: BlogPost) => post.category)
-        .filter(Boolean)
-      )];
-      return categories;
-    }
-  });
 
   const blogs = blogsData?.data?.blogs || [];
-  const categories = categoriesData || [];
   const featuredPost = blogs.find((post: BlogPost) => post.featured);
   const regularPosts = blogs.filter((post: BlogPost) => !post.featured);
 
