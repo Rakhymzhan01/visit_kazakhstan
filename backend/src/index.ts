@@ -14,6 +14,9 @@ import contentRoutes from './routes/content';
 import uploadRoutes from './routes/upload';
 import tourRoutes from './routes/tours';
 import categoryRoutes from './routes/categories';
+import destinationRoutes from './routes/destinations';
+import categoryPageInfoRoutes from './routes/categoryPageInfo';
+import migrateRoutes from './routes/migrate';
 
 // Load environment variables
 dotenv.config();
@@ -68,6 +71,9 @@ app.use('/api/content', contentRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/tours', tourRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/destinations', destinationRoutes);
+app.use('/api/category-page-info', categoryPageInfoRoutes);
+app.use('/api/migrate', migrateRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

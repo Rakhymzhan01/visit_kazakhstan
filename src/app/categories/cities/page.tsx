@@ -2,102 +2,63 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
+import { destinationsApi } from '@/lib/api'
+
+interface Destination {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  category: string;
+  subtitle?: string;
+  featured?: boolean;
+}
 
 const CitiesPage = () => {
-  const cities = [
-    {
-      id: 1,
-      name: 'Astana',
-      subtitle: 'Bold, Visionary, Futuristic',
-      description: 'Kazakhstan\'s capital rises from the steppe with ambition and style. Known for its striking architecture — the Bayterek Tower, Khan Shatyr, and Nur Alem Sphere — Astana is a hub for politics, business, and innovation. Museums, concert halls, and festivals make it a symbol of a forward-looking nation.',
-      image: '/baiterek.jpg',
-      category: 'Cities',
-      slug: 'astana'
-    },
-    {
-      id: 2,
-      name: 'Almaty',
-      subtitle: 'Green, Cultural, Creative',
-      description: 'The cultural and creative heart of Kazakhstan, nestled in the foothills of the majestic Tian Shan mountains. Former capital with rich history, vibrant arts scene, and gateway to natural wonders.',
-      image: '/almaty.jpg',
-      category: 'Cities',
-      slug: 'almaty'
-    },
-    {
-      id: 3,
-      name: 'Turkestan',
-      subtitle: 'Sacred & Historic',
-      description: 'Ancient spiritual center and UNESCO World Heritage site, home to the magnificent Mausoleum of Khoja Ahmed Yasawi and centuries of Islamic architecture.',
-      image: '/turkestan.jpg',
-      category: 'Cities',
-      slug: 'turkestan'
-    },
-    {
-      id: 4,
-      name: 'Shymkent',
-      subtitle: 'Southern Flavor & Tulip Capital',
-      description: 'Kazakhstan\'s southern gateway, rich in tradition and known as the tulip capital. A vibrant mix of modern development and traditional Central Asian culture.',
-      image: '/shym.jpg',
-      category: 'Cities',
-      slug: 'shymkent'
-    },
-    {
-      id: 5,
-      name: 'Aktau & Mangystau',
-      subtitle: 'Caspian Port & Martian Landscapes',
-      description: 'Coastal city on the Caspian Sea surrounded by otherworldly desert landscapes, underground mosques, and unique geological formations.',
-      image: '/aktau.jpg',
-      category: 'Cities',
-      slug: 'aktau-mangystau'
-    },
-    {
-      id: 6,
-      name: 'Oskemen',
-      subtitle: 'Mountain Gateway',
-      description: 'Eastern Kazakhstan\'s cultural center, gateway to the Altai Mountains and rich in mining heritage and natural beauty.',
-      image: '/city.png',
-      category: 'Cities',
-      slug: 'oskemen'
-    },
-    {
-      id: 7,
-      name: 'Taraz',
-      subtitle: 'Ancient City of Traders',
-      description: 'One of Kazakhstan\'s oldest cities, a key stop on the ancient Silk Road with rich archaeological heritage and trading history.',
-      image: '/tours.jpg',
-      category: 'Cities',
-      slug: 'taraz'
-    },
-    {
-      id: 8,
-      name: 'Karaganda',
-      subtitle: 'Industrial Heritage',
-      description: 'Major industrial center with a unique Soviet-era architecture and important role in Kazakhstan\'s mining and space program history.',
-      image: '/expo.jpg',
-      category: 'Cities',
-      slug: 'karaganda'
-    },
-    {
-      id: 9,
-      name: 'Pavlodar',
-      subtitle: 'Northern Industry',
-      description: 'Industrial city on the Irtysh River, known for its petrochemical industry and as a gateway to northern Kazakhstan\'s natural areas.',
-      image: '/desert.jpg',
-      category: 'Cities',
-      slug: 'pavlodar'
-    },
-    {
-      id: 10,
-      name: 'Atyrau',
-      subtitle: 'Oil Capital',
-      description: 'Kazakhstan\'s oil capital at the mouth of the Ural River, where Europe meets Asia, with modern development and Caspian Sea access.',
-      image: '/images/cities/atyrau.jpg',
-      category: 'Cities',
-      slug: 'atyrau'
-    }
-  ]
+  // Fetch cities destinations from database
+  const { data: destinationsData, isLoading, error } = useQuery({
+    queryKey: ['destinations', 'cities'],
+    queryFn: () => destinationsApi.getPublicDestinations({
+      category: 'cities',
+      limit: 20
+    }),
+  });
+
+  const cities = destinationsData?.data?.data?.destinations || [];
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading cities...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error || cities.length === 0) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-600 mb-4">No cities found.</p>
+            <p className="text-sm text-gray-500">Check back later or contact support.</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -268,8 +229,8 @@ const CitiesPage = () => {
             {/* Large landscape photo */}
             <div className="relative overflow-hidden rounded-2xl" style={{ width: '792px', height: '400px' }}>
               <Image
-                src={cities[0].image}
-                alt={cities[0].name}
+                src={cities[0]?.image || '/baiterek.jpg'}
+                alt={cities[0]?.name || 'City'}
                 width={792}
                 height={400}
                 className="w-full h-full object-cover"
@@ -277,12 +238,12 @@ const CitiesPage = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
               <div className="absolute top-4 left-4">
                 <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#F59E0B' }}>
-                  {cities[0].category}
+                  {cities[0]?.category || 'Cities'}
                 </span>
               </div>
               <div className="absolute bottom-6 left-6 right-6">
                 <h3 className="text-white text-3xl font-bold leading-tight">
-                  {cities[0].name}
+                  {cities[0]?.name || 'City'}
                 </h3>
               </div>
             </div>
@@ -297,7 +258,7 @@ const CitiesPage = () => {
                 color: '#202020',
                 marginBottom: '32px'
               }}>
-                {cities[0].name} — {cities[0].subtitle}
+                {cities[0]?.name || 'City'} {cities[0]?.subtitle && `— ${cities[0].subtitle}`}
               </h3>
               <p className="font-manrope flex-1" style={{
                 fontWeight: 400,
@@ -307,7 +268,7 @@ const CitiesPage = () => {
                 color: '#4F504F',
                 marginBottom: '32px'
               }}>
-                {cities[0].description}
+                {cities[0]?.description || 'Explore this amazing city.'}
               </p>
               <button 
                 className="text-white font-manrope rounded-full self-start flex items-center justify-center"
@@ -331,8 +292,8 @@ const CitiesPage = () => {
 
           {/* Cities Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cities.slice(1).map((city) => (
-              <Link key={city.id} href={`/cities/${city.slug}`}>
+            {cities.slice(1).map((city: Destination) => (
+              <Link key={city._id} href={`/cities/${city.slug}`}>
                 <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300" style={{ width: '384px', height: '400px' }}>
                   <Image
                     src={city.image}
@@ -348,14 +309,14 @@ const CitiesPage = () => {
                   {/* Cities badge */}
                   <div className="absolute top-4 left-4">
                     <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#F59E0B' }}>
-                      {city.category}
+                      {city.category || 'Cities'}
                     </span>
                   </div>
                   
                   {/* Title at bottom */}
                   <div className="absolute bottom-6 left-6 right-6">
                     <h3 className="text-white text-2xl font-bold leading-tight">
-                      {city.name} — {city.subtitle}
+                      {city.name} {city.subtitle && `— ${city.subtitle}`}
                     </h3>
                   </div>
                 </div>

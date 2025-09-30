@@ -1,69 +1,63 @@
+'use client';
+
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
+import { destinationsApi } from '@/lib/api'
+
+interface Destination {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  category: string;
+}
 
 const NaturePage = () => {
-  const destinations = [
-    {
-      id: 1,
-      name: 'Mangystau Region',
-      description: 'A surreal desert meets seas region in the west, filled with chalk mountains, underground mosques, and alien-like rock formations. Visit Bozzhyra, Torysh (Valley of Balls), and Sherkala Mountain for a journey into a land that feels untouched by time.',
-      image: '/mangystau.jpg',
-      category: 'Nature',
-      slug: 'mangystau-region',
-      featured: true
-    },
-    {
-      id: 2,
-      name: 'Charyn Canyon',
-      description: 'Kazakhstan\'s answer to the Grand Canyon, with dramatic red rock formations carved by millennia of erosion.',
-      image: '/charyn.jpg',
-      category: 'Nature',
-      slug: 'charyn-canyon'
-    },
-    {
-      id: 3,
-      name: 'Lake Kaindy & Kolsai Lakes',
-      description: 'Crystal-clear alpine lakes in the Tian Shan mountains, perfect for hiking and photography.',
-      image: '/bao_contras.jpg',
-      category: 'Nature',
-      slug: 'kolsai-lakes'
-    },
-    {
-      id: 4,
-      name: 'Big Almaty Lake',
-      description: 'Stunning turquoise lake nestled high in the mountains above Almaty city.',
-      image: '/almaty.jpg',
-      category: 'Nature',
-      slug: 'big-almaty-lake'
-    },
-    {
-      id: 5,
-      name: 'Altyn-Emel National Park',
-      description: 'Home to the famous Singing Dunes and diverse wildlife in a vast desert landscape.',
-      image: '/desert.jpg',
-      category: 'Nature',
-      slug: 'altyn-emel'
-    },
-    {
-      id: 6,
-      name: 'Borovoe (Burabay)',
-      description: 'Kazakhstan\'s "Switzerland" with pristine lakes, unique rock formations, and pine forests.',
-      image: '/kanatnaya_doroga.jpg',
-      category: 'Nature',
-      slug: 'borovoe'
-    },
-    {
-      id: 7,
-      name: 'Tulip Fields in South Kazakhstan (Taraz & Shymkent)',
-      description: 'Spectacular wildflower displays in spring, covering the steppes in vibrant colors.',
-      image: '/yurta.jpg',
-      category: 'Nature',
-      slug: 'tulip-fields'
-    }
-  ]
+  // Fetch nature destinations from database
+  const { data: destinationsData, isLoading, error } = useQuery({
+    queryKey: ['destinations', 'nature'],
+    queryFn: () => destinationsApi.getPublicDestinations({
+      category: 'nature',
+      limit: 20
+    }),
+  });
+
+  const destinations = destinationsData?.data?.data?.destinations || [];
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading nature destinations...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error || destinations.length === 0) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-600 mb-4">No nature destinations found.</p>
+            <p className="text-sm text-gray-500">Check back later or contact support.</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -134,51 +128,52 @@ const NaturePage = () => {
           </div>
 
           {/* Featured section with large photo and card */}
-          <div className="flex gap-6 mb-12">
-            {/* Large landscape photo */}
-            <div className="relative overflow-hidden rounded-2xl" style={{ width: '792px', height: '400px' }}>
-              <Image
-                src="/mangystau.jpg"
-                alt="Kazakhstan Nature Landscape"
-                width={792}
-                height={400}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-              <div className="absolute top-4 left-4">
-                <span className="bg-green-600 text-white text-sm px-4 py-2 rounded-full font-medium">
-                  Nature
-                </span>
+          {destinations.length > 0 && (
+            <div className="flex gap-6 mb-12">
+              {/* Large landscape photo */}
+              <div className="relative overflow-hidden rounded-2xl" style={{ width: '792px', height: '400px' }}>
+                <Image
+                  src={destinations[0]?.image || "/mangystau.jpg"}
+                  alt={destinations[0]?.name || "Kazakhstan Nature Landscape"}
+                  width={792}
+                  height={400}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-green-600 text-white text-sm px-4 py-2 rounded-full font-medium">
+                    Nature
+                  </span>
+                </div>
+                <div className="absolute bottom-6 left-6 right-6">
+                  <h3 className="text-white text-3xl font-bold leading-tight">
+                    {destinations[0]?.name || "Nature Destination"}
+                  </h3>
+                </div>
               </div>
-              <div className="absolute bottom-6 left-6 right-6">
-                <h3 className="text-white text-3xl font-bold leading-tight">
-                  Mangystau Region
-                </h3>
-              </div>
-            </div>
 
-            {/* Text box on the right */}
-            <div className="bg-white rounded-2xl flex flex-col" style={{ width: '384px', height: '400px', padding: '32px' }}>
-              <h3 className="font-montserrat" style={{
-                fontWeight: 600,
-                fontSize: '24px',
-                lineHeight: '130%',
-                letterSpacing: '-2%',
-                color: '#202020',
-                marginBottom: '32px'
-              }}>
-                Mangystau Region
-              </h3>
-              <p className="font-manrope flex-1" style={{
-                fontWeight: 400,
-                fontSize: '14px',
-                lineHeight: '24px',
-                letterSpacing: '-1%',
-                color: '#4F504F',
-                marginBottom: '48px'
-              }}>
-                A surreal desert-meets-sea region in the west, filled with chalk mountains, underground mosques, and alien-like rock formations. Visit Bozzhyra, Torysh (Valley of Balls), and Sherkala Mountain for a journey into a land that feels untouched by time.
-              </p>
+              {/* Text box on the right */}
+              <div className="bg-white rounded-2xl flex flex-col" style={{ width: '384px', height: '400px', padding: '32px' }}>
+                <h3 className="font-montserrat" style={{
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  lineHeight: '130%',
+                  letterSpacing: '-2%',
+                  color: '#202020',
+                  marginBottom: '32px'
+                }}>
+                  {destinations[0]?.name || "Nature Destination"}
+                </h3>
+                <p className="font-manrope flex-1" style={{
+                  fontWeight: 400,
+                  fontSize: '14px',
+                  lineHeight: '24px',
+                  letterSpacing: '-1%',
+                  color: '#4F504F',
+                  marginBottom: '48px'
+                }}>
+                  {destinations[0]?.description || "Explore the natural wonders of Kazakhstan."}
+                </p>
               <Link 
                 href="/plan-your-trip"
                 className="text-white font-manrope rounded-full self-start flex items-center justify-center hover:bg-[#007a9a] transition-colors"
@@ -198,10 +193,11 @@ const NaturePage = () => {
               </Link>
             </div>
           </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {destinations.slice(2).map((destination) => (
-              <Link key={destination.id} href={`/nature/${destination.slug}`}>
+            {destinations.slice(1).map((destination: Destination) => (
+              <Link key={destination._id} href={`/nature/${destination.slug}`}>
                 <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300" style={{ width: '384px', height: '400px' }}>
                   <Image
                     src={destination.image}

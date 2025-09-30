@@ -239,3 +239,61 @@ export const categoriesApi = {
 
   getCategoryStats: () => api.get('/categories/stats'),
 };
+
+// Destinations API
+export const destinationsApi = {
+  getDestinations: (params?: {
+    page?: number;
+    limit?: number;
+    category?: string;
+    subcategory?: string;
+    status?: string;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/destinations', { params }),
+
+  getPublicDestinations: (params?: {
+    page?: number;
+    limit?: number;
+    category?: string;
+    subcategory?: string;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/destinations/public', { params }),
+
+  getDestination: (id: string) => api.get(`/destinations/${id}`),
+
+  getPublicDestination: (id: string) => api.get(`/destinations/public/${id}`),
+
+  getPublicDestinationBySlug: (slug: string) => api.get(`/destinations/public/slug/${slug}`),
+
+  createDestination: (data: Record<string, unknown>) => api.post('/destinations', data),
+
+  updateDestination: (id: string, data: Record<string, unknown>) => api.put(`/destinations/${id}`, data),
+
+  deleteDestination: (id: string) => api.delete(`/destinations/${id}`),
+
+  getDestinationStats: () => api.get('/destinations/stats'),
+};
+
+// Category Page Info API
+export const categoryPageInfoApi = {
+  getCategoryPageInfos: (params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    search?: string;
+  }) => api.get('/category-page-info', { params }),
+
+  getCategoryPageInfoBySlug: (slug: string) => api.get(`/category-page-info/public/${slug}`),
+
+  getCategoryPageInfo: (id: string) => api.get(`/category-page-info/${id}`),
+
+  createCategoryPageInfo: (data: Record<string, unknown>) => api.post('/category-page-info', data),
+
+  updateCategoryPageInfo: (id: string, data: Record<string, unknown>) => api.put(`/category-page-info/${id}`, data),
+
+  deleteCategoryPageInfo: (id: string) => api.delete(`/category-page-info/${id}`),
+
+  getCategoryPageInfoStats: () => api.get('/category-page-info/stats'),
+};

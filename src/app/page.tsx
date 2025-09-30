@@ -26,7 +26,7 @@ export default function HomePage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative h-[610px] bg-cover bg-center overflow-hidden">
+      <section className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[610px] bg-cover bg-center overflow-hidden">
         <video
           autoPlay
           loop
@@ -48,18 +48,20 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black/30"></div>
         <div className="absolute inset-0">
           <div 
-            className="text-white z-10 absolute"
+            className="text-white z-10 absolute px-4 sm:px-6 lg:px-0"
             style={{
-              width: '504px',
-              height: '98px',
-              top: '340px',
-              left: '120px',
+              width: 'calc(100% - 32px)',
+              maxWidth: '504px',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
               fontFamily: 'Montserrat, sans-serif',
               fontWeight: 600,
-              fontSize: '40px',
+              fontSize: 'clamp(24px, 5vw, 40px)',
               lineHeight: '100%',
               letterSpacing: '-3%',
-              opacity: 1
+              opacity: 1,
+              textAlign: 'center'
             }}
           >
             <h1>Your Next Best Trip,</h1>

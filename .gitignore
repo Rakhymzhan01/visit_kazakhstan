@@ -40,3 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 backend/mongodb-macos-x86_64-7.0.0*
+
+# backend compiled files
+backend/dist/
+
+# logs
+*.log
+dev.log

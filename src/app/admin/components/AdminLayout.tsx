@@ -7,14 +7,14 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   LayoutDashboard,
   FileText,
-  Settings,
-  Upload,
-  Users,
   LogOut,
   Menu,
   X,
   Home,
   MapPin,
+  Tag,
+  Navigation,
+  BookOpen,
 } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Card } from '@/app/components/ui/card';
@@ -27,10 +27,10 @@ const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Homepage', href: '/admin/homepage', icon: Home },
   { name: 'Tours', href: '/admin/tours', icon: MapPin },
+  { name: 'Tour Categories', href: '/admin/categories', icon: Tag },
+  { name: 'Category Pages', href: '/admin/category-pages', icon: BookOpen },
+  { name: 'Destinations', href: '/admin/destinations', icon: Navigation },
   { name: 'Blog Posts', href: '/admin/blog', icon: FileText },
-  { name: 'Content', href: '/admin/content', icon: Settings },
-  { name: 'Media', href: '/admin/media', icon: Upload },
-  { name: 'Users', href: '/admin/users', icon: Users },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {

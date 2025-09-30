@@ -29,7 +29,7 @@ export default function CategoriesAdmin() {
   const [saving, setSaving] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [stats, setStats] = useState<{ total: number; active: number; inactive: number; featured: number } | null>(null);
+  const [stats, setStats] = useState<{ totalCategories: number; activeCategories: number; inactiveCategories: number; featuredCategories: number } | null>(null);
 
   // Form state for new/edit category
   const [formData, setFormData] = useState<{
@@ -182,25 +182,25 @@ export default function CategoriesAdmin() {
         <div className="grid grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
+              <div className="text-2xl font-bold text-gray-900">{stats.totalCategories}</div>
               <div className="text-gray-600">Total Categories</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-green-600">{stats.active}</div>
+              <div className="text-2xl font-bold text-green-600">{stats.activeCategories}</div>
               <div className="text-gray-600">Active</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-yellow-600">{stats.inactive}</div>
+              <div className="text-2xl font-bold text-yellow-600">{stats.inactiveCategories}</div>
               <div className="text-gray-600">Inactive</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-purple-600">{stats.featured}</div>
+              <div className="text-2xl font-bold text-purple-600">{stats.featuredCategories}</div>
               <div className="text-gray-600">Featured</div>
             </CardContent>
           </Card>

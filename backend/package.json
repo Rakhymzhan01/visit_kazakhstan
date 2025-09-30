@@ -8,6 +8,7 @@
     "dev": "nodemon src/index.ts",
     "create-admin": "ts-node src/scripts/createAdmin.ts",
     "seed-blogs": "ts-node src/scripts/seedBlogs.ts",
+    "migrate-destinations": "node scripts/migrateDestinations.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
