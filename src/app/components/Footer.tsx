@@ -28,152 +28,150 @@ const Footer = () => {
   return (
     <footer className="bg-white text-[#333333]">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-        <div className="grid gap-2" style={{ gridTemplateColumns: '140px 1fr 1fr 1fr 1fr 250px' }}>
-          
-          {/* Logo */}
-          <div className="flex-shrink-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative">
+        {/* Mobile-first layout */}
+        <div className="space-y-8 lg:space-y-0">
+          {/* Logo and Contact - Full width on mobile */}
+          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start space-y-6 sm:space-y-0">
             <Link href="/" className="flex items-center">
               <Image
                 src="/Logo 2.png"
                 alt="Visit Kazakhstan"
                 width={117}
                 height={48}
-                className="w-[117px] h-[48px] -ml-8"
+                className="w-[100px] sm:w-[117px] h-auto"
               />
             </Link>
-          </div>
-
-          {/* Menu Links */}
-          <div>
-            <h4 className="font-manrope mb-6" style={{
-              fontWeight: 400,
-              fontSize: '12px',
-              lineHeight: '150%',
-              letterSpacing: '-1%',
-              color: '#929292'
-            }}>MENU</h4>
-            <ul className="space-y-3">
-              {menuLinks.map((link) => (
-                <li key={link.title}>
-                  <Link
-                    href={link.href}
-                    className="font-manrope hover:text-[#009CBC] transition-colors duration-200"
-                    style={{
-                      fontWeight: 500,
-                      fontSize: '14px',
-                      lineHeight: '100%',
-                      letterSpacing: '0%',
-                      textTransform: 'uppercase',
-                      color: '#333333'
-                    }}
-                  >
-                    {link.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company Links */}
-          <div>
-            <h4 className="font-manrope mb-6" style={{
-              fontWeight: 400,
-              fontSize: '12px',
-              lineHeight: '150%',
-              letterSpacing: '-1%',
-              color: '#929292'
-            }}>COMPANY</h4>
-            <ul className="space-y-3">
-              {companyLinks.map((link) => (
-                <li key={link.title}>
-                  <Link
-                    href={link.href}
-                    className="font-manrope hover:text-[#009CBC] transition-colors duration-200"
-                    style={{
-                      fontWeight: 500,
-                      fontSize: '14px',
-                      lineHeight: '100%',
-                      letterSpacing: '0%',
-                      textTransform: 'uppercase',
-                      color: '#333333'
-                    }}
-                  >
-                    {link.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Social Links */}
-          <div>
-            <h4 className="font-manrope mb-6" style={{
-              fontWeight: 400,
-              fontSize: '12px',
-              lineHeight: '150%',
-              letterSpacing: '-1%',
-              color: '#929292'
-            }}>SOCIAL</h4>
-            <ul className="space-y-3">
-              {socialLinks.map((social) => (
-                <li key={social.label}>
-                  <Link
-                    href={social.href}
-                    className="font-manrope hover:text-[#009CBC] transition-colors duration-200"
-                    style={{
-                      fontWeight: 500,
-                      fontSize: '14px',
-                      lineHeight: '100%',
-                      letterSpacing: '0%',
-                      textTransform: 'uppercase',
-                      color: '#333333'
-                    }}
-                  >
-                    {social.label.toUpperCase()}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Address Column */}
-          <div>
-            <h4 className="font-manrope mb-6" style={{
-              fontWeight: 400,
-              fontSize: '12px',
-              lineHeight: '150%',
-              letterSpacing: '-1%',
-              color: '#929292'
-            }}>ADRESS</h4>
-            <div className="font-manrope" style={{
-              fontWeight: 500,
-              fontSize: '14px',
-              lineHeight: '100%',
-              letterSpacing: '0%',
-              textTransform: 'uppercase',
-              color: '#333333'
-            }}>
-              <p>4517 Washington Ave.</p>
-              <p>Manchester, Kentucky</p>
-              <p>39495</p>
+            
+            <div className="text-center sm:text-right space-y-2">
+              <p className="text-[#333333] font-montserrat" style={{
+                fontWeight: 600,
+                fontSize: 'clamp(18px, 4vw, 24px)',
+                lineHeight: '130%',
+                letterSpacing: '-2%'
+              }}>+7 7122 000-000</p>
+              <p className="text-[#333333] font-manrope" style={{
+                fontWeight: 400,
+                fontSize: 'clamp(16px, 3vw, 20px)',
+                lineHeight: '100%',
+                letterSpacing: '-2%'
+              }}>info@visitkazakhstan.com</p>
             </div>
           </div>
 
-          {/* Contact Info Column */}
-          <div className="text-left space-y-2">
-            <p className="text-[#333333] font-montserrat" style={{
-              fontWeight: 600,
-              fontSize: '24px',
-              lineHeight: '130%',
-              letterSpacing: '-2%'
-            }}>+7 7122 000-000</p>
-            <p className="text-[#333333] font-manrope" style={{
-              fontWeight: 400,
-              fontSize: '20px',
-              lineHeight: '100%',
-              letterSpacing: '-2%'
-            }}>info@visitkazakhstan.com</p>
+          {/* Navigation Links Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
+            {/* Menu Links */}
+            <div>
+              <h4 className="font-manrope mb-4 sm:mb-6" style={{
+                fontWeight: 400,
+                fontSize: '12px',
+                lineHeight: '150%',
+                letterSpacing: '-1%',
+                color: '#929292'
+              }}>MENU</h4>
+              <ul className="space-y-2 sm:space-y-3">
+                {menuLinks.map((link) => (
+                  <li key={link.title}>
+                    <Link
+                      href={link.href}
+                      className="font-manrope hover:text-[#009CBC] transition-colors duration-200 text-xs sm:text-sm"
+                      style={{
+                        fontWeight: 500,
+                        lineHeight: '100%',
+                        letterSpacing: '0%',
+                        textTransform: 'uppercase',
+                        color: '#333333'
+                      }}
+                    >
+                      {link.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Company Links */}
+            <div>
+              <h4 className="font-manrope mb-4 sm:mb-6" style={{
+                fontWeight: 400,
+                fontSize: '12px',
+                lineHeight: '150%',
+                letterSpacing: '-1%',
+                color: '#929292'
+              }}>COMPANY</h4>
+              <ul className="space-y-2 sm:space-y-3">
+                {companyLinks.map((link) => (
+                  <li key={link.title}>
+                    <Link
+                      href={link.href}
+                      className="font-manrope hover:text-[#009CBC] transition-colors duration-200 text-xs sm:text-sm"
+                      style={{
+                        fontWeight: 500,
+                        lineHeight: '100%',
+                        letterSpacing: '0%',
+                        textTransform: 'uppercase',
+                        color: '#333333'
+                      }}
+                    >
+                      {link.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Social Links */}
+            <div>
+              <h4 className="font-manrope mb-4 sm:mb-6" style={{
+                fontWeight: 400,
+                fontSize: '12px',
+                lineHeight: '150%',
+                letterSpacing: '-1%',
+                color: '#929292'
+              }}>SOCIAL</h4>
+              <ul className="space-y-2 sm:space-y-3">
+                {socialLinks.map((social) => (
+                  <li key={social.label}>
+                    <Link
+                      href={social.href}
+                      className="font-manrope hover:text-[#009CBC] transition-colors duration-200 text-xs sm:text-sm"
+                      style={{
+                        fontWeight: 500,
+                        lineHeight: '100%',
+                        letterSpacing: '0%',
+                        textTransform: 'uppercase',
+                        color: '#333333'
+                      }}
+                    >
+                      {social.label.toUpperCase()}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Address Column */}
+            <div>
+              <h4 className="font-manrope mb-4 sm:mb-6" style={{
+                fontWeight: 400,
+                fontSize: '12px',
+                lineHeight: '150%',
+                letterSpacing: '-1%',
+                color: '#929292'
+              }}>ADDRESS</h4>
+              <div className="font-manrope text-xs sm:text-sm" style={{
+                fontWeight: 500,
+                lineHeight: '120%',
+                letterSpacing: '0%',
+                textTransform: 'uppercase',
+                color: '#333333'
+              }}>
+                <p>4517 Washington Ave.</p>
+                <p>Manchester, Kentucky</p>
+                <p>39495</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

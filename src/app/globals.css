@@ -35,3 +35,33 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Safari and Chrome */
 }
+
+/* Mobile-first responsive utilities */
+@media (max-width: 768px) {
+  /* Prevent horizontal scroll on mobile */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Ensure touch targets are at least 44px */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Responsive font scaling */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* Smooth transitions for responsive elements */
+* {
+  transition: all 0.2s ease-in-out;
+}

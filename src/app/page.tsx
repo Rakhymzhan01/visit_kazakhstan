@@ -71,13 +71,13 @@ export default function HomePage() {
       </section>
 
       {/* Why Visit Kazakhstan */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-8">
+          <h2 className="mb-6 sm:mb-8 text-center sm:text-left">
             <span className="text-[#202020]" style={{
               fontFamily: 'Montserrat, sans-serif',
               fontWeight: 700,
-              fontSize: '48px',
+              fontSize: 'clamp(24px, 6vw, 48px)',
               lineHeight: '100%',
               letterSpacing: '-4%'
             }}>Why</span> <span 
@@ -89,7 +89,7 @@ export default function HomePage() {
                 backgroundClip: 'text',
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 400,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}
@@ -97,7 +97,7 @@ export default function HomePage() {
           </h2>
 
           <div className="overflow-x-auto scrollbar-hide">
-            <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+            <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
               {[
                 {
                   title: "Silk Road History",
@@ -128,8 +128,8 @@ export default function HomePage() {
                 const isExpanded = expandedCards.includes(index)
                 return (
                   <Card key={index} className="relative overflow-hidden group cursor-pointer flex-shrink-0 p-0 border-0" style={{
-                    width: '384px',
-                    height: '500px',
+                    width: 'clamp(280px, 80vw, 384px)',
+                    height: 'clamp(400px, 70vh, 500px)',
                     justifyContent: 'space-between',
                     transform: 'rotate(0deg)',
                     opacity: 1,
@@ -231,14 +231,14 @@ export default function HomePage() {
       </section>
 
       {/* Top Tour Themes */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-start mb-8">
-            <h2 className="mb-8">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-6 sm:mb-8 space-y-6 lg:space-y-0">
+            <h2 className="text-center sm:text-left">
               <span className="text-[#202020]" style={{
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>Top Tour</span> <span 
@@ -250,40 +250,29 @@ export default function HomePage() {
                   backgroundClip: 'text',
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 400,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}
               >Themes</span>
             </h2>
-            <div className="text-left">
-              <div style={{
-                width: '588px',
-                height: '72px'
+            <div className="text-center lg:text-left lg:max-w-md">
+              <p className="text-sm sm:text-base mb-4" style={{
+                fontFamily: 'Manrope, sans-serif',
+                fontWeight: 400,
+                lineHeight: '150%',
+                letterSpacing: '-1%',
+                color: '#333333'
               }}>
-                <p style={{
-                  transform: 'rotate(0deg)',
-                  opacity: 1,
-                  fontFamily: 'Manrope, sans-serif',
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '150%',
-                  letterSpacing: '-1%',
-                  color: '#333333'
-                }}>
-                  Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
-                  landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
-                </p>
-              </div>
+                Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
+                landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
+              </p>
               
               <Link href="/tours">
                 <Button
-                  className="border-0 hover:bg-white hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="border-0 hover:bg-white hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md w-full sm:w-auto"
                   style={{
-                    width: '142px',
                     height: '50px',
-                    transform: 'rotate(0deg)',
-                    opacity: 1,
                     paddingTop: '13px',
                     paddingRight: '26px',
                     paddingBottom: '13px',
@@ -292,7 +281,6 @@ export default function HomePage() {
                     borderRadius: '99px',
                     background: '#FFFFFF',
                     color: '#009CBC',
-                    marginTop: '16px',
                     boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)'
                   }}
                 >
@@ -303,7 +291,7 @@ export default function HomePage() {
           </div>
 
           <div className="overflow-x-auto scrollbar-hide">
-            <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+            <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
               {[
                 {
                   title: "Charyn Canyon & Kolsai Lakes Tour",
@@ -346,8 +334,8 @@ export default function HomePage() {
                 return (
                   <Link key={index} href={`/tours/${slug}`}>
                     <Card className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200" style={{
-                      width: '384px',
-                      height: '506px'
+                      width: 'clamp(280px, 80vw, 384px)',
+                      height: 'clamp(400px, auto, 506px)'
                     }}>
                   <div className="relative">
                     <Image
@@ -404,13 +392,13 @@ export default function HomePage() {
       </section>
 
       {/* Discover Cities */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-8">
+          <h2 className="mb-6 sm:mb-8 text-center sm:text-left">
             <span className="text-[#202020]" style={{
               fontFamily: 'Montserrat, sans-serif',
               fontWeight: 700,
-              fontSize: '48px',
+              fontSize: 'clamp(24px, 6vw, 48px)',
               lineHeight: '100%',
               letterSpacing: '-4%'
             }}>Discover</span> <span 
@@ -422,19 +410,18 @@ export default function HomePage() {
                 backgroundClip: 'text',
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 400,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}
             >Cities</span>
           </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            <div>
-              <p className="text-gray-600 mb-6" style={{
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+            <div className="text-center lg:text-left">
+              <p className="text-gray-600 mb-6 text-sm sm:text-base" style={{
                 fontFamily: 'Manrope, sans-serif',
                 fontWeight: 400,
-                fontSize: '16px',
                 lineHeight: '150%',
                 letterSpacing: '-1%'
               }}>
@@ -443,30 +430,30 @@ export default function HomePage() {
                 rhythm, and reason to explore.
               </p>
               <Button 
-                className="bg-[#009CBC] hover:bg-[#007a9a] text-white border-0 hover:scale-105 transition-all duration-200"
+                className="bg-[#009CBC] hover:bg-[#007a9a] text-white border-0 hover:scale-105 transition-all duration-200 w-full sm:w-auto"
                 style={{
-                  width: '108px',
                   height: '50px',
-                  borderRadius: '99px'
+                  borderRadius: '99px',
+                  padding: '0 24px'
                 }}
               >
                 Discover
               </Button>
             </div>
 
-            <div className="relative">
+            <div className="relative order-first lg:order-last">
               <Image
                 src="/kz_map.png"
                 alt="Kazakhstan Map"
                 width={500}
                 height={300}
-                className="w-full h-auto"
+                className="w-full h-auto max-w-md mx-auto lg:max-w-none"
               />
             </div>
           </div>
 
-          <div className="mt-8">
-            <Card className="relative overflow-hidden w-72">
+          <div className="mt-8 flex justify-center lg:justify-start">
+            <Card className="relative overflow-hidden w-full max-w-xs sm:max-w-sm">
               <Image
                 src="/turkestan.jpg?height=160&width=280"
                 alt="Turkestan"
@@ -485,16 +472,10 @@ export default function HomePage() {
       </section>
 
       {/* Instagram Section */}
-      <section className="py-12 bg-gray-50 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex items-start" style={{ gap: '50px' }}>
-            <div style={{ 
-              width: '486px', 
-              height: '282px',
-              paddingTop: '50px',
-              opacity: 1,
-              transform: 'rotate(0deg)'
-            }}>
+      <section className="py-8 sm:py-12 bg-gray-50 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-12">
+            <div className="text-center lg:text-left lg:max-w-md">
               <h2 className="mb-4">
                 <span 
                   className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
@@ -505,63 +486,63 @@ export default function HomePage() {
                     backgroundClip: 'text',
                     fontFamily: 'Montserrat, sans-serif',
                     fontWeight: 400,
-                    fontSize: '48px',
+                    fontSize: 'clamp(24px, 6vw, 48px)',
                     lineHeight: '100%',
                     letterSpacing: '-4%'
                   }}
                 >@into.kazakhstan</span>
               </h2>
-              <p className="text-gray-600 mb-6 text-sm" style={{ width: '486px' }}>
+              <p className="text-gray-600 mb-6 text-sm sm:text-base">
                 Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
                 landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
               </p>
               <Button 
-                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200"
+                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200 w-full sm:w-auto"
                 style={{
-                  width: '145px',
                   height: '50px',
-                  borderRadius: '99px'
+                  borderRadius: '99px',
+                  padding: '0 24px'
                 }}
               >
                 See Instagram
               </Button>
             </div>
-          </div>
 
-          {/* Instagram Photos Overlay */}
-          <div className="absolute z-20 overflow-x-auto scrollbar-hide" style={{ top: '0px', left: '570px', right: '0px', height: '282px' }}>
-            <div 
-              className="flex gap-6" 
-              style={{ 
-                width: 'max-content'
-              }}
-            >
-              {[
-                { image: "/nomad_girls.png", alt: "Nomad girls" },
-                { image: "/desert.jpg", alt: "Desert landscape" },
-                { image: "/yurta.jpg", alt: "Traditional yurt" }
-              ].map((post, index) => (
-                <div key={index} className="relative flex-shrink-0" style={{ width: '282px', height: '282px' }}>
-                  <Image
-                    src={post.image}
-                    alt={post.alt}
-                    width={282}
-                    height={282}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                  <Instagram className="absolute top-3 left-3 w-8 h-8 text-white" />
+            {/* Instagram Photos */}
+            <div className="flex-1">
+              <div className="overflow-x-auto scrollbar-hide">
+                <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
+                  {[
+                    { image: "/nomad_girls.png", alt: "Nomad girls" },
+                    { image: "/desert.jpg", alt: "Desert landscape" },
+                    { image: "/yurta.jpg", alt: "Traditional yurt" }
+                  ].map((post, index) => (
+                    <div key={index} className="relative flex-shrink-0" style={{ 
+                      width: 'clamp(200px, 50vw, 282px)', 
+                      height: 'clamp(200px, 50vw, 282px)' 
+                    }}>
+                      <Image
+                        src={post.image}
+                        alt={post.alt}
+                        width={282}
+                        height={282}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      <Instagram className="absolute top-3 left-3 w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Blog Section */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-6 mb-8">
-            <h2>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <h2 className="text-center sm:text-left">
               <span 
                 className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
                 style={{
@@ -571,19 +552,19 @@ export default function HomePage() {
                   backgroundClip: 'text',
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 400,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}
               >Blog</span>
             </h2>
-            <Link href="/blog">
+            <Link href="/blog" className="flex justify-center sm:justify-start">
               <Button 
-                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200"
+                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200 w-full sm:w-auto"
                 style={{
-                  width: '144px',
                   height: '50px',
-                  borderRadius: '99px'
+                  borderRadius: '99px',
+                  padding: '0 24px'
                 }}
               >
                 Show all blogs
@@ -592,7 +573,7 @@ export default function HomePage() {
           </div>
 
           <div className="overflow-x-auto scrollbar-hide">
-            <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+            <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
               {[
                 {
                   image: "/famile.jpg",
@@ -619,7 +600,10 @@ export default function HomePage() {
                   category: "History"
                 }
               ].map((post, index) => (
-                <Card key={index} className="overflow-hidden flex-shrink-0 p-2 flex flex-col border-0" style={{ width: '384px', height: '506px' }}>
+                <Card key={index} className="overflow-hidden flex-shrink-0 p-2 flex flex-col border-0" style={{ 
+                  width: 'clamp(280px, 80vw, 384px)', 
+                  height: 'clamp(400px, auto, 506px)' 
+                }}>
                   <div className="relative">
                     <Image
                       src={post.image}
@@ -667,14 +651,14 @@ export default function HomePage() {
       </section>
 
       {/* Explore Events */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-start mb-8">
-            <h2>
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-6 sm:mb-8 space-y-6 lg:space-y-0">
+            <h2 className="text-center sm:text-left">
               <span className="text-[#202020]" style={{
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>Explore</span> <span 
@@ -686,23 +670,23 @@ export default function HomePage() {
                   backgroundClip: 'text',
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 400,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}
               >Events</span>
             </h2>
-            <div className="max-w-md text-left">
-              <p className="text-gray-600 text-sm mb-4">
+            <div className="text-center lg:text-left lg:max-w-md">
+              <p className="text-gray-600 text-sm sm:text-base mb-4">
                 Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
                 landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
               </p>
               <Button 
-                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200"
+                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200 w-full sm:w-auto"
                 style={{
-                  width: '152px',
                   height: '50px',
-                  borderRadius: '99px'
+                  borderRadius: '99px',
+                  padding: '0 24px'
                 }}
               >
                 Show all Events
@@ -711,14 +695,17 @@ export default function HomePage() {
           </div>
 
           <div className="overflow-x-auto scrollbar-hide">
-            <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+            <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
               {[
                 { name: "Kolsay & Kayindy", image: "/bao_contras.jpg?height=240&width=280" },
                 { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
                 { name: "Shymbulak", image: "/kanatnaya_doroga.jpg?height=240&width=280" },
                 { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
               ].map((event, index) => (
-                <Card key={index} className="relative overflow-hidden flex-shrink-0 border-0" style={{ width: '384px', height: '400px' }}>
+                <Card key={index} className="relative overflow-hidden flex-shrink-0 border-0" style={{ 
+                  width: 'clamp(280px, 80vw, 384px)', 
+                  height: 'clamp(300px, 60vh, 400px)' 
+                }}>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
                   <Image
                     src={event.image || "/placeholder.svg"}
@@ -742,46 +729,49 @@ export default function HomePage() {
       </section>
 
       {/* For Investors */}
-      <section className="py-16 relative flex justify-center bg-gray-50">
-        <div className="relative rounded-lg overflow-hidden" style={{ width: '1360px', height: '240px' }}>
-          <Image
-            src="/expo.jpg?height=240&width=1360"
-            alt="City aerial view"
-            width={1360}
-            height={240}
-            className="object-cover rounded-lg"
-            style={{ width: '1360px', height: '240px' }}
-          />
-          <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
-          <div className="absolute inset-0 flex justify-between items-center px-8 z-10">
-            <h2 className="text-3xl font-bold text-white">
-              For <span className="text-[#009CBC]">Investors</span>
-            </h2>
-            <Button className="bg-white text-gray-900 hover:bg-gray-100 rounded-full">Show all tours</Button>
+      <section className="py-8 sm:py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative rounded-lg overflow-hidden" style={{ height: 'clamp(180px, 30vh, 240px)' }}>
+            <Image
+              src="/expo.jpg?height=240&width=1360"
+              alt="City aerial view"
+              width={1360}
+              height={240}
+              className="object-cover rounded-lg w-full h-full"
+            />
+            <div className="absolute inset-0 bg-black/20 rounded-lg"></div>
+            <div className="absolute inset-0 flex flex-col sm:flex-row justify-center sm:justify-between items-center px-4 sm:px-8 z-10 gap-4 sm:gap-0">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white text-center sm:text-left">
+                For <span className="text-[#009CBC]">Investors</span>
+              </h2>
+              <Button className="bg-white text-gray-900 hover:bg-gray-100 rounded-full w-full sm:w-auto px-6">
+                Show all tours
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row gap-12 items-start">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
             {/* Left side - About content */}
-            <div className="flex-1">
-              <div className="flex items-center mb-6">
+            <div className="flex-1 text-center lg:text-left">
+              <div className="flex justify-center lg:justify-start items-center mb-6">
                 <Image
                   src="/Logo 2.png"
                   alt="Visit Kazakhstan"
                   width={120}
                   height={40}
-                  className="h-10 w-auto"
+                  className="h-8 sm:h-10 w-auto"
                 />
               </div>
               <h2 className="mb-6">
                 <span className="text-[#202020]" style={{
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 700,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}>About</span> <span 
@@ -793,16 +783,15 @@ export default function HomePage() {
                     backgroundClip: 'text',
                     fontFamily: 'Montserrat, sans-serif',
                     fontWeight: 400,
-                    fontSize: '48px',
+                    fontSize: 'clamp(24px, 6vw, 48px)',
                     lineHeight: '100%',
                     letterSpacing: '-4%'
                   }}
                 >us</span>
               </h2>
-              <p className="text-gray-600 mb-6" style={{
+              <p className="text-gray-600 mb-6 text-sm sm:text-base" style={{
                 fontFamily: 'Manrope, sans-serif',
                 fontWeight: 400,
-                fontSize: '16px',
                 lineHeight: '150%',
                 letterSpacing: '-1%'
               }}>
@@ -810,13 +799,13 @@ export default function HomePage() {
                 landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
               </p>
               <Button 
-                className="text-[#009CBC] hover:text-[#007a9a] border-0 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md"
+                className="text-[#009CBC] hover:text-[#007a9a] border-0 hover:scale-105 transition-all duration-200 shadow-sm hover:shadow-md w-full sm:w-auto"
                 style={{
-                  width: '121px',
                   height: '50px',
                   borderRadius: '99px',
                   background: '#FFFFFF',
-                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)'
+                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
+                  padding: '0 24px'
                 }}
               >
                 Read more
@@ -824,91 +813,60 @@ export default function HomePage() {
             </div>
 
             {/* Right side - Statistics boxes */}
-            <div style={{ 
-              width: '588px', 
-              height: '476px',
-              position: 'relative'
-            }}>
-              {/* Staggered layout */}
-              <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
-                position: 'absolute',
-                top: '0px',
-                left: '0px',
-                width: '282px', 
-                height: '196px' 
-              }}>
-                <div className="text-[#009CBC] mb-3 font-montserrat" style={{
-                  fontWeight: 600,
-                  fontSize: '50px',
-                  lineHeight: '100%',
-                  letterSpacing: '-4%'
-                }}>2010</div>
-                <p className="text-gray-600 font-manrope" style={{
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '150%',
-                  letterSpacing: '-1%'
-                }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
-                position: 'absolute',
-                top: '60px',
-                left: '306px',
-                width: '282px', 
-                height: '196px' 
-              }}>
-                <div className="text-[#009CBC] mb-3 font-montserrat" style={{
-                  fontWeight: 600,
-                  fontSize: '50px',
-                  lineHeight: '100%',
-                  letterSpacing: '-4%'
-                }}>50+</div>
-                <p className="text-gray-600 font-manrope" style={{
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '150%',
-                  letterSpacing: '-1%'
-                }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
-                position: 'absolute',
-                top: '220px',
-                left: '0px',
-                width: '282px', 
-                height: '196px' 
-              }}>
-                <div className="text-[#009CBC] mb-3 font-montserrat" style={{
-                  fontWeight: 600,
-                  fontSize: '50px',
-                  lineHeight: '100%',
-                  letterSpacing: '-4%'
-                }}>1000+</div>
-                <p className="text-gray-600 font-manrope" style={{
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '150%',
-                  letterSpacing: '-1%'
-                }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
-                position: 'absolute',
-                top: '280px',
-                left: '306px',
-                width: '282px', 
-                height: '196px' 
-              }}>
-                <div className="text-[#009CBC] mb-3 font-montserrat" style={{
-                  fontWeight: 600,
-                  fontSize: '50px',
-                  lineHeight: '100%',
-                  letterSpacing: '-4%'
-                }}>20</div>
-                <p className="text-gray-600 font-manrope" style={{
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '150%',
-                  letterSpacing: '-1%'
-                }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <div className="w-full lg:w-auto lg:max-w-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+                  <div className="text-[#009CBC] mb-3 font-montserrat" style={{
+                    fontWeight: 600,
+                    fontSize: 'clamp(32px, 8vw, 50px)',
+                    lineHeight: '100%',
+                    letterSpacing: '-4%'
+                  }}>2010</div>
+                  <p className="text-gray-600 font-manrope text-sm sm:text-base" style={{
+                    fontWeight: 400,
+                    lineHeight: '150%',
+                    letterSpacing: '-1%'
+                  }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 sm:mt-8">
+                  <div className="text-[#009CBC] mb-3 font-montserrat" style={{
+                    fontWeight: 600,
+                    fontSize: 'clamp(32px, 8vw, 50px)',
+                    lineHeight: '100%',
+                    letterSpacing: '-4%'
+                  }}>50+</div>
+                  <p className="text-gray-600 font-manrope text-sm sm:text-base" style={{
+                    fontWeight: 400,
+                    lineHeight: '150%',
+                    letterSpacing: '-1%'
+                  }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 sm:mt-16">
+                  <div className="text-[#009CBC] mb-3 font-montserrat" style={{
+                    fontWeight: 600,
+                    fontSize: 'clamp(32px, 8vw, 50px)',
+                    lineHeight: '100%',
+                    letterSpacing: '-4%'
+                  }}>1000+</div>
+                  <p className="text-gray-600 font-manrope text-sm sm:text-base" style={{
+                    fontWeight: 400,
+                    lineHeight: '150%',
+                    letterSpacing: '-1%'
+                  }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 sm:mt-24">
+                  <div className="text-[#009CBC] mb-3 font-montserrat" style={{
+                    fontWeight: 600,
+                    fontSize: 'clamp(32px, 8vw, 50px)',
+                    lineHeight: '100%',
+                    letterSpacing: '-4%'
+                  }}>20</div>
+                  <p className="text-gray-600 font-manrope text-sm sm:text-base" style={{
+                    fontWeight: 400,
+                    lineHeight: '150%',
+                    letterSpacing: '-1%'
+                  }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
               </div>
             </div>
           </div>
