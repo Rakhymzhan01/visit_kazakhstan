@@ -234,10 +234,10 @@ const Header = () => {
               </div>
             </nav>
 
-            {/* Search and Language Container - Always visible */}
+            {/* Search and Language Container - Show only on desktop */}
             <div 
+              className="hidden min-[480px]:flex"
               style={{
-                display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
                 padding: '2px',
@@ -252,7 +252,7 @@ const Header = () => {
                 flexGrow: 0
               }}
             >
-              {/* Search - Always visible */}
+              {/* Search */}
               <div 
                 className="flex items-center bg-white"
                 style={{
@@ -282,7 +282,7 @@ const Header = () => {
                 />
               </div>
 
-              {/* Language Toggle - Always visible */}
+              {/* Language Toggle */}
               <button className="text-white text-sm font-medium flex items-center gap-1">
                 EN
                 <DropdownArrowIcon 
@@ -334,6 +334,40 @@ const Header = () => {
         {isMenuOpen && (
           <div className="max-[479px]:block hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t">
             <div className="px-4 py-4">
+              {/* Mobile Search */}
+              <div className="mb-4">
+                <div className="flex items-center bg-gray-50 rounded-full px-4 py-3">
+                  <SearchIcon 
+                    size={18} 
+                    color="#6B7280" 
+                    strokeWidth={2}
+                    className="mr-3"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="bg-transparent text-sm outline-none flex-1"
+                  />
+                </div>
+              </div>
+
+              {/* Language Selection */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3">
+                  <span className="text-sm font-medium text-gray-700">Language</span>
+                  <button className="flex items-center gap-2 text-[#009CBC] font-medium">
+                    EN
+                    <DropdownArrowIcon 
+                      size={16} 
+                      color="#009CBC"
+                      strokeWidth={2}
+                    />
+                  </button>
+                </div>
+              </div>
+
               {/* Mobile Navigation */}
               <nav className="space-y-3">
                 {navigation.map((item) => (
