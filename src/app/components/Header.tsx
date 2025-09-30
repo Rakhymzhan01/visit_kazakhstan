@@ -79,8 +79,8 @@ const Header = () => {
               />
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-8 flex-1 justify-center">
+            {/* Desktop Navigation - Hide on actual mobile phones (< 480px), show for larger screens */}
+            <nav className="hidden min-[480px]:flex items-center space-x-1 sm:space-x-2 md:space-x-4 xl:space-x-8 flex-1 justify-center">
               <div 
                 style={{
                   display: 'flex',
@@ -88,7 +88,7 @@ const Header = () => {
                   alignItems: 'center',
                   justifyContent: 'space-evenly',
                   padding: '2px',
-                  width: '740px',
+                  width: 'clamp(280px, 55vw, 740px)',
                   height: '50px',
                   background: '#FFFFFF',
                   borderRadius: '99px',
@@ -107,9 +107,9 @@ const Header = () => {
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    padding: '6px 16px',
+                    padding: 'clamp(4px, 1vw, 6px) clamp(4px, 1.5vw, 8px)',
                     gap: '2px',
-                    width: `${item.width}px`,
+                    width: `clamp(${Math.max(item.width - 30, 60)}px, auto, ${item.width}px)`,
                     height: '46px',
                     borderRadius: '99px',
                     flex: 'none',
@@ -141,7 +141,7 @@ const Header = () => {
                           fontFamily: 'var(--font-manrope), Manrope, sans-serif',
                           fontStyle: 'normal',
                           fontWeight: 500,
-                          fontSize: '14px',
+                          fontSize: 'clamp(10px, 2.5vw, 14px)',
                           lineHeight: '19px',
                           textTransform: 'uppercase',
                           color: '#333333',
@@ -176,7 +176,7 @@ const Header = () => {
                           fontFamily: 'var(--font-manrope), Manrope, sans-serif',
                           fontStyle: 'normal',
                           fontWeight: 500,
-                          fontSize: '14px',
+                          fontSize: 'clamp(10px, 2.5vw, 14px)',
                           lineHeight: '19px',
                           textTransform: 'uppercase',
                           color: '#333333',
@@ -234,7 +234,7 @@ const Header = () => {
               </div>
             </nav>
 
-            {/* Search and Language Container */}
+            {/* Search and Language Container - Always visible */}
             <div 
               style={{
                 display: 'flex',
@@ -252,9 +252,9 @@ const Header = () => {
                 flexGrow: 0
               }}
             >
-              {/* Search */}
+              {/* Search - Always visible */}
               <div 
-                className="hidden md:flex items-center bg-white"
+                className="flex items-center bg-white"
                 style={{
                   width: '86px',
                   height: '46px',
@@ -282,7 +282,7 @@ const Header = () => {
                 />
               </div>
 
-              {/* Language Toggle */}
+              {/* Language Toggle - Always visible */}
               <button className="text-white text-sm font-medium flex items-center gap-1">
                 EN
                 <DropdownArrowIcon 
@@ -320,40 +320,22 @@ const Header = () => {
                 Plan your trip
               </button>
 
-              {/* Mobile Menu Button */}
+              {/* Mobile Menu Button - Only show on screens smaller than 480px (actual mobile phones) */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden p-2 text-gray-700"
+                className="max-[479px]:block hidden p-2 text-gray-700"
               >
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </div>
           </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Only show on screens smaller than 480px (actual mobile phones) */}
         {isMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t">
-            <div className="px-4 py-2">
-              {/* Mobile Search */}
-              <div className="flex items-center bg-gray-50 rounded-full px-3 py-1.5 mb-4">
-                <SearchIcon 
-                  size={16} 
-                  color="#6B7280" 
-                  strokeWidth={2} 
-                  className="mr-2"
-                  style={{ minWidth: '16px', minHeight: '16px' }}
-                />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-transparent text-sm outline-none flex-1"
-                />
-              </div>
-
+          <div className="max-[479px]:block hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t">
+            <div className="px-4 py-4">
               {/* Mobile Navigation */}
-              <nav className="space-y-2">
+              <nav className="space-y-3">
                 {navigation.map((item) => (
                   <div key={item.name}>
                     {item.name === 'PLAN YOUR TRIP' ? (
@@ -362,26 +344,26 @@ const Header = () => {
                           handlePlanTripClick(e)
                           setIsMenuOpen(false)
                         }}
-                        className="block py-2 text-gray-700 hover:text-blue-600 font-medium"
+                        className="block w-full text-left py-3 px-4 text-gray-700 hover:text-blue-600 hover:bg-gray-50 font-medium rounded-lg transition-colors"
                       >
                         {item.name}
                       </button>
                     ) : (
                       <Link
                         href={item.href}
-                        className="block py-2 text-gray-700 hover:text-blue-600 font-medium"
+                        className="block w-full py-3 px-4 text-gray-700 hover:text-blue-600 hover:bg-gray-50 font-medium rounded-lg transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {item.name}
                       </Link>
                     )}
                     {item.hasDropdown && item.dropdownItems && (
-                      <div className="pl-4 space-y-1">
+                      <div className="pl-4 space-y-1 mt-2">
                         {item.dropdownItems.map((dropdownItem) => (
                           <Link
                             key={dropdownItem.name}
                             href={dropdownItem.href}
-                            className="block py-1 text-sm text-gray-600 hover:text-blue-600"
+                            className="block py-2 px-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
                             onClick={() => setIsMenuOpen(false)}
                           >
                             {dropdownItem.name}
