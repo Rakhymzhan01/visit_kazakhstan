@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, MapPin, Users, Music, Camera, Clock, MapIcon } from 'lucide-react';
+import { ArrowLeft, MapPin, Users, Music, Camera, Clock } from 'lucide-react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { destinationsApi } from '@/lib/api';
