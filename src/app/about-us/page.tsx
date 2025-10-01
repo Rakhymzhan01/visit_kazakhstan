@@ -44,18 +44,7 @@ const AboutSection = () => {
           {/* Stats Grid - Same as Home Page */}
           <div className="w-full max-w-lg mx-auto lg:max-w-none lg:w-[588px] h-auto lg:h-[476px] relative">
             {/* Staggered layout */}
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0" style={{ 
-              position: 'static',
-              '@media (min-width: 1024px)': {
-                position: 'absolute',
-                top: '0px',
-                left: '0px'
-              },
-              width: '100%',
-              maxWidth: '282px', 
-              height: 'auto',
-              minHeight: '196px'
-            }}>
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0 lg:absolute lg:top-0 lg:left-0 w-full max-w-[282px] h-auto min-h-[196px]">
               <div className="text-[#009CBC] mb-3 font-montserrat" style={{
                 fontWeight: 600,
                 fontSize: 'clamp(32px, 8vw, 50px)',
@@ -69,18 +58,7 @@ const AboutSection = () => {
                 letterSpacing: '-1%'
               }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0" style={{ 
-              position: 'static',
-              '@media (min-width: 1024px)': {
-                position: 'absolute',
-                top: '60px',
-                left: '306px'
-              },
-              width: '100%',
-              maxWidth: '282px', 
-              height: 'auto',
-              minHeight: '196px'
-            }}>
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0 lg:absolute lg:top-[60px] lg:left-[306px] w-full max-w-[282px] h-auto min-h-[196px]">
               <div className="text-[#009CBC] mb-3 font-montserrat" style={{
                 fontWeight: 600,
                 fontSize: 'clamp(32px, 8vw, 50px)',
@@ -94,18 +72,7 @@ const AboutSection = () => {
                 letterSpacing: '-1%'
               }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0" style={{ 
-              position: 'static',
-              '@media (min-width: 1024px)': {
-                position: 'absolute',
-                top: '220px',
-                left: '0px'
-              },
-              width: '100%',
-              maxWidth: '282px', 
-              height: 'auto',
-              minHeight: '196px'
-            }}>
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0 lg:absolute lg:top-[220px] lg:left-0 w-full max-w-[282px] h-auto min-h-[196px]">
               <div className="text-[#009CBC] mb-3 font-montserrat" style={{
                 fontWeight: 600,
                 fontSize: 'clamp(32px, 8vw, 50px)',
@@ -119,18 +86,7 @@ const AboutSection = () => {
                 letterSpacing: '-1%'
               }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6" style={{ 
-              position: 'static',
-              '@media (min-width: 1024px)': {
-                position: 'absolute',
-                top: '280px',
-                left: '306px'
-              },
-              width: '100%',
-              maxWidth: '282px', 
-              height: 'auto',
-              minHeight: '196px'
-            }}>
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:absolute lg:top-[280px] lg:left-[306px] w-full max-w-[282px] h-auto min-h-[196px]">
               <div className="text-[#009CBC] mb-3 font-montserrat" style={{
                 fontWeight: 600,
                 fontSize: 'clamp(32px, 8vw, 50px)',
@@ -222,9 +178,7 @@ const TeamSection = () => {
                     alt={member.name}
                     width={300}
                     height={400}
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    style={{ width: '250px', height: '320px' }}
-                    className="sm:!w-[280px] sm:!h-[360px] lg:!w-[300px] lg:!h-[400px]"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300 w-[250px] h-[320px] sm:w-[280px] sm:h-[360px] lg:w-[300px] lg:h-[400px]"
                   />
                   {/* Overlay with name and position */}
                   <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl p-4">
