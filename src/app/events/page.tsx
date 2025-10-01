@@ -87,32 +87,34 @@ const EventsPage = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative flex justify-center py-8 bg-gray-50">
-        <div className="flex gap-2 items-center">
-          {/* Left Content */}
-          <div className="w-[678px] h-[550px] bg-white rounded-lg px-20 py-16 flex flex-col justify-center">
-            <div className="inline-block text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit" style={{ backgroundColor: '#E8A3BE' }}>
-              EVENTS
+      <section className="relative py-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-2 items-center justify-center">
+            {/* Left Content */}
+            <div className="w-full lg:w-[678px] h-auto lg:h-[550px] bg-white rounded-lg px-6 sm:px-12 lg:px-20 py-8 lg:py-16 flex flex-col justify-center">
+              <div className="inline-block text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit" style={{ backgroundColor: '#E8A3BE' }}>
+                EVENTS
+              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-gray-900 mb-6 leading-tight">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </h1>
+              <p className="text-sm lg:text-[14px] text-gray-600 leading-relaxed max-w-md">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et 
+                velit interdum, ac aliquet odio mattis.
+              </p>
             </div>
-            <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </h1>
-            <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et 
-              velit interdum, ac aliquet odio mattis.
-            </p>
-          </div>
-          
-          {/* Right Image */}
-          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden">
-            <Image 
-              src="/bao_contras.jpg" 
-              alt="Kazakhstan Events"
-              width={674}
-              height={550}
-              className="w-full h-full object-cover"
-              priority
-            />
+            
+            {/* Right Image */}
+            <div className="w-full lg:w-[674px] h-[300px] sm:h-[400px] lg:h-[550px] rounded-lg overflow-hidden">
+              <Image 
+                src="/bao_contras.jpg" 
+                alt="Kazakhstan Events"
+                width={674}
+                height={550}
+                className="w-full h-full object-cover"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -136,11 +138,11 @@ const EventsPage = () => {
           
           {/* Section Header with Filters */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
-            <h2>
+            <h2 className="text-center sm:text-left">
               <span className="text-[#202020]" style={{
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>Explore</span> <span 
@@ -152,14 +154,14 @@ const EventsPage = () => {
                   backgroundClip: 'text',
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 400,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}
               >Events</span>
             </h2>
             
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
               {/* City Filter */}
               <div className="relative">
                 <button className="flex items-center gap-2 bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm text-gray-600 hover:border-[#009CBC] transition-colors">
@@ -181,9 +183,9 @@ const EventsPage = () => {
           {/* Featured Event */}
           {featuredEvent && (
             <div className="mb-16">
-              <div className="flex gap-6 items-stretch">
+              <div className="flex flex-col lg:flex-row gap-6 items-stretch">
                 {/* Large Image */}
-                <div className="relative overflow-hidden rounded-2xl" style={{ width: '792px', height: '400px' }}>
+                <div className="relative overflow-hidden rounded-2xl w-full lg:w-[792px] h-[300px] sm:h-[400px]">
                   <Image
                     src={featuredEvent.image}
                     alt={featuredEvent.title}
@@ -202,19 +204,19 @@ const EventsPage = () => {
                 </div>
 
                 {/* Text Content */}
-                <div className="bg-white rounded-2xl flex flex-col justify-center" style={{ width: '384px', height: '400px', padding: '32px' }}>
-                  <h3 className="font-montserrat mb-6" style={{
+                <div className="bg-white rounded-2xl flex flex-col justify-center w-full lg:w-[384px] h-auto lg:h-[400px] p-6 lg:p-8">
+                  <h3 className="font-montserrat mb-4 lg:mb-6" style={{
                     fontWeight: 600,
-                    fontSize: '24px',
+                    fontSize: 'clamp(18px, 4vw, 24px)',
                     lineHeight: '130%',
                     letterSpacing: '-2%',
                     color: '#202020'
                   }}>
                     {featuredEvent.title}
                   </h3>
-                  <p className="font-manrope mb-8" style={{
+                  <p className="font-manrope mb-6 lg:mb-8" style={{
                     fontWeight: 400,
-                    fontSize: '14px',
+                    fontSize: 'clamp(13px, 2.5vw, 14px)',
                     lineHeight: '24px',
                     letterSpacing: '-1%',
                     color: '#4F504F'
@@ -224,7 +226,7 @@ const EventsPage = () => {
                   <button 
                     className="text-white font-manrope rounded-full self-start flex items-center justify-center"
                     style={{
-                      width: '160px',
+                      width: 'clamp(140px, 30vw, 160px)',
                       height: '50px',
                       backgroundColor: '#009CBC',
                       padding: '13px 30px',
@@ -245,7 +247,7 @@ const EventsPage = () => {
           {/* Events Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {otherEvents.map((event) => (
-              <div key={event.id} className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300" style={{ width: '384px', height: '400px' }}>
+              <div key={event.id} className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300 w-full h-[300px] sm:h-[350px] lg:h-[400px]">
                 <Image
                   src={event.image}
                   alt={event.title}

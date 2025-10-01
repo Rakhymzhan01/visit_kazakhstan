@@ -328,20 +328,20 @@ const PlanTripPage = () => {
             className="object-cover opacity-60"
           />
         </div>
-        <div className="relative px-6 py-20 text-center">
+        <div className="relative px-4 sm:px-6 py-12 sm:py-20 text-center">
           <div className="inline-block bg-green-600 text-white px-4 py-2 rounded text-sm font-medium mb-6">
             PLAN YOUR TRIP
           </div>
-          <h1 className="text-5xl font-bold mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
             Everything You Need to Know Before You Go
           </h1>
-          <p className="text-xl opacity-90 mb-12">
+          <p className="text-lg sm:text-xl opacity-90 mb-8 sm:mb-12">
             Build a trip yourself, or have experts plan it for you.
           </p>
           
           {/* Search Form */}
-          <div className="mx-auto bg-white rounded-full flex items-center justify-between px-12 py-3 relative" style={{ width: '1200px', height: '66px' }}>
-            <div className="flex items-center relative" style={{ width: '240px', height: '50px' }} ref={dropdownRef}>
+          <div className="mx-auto bg-white rounded-2xl sm:rounded-full flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-0 p-4 sm:px-12 sm:py-3 relative max-w-6xl" style={{ minHeight: '66px' }}>
+            <div className="flex items-center relative w-full sm:w-60 h-12 sm:h-[50px]" ref={dropdownRef}>
               <div 
                 className="flex-1 flex items-center justify-between px-4 py-3 border border-gray-200 cursor-pointer hover:border-gray-300 bg-gray-50 rounded-full"
                 onClick={() => setIsCitiesDropdownOpen(!isCitiesDropdownOpen)}
@@ -389,7 +389,7 @@ const PlanTripPage = () => {
               )}
             </div>
             
-            <div className="flex items-center relative" style={{ width: '240px', height: '50px' }} ref={calendarRef}>
+            <div className="flex items-center relative w-full sm:w-60 h-12 sm:h-[50px]" ref={calendarRef}>
               <div 
                 className="flex-1 flex items-center justify-between px-4 py-3 border border-gray-200 cursor-pointer hover:border-gray-300 bg-gray-50 rounded-full"
                 onClick={() => setIsCalendarDropdownOpen(!isCalendarDropdownOpen)}
@@ -471,7 +471,7 @@ const PlanTripPage = () => {
               )}
             </div>
             
-            <div className="flex items-center relative flex-shrink-0" style={{ width: '240px', height: '50px' }} ref={guestsRef}>
+            <div className="flex items-center relative flex-shrink-0 w-full sm:w-60 h-12 sm:h-[50px]" ref={guestsRef}>
               <div 
                 className="flex-1 flex items-center justify-between px-4 py-3 border border-gray-200 cursor-pointer hover:border-gray-300 bg-gray-50 rounded-full"
                 onClick={() => setIsGuestsDropdownOpen(!isGuestsDropdownOpen)}
@@ -540,7 +540,7 @@ const PlanTripPage = () => {
               )}
             </div>
             
-            <div className="flex items-center relative flex-shrink-0" style={{ width: '240px', height: '50px' }} ref={tourTypesRef}>
+            <div className="flex items-center relative flex-shrink-0 w-full sm:w-60 h-12 sm:h-[50px]" ref={tourTypesRef}>
               <div 
                 className="flex-1 flex items-center justify-between px-4 py-3 border border-gray-200 cursor-pointer hover:border-gray-300 bg-gray-50 rounded-full"
                 onClick={() => setIsTourTypesDropdownOpen(!isTourTypesDropdownOpen)}
@@ -588,7 +588,7 @@ const PlanTripPage = () => {
               )}
             </div>
             
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-full text-base font-medium">
+            <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-full text-base font-medium w-full sm:w-auto">
               Sent
             </button>
           </div>
@@ -596,15 +596,15 @@ const PlanTripPage = () => {
       </section>
 
       {/* Content Section */}
-      <section className="py-16 px-6">
+      <section className="py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           {/* Tab Navigation */}
-          <div className="flex space-x-8 border-b border-gray-200 mb-12">
+          <div className="flex flex-nowrap overflow-x-auto scrollbar-hide space-x-4 sm:space-x-8 border-b border-gray-200 mb-8 sm:mb-12 pb-2">
             {tabs.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-4 px-1 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                className={`pb-4 px-2 sm:px-1 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0 ${
                   activeTab === tab
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -616,7 +616,7 @@ const PlanTripPage = () => {
           </div>
 
           {/* Content Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {tabContent[activeTab]?.map((item, index) => (
               <div key={index} className="bg-white rounded-lg p-6 border border-gray-100">
                 <div className="text-4xl mb-4">{item.icon}</div>

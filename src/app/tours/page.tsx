@@ -136,31 +136,33 @@ const ToursPage = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative flex justify-center py-8">
-        <div className="flex gap-2 items-center">
-          {/* Left Content */}
-          <div className="w-[678px] h-[550px] bg-white rounded-lg px-20 py-16 flex flex-col justify-center">
-            <div className="inline-block bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit">
-              {content.hero.badge}
+      <section className="relative py-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-2 items-center justify-center">
+            {/* Left Content */}
+            <div className="w-full lg:w-[678px] h-auto lg:h-[550px] bg-white rounded-lg px-6 sm:px-12 lg:px-20 py-8 lg:py-16 flex flex-col justify-center">
+              <div className="inline-block bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit">
+                {content.hero.badge}
+              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-gray-900 mb-6 leading-tight">
+                {content.hero.title}
+              </h1>
+              <p className="text-sm lg:text-[14px] text-gray-600 leading-relaxed max-w-md">
+                {content.hero.description}
+              </p>
             </div>
-            <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
-              {content.hero.title}
-            </h1>
-            <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
-              {content.hero.description}
-            </p>
-          </div>
-          
-          {/* Right Image */}
-          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden">
-            <Image 
-              src="/tours.jpg" 
-              alt="Traveler with backpack taking photo"
-              width={674}
-              height={550}
-              className="w-full h-full object-cover"
-              priority
-            />
+            
+            {/* Right Image */}
+            <div className="w-full lg:w-[674px] h-[300px] sm:h-[400px] lg:h-[550px] rounded-lg overflow-hidden">
+              <Image 
+                src="/tours.jpg" 
+                alt="Traveler with backpack taking photo"
+                width={674}
+                height={550}
+                className="w-full h-full object-cover"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -169,11 +171,11 @@ const ToursPage = () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <h2 className="mb-8">
+          <h2 className="mb-8 text-center sm:text-left">
             <span className="text-[#202020]" style={{
               fontFamily: 'Montserrat, sans-serif',
               fontWeight: 700,
-              fontSize: '48px',
+              fontSize: 'clamp(24px, 6vw, 48px)',
               lineHeight: '100%',
               letterSpacing: '-4%'
             }}>Top Tour</span> <span 
@@ -185,7 +187,7 @@ const ToursPage = () => {
                 backgroundClip: 'text',
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 400,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}
@@ -193,7 +195,7 @@ const ToursPage = () => {
           </h2>
           
           {/* Category Tabs Navigation */}
-          <div className="flex space-x-8 mb-12">
+          <div className="flex flex-wrap gap-4 sm:gap-8 mb-12 justify-center sm:justify-start">
             {categories.map((category) => (
               <button
                 key={category.id}

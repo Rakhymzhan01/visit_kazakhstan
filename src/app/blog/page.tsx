@@ -78,28 +78,30 @@ export default function BlogPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative flex justify-center py-8 bg-gray-50">
-        <div className="flex gap-2 items-center">
-          {/* Left Content */}
-          <div className="w-[678px] h-[550px] bg-white rounded-lg px-20 py-16 flex flex-col justify-center">
-            <div className="inline-block text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit" style={{ backgroundColor: '#FFE700', color: '#000' }}>
-              BLOG
+      <section className="relative py-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-2 items-center justify-center">
+            {/* Left Content */}
+            <div className="w-full lg:w-[678px] h-auto lg:h-[550px] bg-white rounded-lg px-6 sm:px-12 lg:px-20 py-8 lg:py-16 flex flex-col justify-center">
+              <div className="inline-block text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit" style={{ backgroundColor: '#FFE700', color: '#000' }}>
+                BLOG
+              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-gray-900 mb-6 leading-tight">
+                Discover Kazakhstan Through Stories — Travel Guides & Adventures
+              </h1>
+              <p className="text-sm lg:text-[14px] text-gray-600 leading-relaxed max-w-md">
+                From hidden gems in ancient cities to breathtaking natural wonders, explore Kazakhstan through our curated collection of travel stories, guides, and insider tips that bring this incredible country to life.
+              </p>
             </div>
-            <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
-              Discover Kazakhstan Through Stories — Travel Guides & Adventures
-            </h1>
-            <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
-              From hidden gems in ancient cities to breathtaking natural wonders, explore Kazakhstan through our curated collection of travel stories, guides, and insider tips that bring this incredible country to life.
-            </p>
-          </div>
-          
-          {/* Right Image */}
-          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden">
-            <img 
-              src="/couple-photo.jpg" 
-              alt="Travel planning"
-              className="w-full h-full object-cover"
-            />
+            
+            {/* Right Image */}
+            <div className="w-full lg:w-[674px] h-[300px] sm:h-[400px] lg:h-[550px] rounded-lg overflow-hidden">
+              <img 
+                src="/couple-photo.jpg" 
+                alt="Travel planning"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -109,11 +111,11 @@ export default function BlogPage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-left mb-12">
-            <h2 className="mb-4">
+            <h2 className="mb-4 text-center sm:text-left">
               <span className="text-[#202020]" style={{
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>Featured</span> <span 
@@ -125,7 +127,7 @@ export default function BlogPage() {
                   backgroundClip: 'text',
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 400,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}
@@ -134,9 +136,9 @@ export default function BlogPage() {
           </div>
 
           {featuredPost && (
-            <div className="flex gap-6 mb-12">
+            <div className="flex flex-col lg:flex-row gap-6 mb-12">
               {/* Large featured image */}
-              <div className="relative overflow-hidden rounded-2xl" style={{ width: '792px', height: '400px' }}>
+              <div className="relative overflow-hidden rounded-2xl w-full lg:w-[792px] h-[300px] sm:h-[400px]">
                 {featuredPost.featuredImage ? (
                   <img
                     src={featuredPost.featuredImage}
@@ -162,14 +164,14 @@ export default function BlogPage() {
               </div>
 
               {/* Text box on the right */}
-              <div className="bg-white rounded-2xl flex flex-col" style={{ width: '384px', height: '400px', padding: '32px' }}>
+              <div className="bg-white rounded-2xl flex flex-col w-full lg:w-[384px] h-auto lg:h-[400px] p-6 lg:p-8">
                 <h3 className="font-montserrat" style={{
                   fontWeight: 600,
-                  fontSize: '24px',
+                  fontSize: 'clamp(18px, 4vw, 24px)',
                   lineHeight: '130%',
                   letterSpacing: '-2%',
                   color: '#202020',
-                  marginBottom: '16px'
+                  marginBottom: 'clamp(16px, 4vw, 32px)'
                 }}>
                   {featuredPost.title}
                 </h3>
@@ -194,11 +196,11 @@ export default function BlogPage() {
                 {featuredPost.excerpt && (
                   <p className="font-manrope flex-1" style={{
                     fontWeight: 400,
-                    fontSize: '14px',
+                    fontSize: 'clamp(13px, 2.5vw, 14px)',
                     lineHeight: '24px',
                     letterSpacing: '-1%',
                     color: '#4F504F',
-                    marginBottom: '32px'
+                    marginBottom: 'clamp(24px, 6vw, 48px)'
                   }}>
                     {featuredPost.excerpt}
                   </p>
@@ -208,7 +210,7 @@ export default function BlogPage() {
                   <button 
                     className="text-white font-manrope rounded-full self-start flex items-center justify-center"
                     style={{
-                      width: '140px',
+                      width: 'clamp(140px, 30vw, 160px)',
                       height: '50px',
                       backgroundColor: '#009CBC',
                       padding: '13px 30px',
@@ -232,11 +234,11 @@ export default function BlogPage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-left mb-12">
-            <h2 className="mb-4">
+            <h2 className="mb-4 text-center sm:text-left">
               <span className="text-[#202020]" style={{
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>Latest</span> <span 
@@ -248,7 +250,7 @@ export default function BlogPage() {
                   backgroundClip: 'text',
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 400,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}
@@ -299,7 +301,7 @@ export default function BlogPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {regularPosts.map((post: BlogPost) => (
                 <Link key={post.id} href={`/blog/${post.slug}`}>
-                  <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300" style={{ width: '384px', height: '400px' }}>
+                  <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300 w-full h-[300px] sm:h-[350px] lg:h-[400px]">
                     {post.featuredImage ? (
                       <img
                         src={post.featuredImage}
@@ -354,15 +356,9 @@ export default function BlogPage() {
 
       {/* Instagram Section */}
       <section className="py-12 bg-gray-50 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex items-start" style={{ gap: '50px' }}>
-            <div style={{ 
-              width: '486px', 
-              height: '282px',
-              paddingTop: '50px',
-              opacity: 1,
-              transform: 'rotate(0deg)'
-            }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
+            <div className="w-full lg:w-[486px] pt-8 lg:pt-12">
               <h2 className="mb-4">
                 <span 
                   className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
@@ -373,13 +369,13 @@ export default function BlogPage() {
                     backgroundClip: 'text',
                     fontFamily: 'Montserrat, sans-serif',
                     fontWeight: 400,
-                    fontSize: '48px',
+                    fontSize: 'clamp(24px, 6vw, 48px)',
                     lineHeight: '100%',
                     letterSpacing: '-4%'
                   }}
                 >@into.kazakhstan</span>
               </h2>
-              <p className="text-gray-600 mb-6 text-sm" style={{ width: '486px' }}>
+              <p className="text-gray-600 mb-6 text-sm max-w-md">
                 Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
                 landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
               </p>
@@ -396,20 +392,15 @@ export default function BlogPage() {
             </div>
           </div>
 
-          {/* Instagram Photos Overlay */}
-          <div className="absolute z-20 overflow-x-auto scrollbar-hide" style={{ top: '0px', left: '570px', right: '0px', height: '282px' }}>
-            <div 
-              className="flex gap-6" 
-              style={{ 
-                width: 'max-content'
-              }}
-            >
+          {/* Instagram Photos */}
+          <div className="w-full lg:flex-1 overflow-x-auto scrollbar-hide">
+            <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
               {[
                 { image: "/nomad_girls.png", alt: "Nomad girls" },
                 { image: "/desert.jpg", alt: "Desert landscape" },
                 { image: "/yurta.jpg", alt: "Traditional yurt" }
               ].map((post, index) => (
-                <div key={index} className="relative flex-shrink-0" style={{ width: '282px', height: '282px' }}>
+                <div key={index} className="relative flex-shrink-0 w-60 h-60 sm:w-[282px] sm:h-[282px]">
                   <Image
                     src={post.image}
                     alt={post.alt}

@@ -12,11 +12,11 @@ const AboutSection = () => {
           
           {/* Text Content */}
           <div>
-            <h2 className="mb-6">
+            <h2 className="mb-6 text-center sm:text-left">
               <span className="text-[#202020]" style={{
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>About</span> <span 
@@ -28,7 +28,7 @@ const AboutSection = () => {
                   backgroundClip: 'text',
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 400,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}
@@ -42,22 +42,23 @@ const AboutSection = () => {
           </div>
 
           {/* Stats Grid - Same as Home Page */}
-          <div style={{ 
-            width: '588px', 
-            height: '476px',
-            position: 'relative'
-          }}>
+          <div className="w-full max-w-lg mx-auto lg:max-w-none lg:w-[588px] h-auto lg:h-[476px] relative">
             {/* Staggered layout */}
-            <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
-              position: 'absolute',
-              top: '0px',
-              left: '0px',
-              width: '282px', 
-              height: '196px' 
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0" style={{ 
+              position: 'static',
+              '@media (min-width: 1024px)': {
+                position: 'absolute',
+                top: '0px',
+                left: '0px'
+              },
+              width: '100%',
+              maxWidth: '282px', 
+              height: 'auto',
+              minHeight: '196px'
             }}>
               <div className="text-[#009CBC] mb-3 font-montserrat" style={{
                 fontWeight: 600,
-                fontSize: '50px',
+                fontSize: 'clamp(32px, 8vw, 50px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>2010</div>
@@ -68,16 +69,21 @@ const AboutSection = () => {
                 letterSpacing: '-1%'
               }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-            <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
-              position: 'absolute',
-              top: '60px',
-              left: '306px',
-              width: '282px', 
-              height: '196px' 
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0" style={{ 
+              position: 'static',
+              '@media (min-width: 1024px)': {
+                position: 'absolute',
+                top: '60px',
+                left: '306px'
+              },
+              width: '100%',
+              maxWidth: '282px', 
+              height: 'auto',
+              minHeight: '196px'
             }}>
               <div className="text-[#009CBC] mb-3 font-montserrat" style={{
                 fontWeight: 600,
-                fontSize: '50px',
+                fontSize: 'clamp(32px, 8vw, 50px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>50+</div>
@@ -88,16 +94,21 @@ const AboutSection = () => {
                 letterSpacing: '-1%'
               }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-            <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
-              position: 'absolute',
-              top: '220px',
-              left: '0px',
-              width: '282px', 
-              height: '196px' 
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0" style={{ 
+              position: 'static',
+              '@media (min-width: 1024px)': {
+                position: 'absolute',
+                top: '220px',
+                left: '0px'
+              },
+              width: '100%',
+              maxWidth: '282px', 
+              height: 'auto',
+              minHeight: '196px'
             }}>
               <div className="text-[#009CBC] mb-3 font-montserrat" style={{
                 fontWeight: 600,
-                fontSize: '50px',
+                fontSize: 'clamp(32px, 8vw, 50px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>1000+</div>
@@ -108,16 +119,21 @@ const AboutSection = () => {
                 letterSpacing: '-1%'
               }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
-            <div className="bg-white rounded-lg shadow-sm p-6" style={{ 
-              position: 'absolute',
-              top: '280px',
-              left: '306px',
-              width: '282px', 
-              height: '196px' 
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6" style={{ 
+              position: 'static',
+              '@media (min-width: 1024px)': {
+                position: 'absolute',
+                top: '280px',
+                left: '306px'
+              },
+              width: '100%',
+              maxWidth: '282px', 
+              height: 'auto',
+              minHeight: '196px'
             }}>
               <div className="text-[#009CBC] mb-3 font-montserrat" style={{
                 fontWeight: 600,
-                fontSize: '50px',
+                fontSize: 'clamp(32px, 8vw, 50px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>20</div>
@@ -175,7 +191,7 @@ const TeamSection = () => {
             <span className="text-[#202020]" style={{
               fontFamily: 'Montserrat, sans-serif',
               fontWeight: 700,
-              fontSize: '48px',
+              fontSize: 'clamp(24px, 6vw, 48px)',
               lineHeight: '100%',
               letterSpacing: '-4%'
             }}>Our</span> <span 
@@ -187,7 +203,7 @@ const TeamSection = () => {
                 backgroundClip: 'text',
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 400,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}
@@ -197,7 +213,7 @@ const TeamSection = () => {
 
         {/* Team Grid */}
         <div className="overflow-x-auto scrollbar-hide mb-12">
-          <div className="flex gap-8 pb-4" style={{ width: 'max-content' }}>
+          <div className="flex gap-4 sm:gap-6 lg:gap-8 pb-4" style={{ width: 'max-content' }}>
             {teamMembers.map((member, index) => (
               <div key={index} className="group cursor-pointer flex-shrink-0">
                 <div className="relative overflow-hidden rounded-2xl">
@@ -207,7 +223,8 @@ const TeamSection = () => {
                     width={300}
                     height={400}
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    style={{ width: '300px', height: '400px' }}
+                    style={{ width: '250px', height: '320px' }}
+                    className="sm:!w-[280px] sm:!h-[360px] lg:!w-[300px] lg:!h-[400px]"
                   />
                   {/* Overlay with name and position */}
                   <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm rounded-xl p-4">
@@ -248,7 +265,7 @@ const VisitKazakhstanSection = () => {
           
           {/* Left side - Contact Info */}
           <div>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#202020] mb-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#202020] mb-8">
               Visit <span className="text-[#009CBC]">Kazakhstan</span>
             </h2>
             
