@@ -96,31 +96,33 @@ export default function CategoriesPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative flex justify-center py-8 bg-gray-50">
-        <div className="flex gap-2 items-center">
-          {/* Left Content */}
-          <div className="w-[678px] h-[550px] bg-white rounded-lg px-20 py-16 flex flex-col justify-center">
-            <div className="inline-block text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit" style={{ backgroundColor: '#009CBC' }}>
-              CATEGORIES
+      <section className="relative py-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-2 items-center justify-center">
+            {/* Left Content */}
+            <div className="w-full lg:w-[678px] h-auto lg:h-[550px] bg-white rounded-lg px-6 sm:px-12 lg:px-20 py-8 lg:py-16 flex flex-col justify-center">
+              <div className="inline-block text-white px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit" style={{ backgroundColor: '#009CBC' }}>
+                CATEGORIES
+              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-gray-900 mb-6 leading-tight">
+                Explore Kazakhstan by Category — Find Your Perfect Adventure
+              </h1>
+              <p className="text-sm lg:text-[14px] text-gray-600 leading-relaxed max-w-md">
+                From pristine nature escapes to rich cultural experiences, discover Kazakhstan through our carefully curated categories. Each category offers unique adventures and unforgettable memories waiting to be explored.
+              </p>
             </div>
-            <h1 className="text-[36px] font-bold text-gray-900 mb-6 leading-tight">
-              Explore Kazakhstan by Category — Find Your Perfect Adventure
-            </h1>
-            <p className="text-[14px] text-gray-600 leading-relaxed max-w-md">
-              From pristine nature escapes to rich cultural experiences, discover Kazakhstan through our carefully curated categories. Each category offers unique adventures and unforgettable memories waiting to be explored.
-            </p>
-          </div>
-          
-          {/* Right Image */}
-          <div className="w-[674px] h-[550px] rounded-lg overflow-hidden">
-            <Image 
-              src="/categories-hero.jpg" 
-              alt="Kazakhstan Categories"
-              width={674}
-              height={550}
-              className="w-full h-full object-cover"
-              priority
-            />
+            
+            {/* Right Image */}
+            <div className="w-full lg:w-[674px] h-[300px] sm:h-[400px] lg:h-[550px] rounded-lg overflow-hidden">
+              <Image 
+                src="/categories-hero.jpg" 
+                alt="Kazakhstan Categories"
+                width={674}
+                height={550}
+                className="w-full h-full object-cover"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -129,11 +131,11 @@ export default function CategoriesPage() {
       {featuredCategory && (
         <section className="py-8 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-8">
+            <h2 className="mb-8 text-center sm:text-left">
               <span className="text-[#202020]" style={{
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>Featured</span> <span 
@@ -145,7 +147,7 @@ export default function CategoriesPage() {
                   backgroundClip: 'text',
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 400,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}
@@ -161,10 +163,10 @@ export default function CategoriesPage() {
                       alt={featuredCategory.name}
                       width={1200}
                       height={400}
-                      className="w-full h-[400px] object-cover"
+                      className="w-full h-[250px] sm:h-[300px] lg:h-[400px] object-cover"
                     />
                   ) : (
-                    <div className="w-full h-[400px] bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                    <div className="w-full h-[250px] sm:h-[300px] lg:h-[400px] bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
                       <span className="text-gray-400 text-xl">No image available</span>
                     </div>
                   )}
@@ -176,14 +178,14 @@ export default function CategoriesPage() {
                   </div>
                 </div>
                 
-                <div className="p-8">
-                  <h3 className="text-3xl font-bold text-gray-900 mb-4">{featuredCategory.name}</h3>
+                <div className="p-6 sm:p-8">
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4">{featuredCategory.name}</h3>
                   {featuredCategory.description && (
-                    <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                    <p className="text-gray-600 mb-6 text-base lg:text-lg leading-relaxed">
                       {featuredCategory.description}
                     </p>
                   )}
-                  <span className="text-[#009CBC] hover:text-[#007a9a] font-medium text-lg">
+                  <span className="text-[#009CBC] hover:text-[#007a9a] font-medium text-base lg:text-lg">
                     Explore this category →
                   </span>
                 </div>
@@ -196,11 +198,11 @@ export default function CategoriesPage() {
       {/* All Categories Grid */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-12">
+          <h2 className="mb-12 text-center sm:text-left">
             <span className="text-[#202020]" style={{
               fontFamily: 'Montserrat, sans-serif',
               fontWeight: 700,
-              fontSize: '48px',
+              fontSize: 'clamp(24px, 6vw, 48px)',
               lineHeight: '100%',
               letterSpacing: '-4%'
             }}>All</span> <span 
@@ -212,7 +214,7 @@ export default function CategoriesPage() {
                 backgroundClip: 'text',
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 400,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}
@@ -230,10 +232,10 @@ export default function CategoriesPage() {
                         alt={category.name}
                         width={400}
                         height={240}
-                        className="w-full h-60 object-cover"
+                        className="w-full h-48 sm:h-60 object-cover"
                       />
                     ) : (
-                      <div className="w-full h-60 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                      <div className="w-full h-48 sm:h-60 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
                         <span className="text-gray-400">No image</span>
                       </div>
                     )}
@@ -247,8 +249,8 @@ export default function CategoriesPage() {
                     )}
                   </div>
                   
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3" style={{
+                  <div className="p-4 sm:p-6">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3" style={{
                       fontFamily: 'Montserrat, sans-serif',
                       fontWeight: 600
                     }}>
@@ -264,7 +266,7 @@ export default function CategoriesPage() {
                       </p>
                     )}
                     
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <span className="text-[#009CBC] hover:text-[#007a9a] font-medium text-sm transition-colors">
                         Explore category →
                       </span>

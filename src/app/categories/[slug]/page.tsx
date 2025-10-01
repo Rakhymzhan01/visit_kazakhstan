@@ -194,7 +194,7 @@ export default function CategoryDetailPage() {
 
       {/* Hero Image with Title Overlay */}
       <div className="relative w-full px-4 sm:px-6 lg:px-8 py-8">
-        <div className="relative w-full h-[453px] rounded-lg overflow-hidden bg-gray-900">
+        <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[453px] rounded-lg overflow-hidden bg-gray-900">
           {category.image ? (
             <img
               src={category.image}
@@ -212,7 +212,7 @@ export default function CategoryDetailPage() {
           
           {/* Title overlay with strong contrast */}
           <div className="absolute inset-0 flex items-center justify-center z-10">
-            <h1 className="text-4xl lg:text-6xl font-black text-white text-center leading-tight px-8 max-w-5xl" style={{
+            <h1 className="text-2xl sm:text-4xl lg:text-6xl font-black text-white text-center leading-tight px-4 sm:px-8 max-w-5xl" style={{
               textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
             }}>
               {category.name}
@@ -312,11 +312,11 @@ export default function CategoryDetailPage() {
       {categoryTours.length > 0 && (
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-8">
+            <h2 className="mb-8 text-center sm:text-left">
               <span className="text-[#202020]" style={{
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
-                fontSize: '48px',
+                fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
               }}>Tours in</span> <span 
@@ -328,7 +328,7 @@ export default function CategoryDetailPage() {
                   backgroundClip: 'text',
                   fontFamily: 'Montserrat, sans-serif',
                   fontWeight: 400,
-                  fontSize: '48px',
+                  fontSize: 'clamp(24px, 6vw, 48px)',
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}

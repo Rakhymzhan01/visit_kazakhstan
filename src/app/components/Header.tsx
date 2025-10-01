@@ -300,11 +300,11 @@ const Header = () => {
             </div>
 
             {/* Actions Container */}
-            <div className="flex items-center space-x-4">
-              {/* Plan Your Trip Button */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Plan Your Trip Button - Hide on mobile, show from min-[480px] up */}
               <button
                 onClick={handlePlanTripClick}
-                className="bg-[#009CBC] hover:bg-[#007a9a] text-white flex items-center justify-center font-medium whitespace-nowrap"
+                className="hidden min-[480px]:flex bg-[#009CBC] hover:bg-[#007a9a] text-white items-center justify-center font-medium whitespace-nowrap"
                 style={{
                   width: '137px',
                   height: '50px',
