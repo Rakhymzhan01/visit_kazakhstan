@@ -15,6 +15,7 @@ import {
   Tag,
   Navigation,
   BookOpen,
+  Calendar,
 } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Card } from '@/app/components/ui/card';
@@ -30,6 +31,7 @@ const navigation = [
   { name: 'Tour Categories', href: '/admin/categories', icon: Tag },
   { name: 'Category Pages', href: '/admin/category-pages', icon: BookOpen },
   { name: 'Destinations', href: '/admin/destinations', icon: Navigation },
+  { name: 'Events', href: '/admin/events', icon: Calendar },
   { name: 'Blog Posts', href: '/admin/blog', icon: FileText },
 ];
 

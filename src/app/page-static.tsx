@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "./components/ui/button"
@@ -9,61 +8,10 @@ import { Badge } from "./components/ui/badge"
 import { Star, Instagram, Minus } from "lucide-react"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import { homepageApi, toursApi, blogApi, eventsApi } from '@/lib/api'
-
-// Types
-interface WhyVisitItem {
-  title: string;
-  description: string;
-  image: string;
-  bgColor: string;
-  order: number;
-}
-
-
-interface Tour {
-  id: string;
-  title: string;
-  slug: string;
-  description?: string;
-  image: string;
-  category: string;
-  rating: number;
-  date?: string;
-  location?: string;
-  featured: boolean;
-  status: string;
-}
-
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt?: string;
-  featuredImage?: string;
-  category?: string;
-  publishedAt?: string;
-  createdAt: string;
-}
-
-interface Event {
-  _id: string;
-  name: string;
-  image: string;
-  category: string;
-  date: string;
-  order: number;
-}
+import { useState } from "react"
 
 export default function HomePage() {
   const [expandedCards, setExpandedCards] = useState<number[]>([])
-  
-  // State for dynamic content
-  const [whyVisitItems, setWhyVisitItems] = useState<WhyVisitItem[]>([])
-  const [featuredTours, setFeaturedTours] = useState<Tour[]>([])
-  const [featuredBlogs, setFeaturedBlogs] = useState<BlogPost[]>([])
-  const [featuredEvents, setFeaturedEvents] = useState<Event[]>([])
-  const [loading, setLoading] = useState(true)
 
   const toggleCard = (index: number) => {
     setExpandedCards(prev => 
@@ -72,83 +20,6 @@ export default function HomePage() {
         : [...prev, index]
     )
   }
-
-  // Load dynamic content
-  useEffect(() => {
-    const loadContent = async () => {
-      try {
-        setLoading(true);
-        
-        // Start with empty array
-        setWhyVisitItems([]);
-
-        try {
-          console.log('Fetching homepage content from API...');
-          const homepageResponse = await homepageApi.getPublicHomepageContent();
-          console.log('Homepage response:', homepageResponse);
-          
-          if (homepageResponse.data.success && homepageResponse.data.data) {
-            const data = homepageResponse.data.data;
-            console.log('Homepage data:', data);
-            
-            if (data.whyVisit?.features && data.whyVisit.features.length > 0) {
-              console.log('SUCCESS: Setting features from database:', data.whyVisit.features);
-              setWhyVisitItems(data.whyVisit.features.sort((a: WhyVisitItem, b: WhyVisitItem) => a.order - b.order));
-            } else {
-              console.log('No features found in database data');
-              setWhyVisitItems([]);
-            }
-          } else {
-            console.log('No content in database, keeping empty');
-            setWhyVisitItems([]);
-          }
-        } catch (error) {
-          console.error('Error fetching homepage content:', error);
-          console.log('API error, keeping empty');
-          setWhyVisitItems([]);
-        }
-        
-        // Load featured tours
-        try {
-          const toursResponse = await toursApi.getPublicTours({ featured: true, limit: 4 });
-          if (toursResponse.data.success && toursResponse.data.data?.tours) {
-            setFeaturedTours(toursResponse.data.data.tours);
-          }
-        } catch (error) {
-          console.error('Error loading featured tours:', error);
-        }
-        
-        // Load featured blog posts
-        try {
-          const blogsResponse = await blogApi.getBlogs({ featured: true, limit: 4, status: 'PUBLISHED' });
-          if (blogsResponse.data.success && blogsResponse.data.data?.blogs) {
-            setFeaturedBlogs(blogsResponse.data.data.blogs);
-          }
-        } catch (error) {
-          console.error('Error loading featured blogs:', error);
-        }
-        
-        // Load featured events from homepage content
-        try {
-          console.log('Getting events from homepage data...');
-          const homepageResponse = await homepageApi.getPublicHomepageContent();
-          if (homepageResponse.data.success && homepageResponse.data.data?.events?.eventList) {
-            console.log('Events found in homepage:', homepageResponse.data.data.events.eventList);
-            setFeaturedEvents(homepageResponse.data.data.events.eventList.sort((a: any, b: any) => a.order - b.order));
-          }
-        } catch (error) {
-          console.error('Error loading featured events:', error);
-        }
-        
-      } catch (error) {
-        console.error('Error loading homepage content:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadContent();
-  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -165,6 +36,7 @@ export default function HomePage() {
         >
           <source src="./2496349_Mountain_Water_1920x1080.mp4" type="video/mp4" />
           <source src="/hero-video.webm" type="video/webm" />
+          {/* Fallback image if video doesn't load */}
           <Image
             src="/image.png"
             alt="Kazakhstan Landscape"
@@ -198,7 +70,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why Visit Kazakhstan - Dynamic */}
+      {/* Why Visit Kazakhstan */}
       <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="mb-6 sm:mb-8 text-center sm:text-left">
@@ -226,7 +98,33 @@ export default function HomePage() {
 
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
-              {whyVisitItems.map((item, index) => {
+              {[
+                {
+                  title: "Silk Road History",
+                  image: "/desert.jpg",
+                  bgColor: "from-blue-400 to-blue-600",
+                },
+                {
+                  title: "Nomadic Soul",
+                  image: "/shanyrak.jpg",
+                  bgColor: "from-amber-600 to-amber-800",
+                },
+                {
+                  title: "Modern Meets Traditional",
+                  image: "/baiterek.jpg", 
+                  bgColor: "from-orange-400 to-orange-600",
+                },
+                {
+                  title: "No Crowds, Just Space",
+                  image: "/kanatnaya_doroga.jpg",
+                  bgColor: "from-red-400 to-red-600",
+                },
+                {
+                  title: "Unspoiled Nature",
+                  image: "/yurta.jpg",
+                  bgColor: "from-green-400 to-green-600",
+                },
+              ].map((item, index) => {
                 const isExpanded = expandedCards.includes(index)
                 return (
                   <Card key={index} className="relative overflow-hidden group cursor-pointer flex-shrink-0 p-0 border-0" style={{
@@ -251,7 +149,7 @@ export default function HomePage() {
                       <h3 className="text-lg font-semibold">{item.title}</h3>
                       {isExpanded && (
                         <p className="text-sm mt-4 opacity-90 transition-all duration-500 animate-in slide-in-from-top-2">
-                          {item.description}
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
                         </p>
                       )}
                     </div>
@@ -286,6 +184,7 @@ export default function HomePage() {
                             height: '30px'
                           }}
                         >
+                          {/* Plus icon container */}
                           <div
                             className="absolute"
                             style={{
@@ -297,6 +196,7 @@ export default function HomePage() {
                               left: '4.5px'
                             }}
                           >
+                            {/* Vertical rectangle */}
                             <div
                               className="absolute"
                               style={{
@@ -307,6 +207,7 @@ export default function HomePage() {
                                 background: '#009CBC'
                               }}
                             />
+                            {/* Horizontal rectangle */}
                             <div
                               className="absolute"
                               style={{
@@ -329,7 +230,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Top Tour Themes - Dynamic from Database */}
+      {/* Top Tour Themes */}
       <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-6 sm:mb-8 space-y-6 lg:space-y-0">
@@ -391,67 +292,106 @@ export default function HomePage() {
 
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
-              {featuredTours.length > 0 ? featuredTours.map((tour, index) => (
-                <Link key={tour.id} href={`/tours/${tour.slug}`}>
-                  <Card className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200" style={{
-                    width: 'clamp(280px, 80vw, 384px)',
-                    height: 'clamp(400px, auto, 506px)'
-                  }}>
-                    <div className="relative">
-                      <Image
-                        src={tour.image || "/placeholder.svg"}
-                        alt={tour.title}
-                        width={368}
-                        height={260}
-                        className="w-full object-cover rounded-lg"
-                        style={{
-                          width: '368px',
-                          height: '260px'
-                        }}
-                      />
-                      <div className="absolute top-3 left-3 flex gap-2">
-                        <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 {tour.date || '20 may 2025'}</Badge>
-                        {tour.location && (
-                          <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{tour.location}</Badge>
-                        )}
-                      </div>
+              {[
+                {
+                  title: "Charyn Canyon & Kolsai Lakes Tour",
+                description:
+                  "A classic multi-day trip from Almaty into the Tian Shan mountains — explore canyons, alpine lakes, and mountain villages.",
+                image: "/bao_contras.jpg",
+                date: "20 may 2025",
+                location: "Almaty",
+                rating: 5,
+              },
+              {
+                title: "Mangystau Desert Expedition",
+                description:
+                  "Visit Bozzhyra, Sherkala, and Torysh with local guides. Sleep in a yurt under the stars, explore sacred places.",
+                image: "/mangystau.jpg",
+                date: "20 may 2025",
+                location: "",
+                rating: 5,
+              },
+              {
+                title: "Turkestan - Taraz - Otrar Route",
+                description:
+                  "A historical journey across mausoleums, caravanserais, and ruins — with stories of poets, traders, and pilgrims.",
+                image: "/kozha_akhmet_yassaui.jpg",
+                date: "20 may 2025",
+                location: "",
+                rating: 5,
+              },
+              {
+                title: "Almaty",
+                description:
+                  "Street art, fashion studios, coffee culture, and live music — explore Almaty's youthful soul.",
+                image: "/almaty.jpg",
+                date: "20 may 2025",
+                location: "",
+                rating: 5,
+              },
+              ].map((tour, index) => {
+                const slug = tour.title.toLowerCase().replace(/\s+/g, '-').replace(/[&]/g, '')
+                return (
+                  <Link key={index} href={`/tours/${slug}`}>
+                    <Card className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200" style={{
+                      width: 'clamp(280px, 80vw, 384px)',
+                      height: 'clamp(400px, auto, 506px)'
+                    }}>
+                  <div className="relative">
+                    <Image
+                      src={tour.image || "/placeholder.svg"}
+                      alt={tour.title}
+                      width={368}
+                      height={260}
+                      className="w-full object-cover rounded-lg"
+                      style={{
+                        width: '368px',
+                        height: '260px'
+                      }}
+                    />
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 {tour.date}</Badge>
+                    {tour.location && (
+                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{tour.location}</Badge>
+                    )}
+                  </div>
+                </div>
+                <CardContent className="p-4">
+                  <h3 className="mb-2 text-[#202020]" style={{
+                    fontFamily: 'Manrope, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '24px',
+                    lineHeight: '100%',
+                    letterSpacing: '-2%'
+                  }}>{tour.title}</h3>
+                  <p className="text-gray-600 mb-3 line-clamp-3" style={{
+                    fontFamily: 'Manrope, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '14px',
+                    lineHeight: '24px',
+                    letterSpacing: '-1%'
+                  }}>{tour.description}</p>
+                  <div className="flex justify-between items-center">
+                    <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
+                      Read more →
+                    </Button>
+                    <div className="flex">
+                      {Array.from({ length: tour.rating }).map((_, i) => (
+                        <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                      ))}
                     </div>
-                    <CardContent className="p-4">
-                      <h3 className="mb-2 text-[#202020]" style={{
-                        fontFamily: 'Manrope, sans-serif',
-                        fontWeight: 600,
-                        fontSize: '24px',
-                        lineHeight: '100%',
-                        letterSpacing: '-2%'
-                      }}>{tour.title}</h3>
-                      <p className="text-gray-600 mb-3 line-clamp-3" style={{
-                        fontFamily: 'Manrope, sans-serif',
-                        fontWeight: 400,
-                        fontSize: '14px',
-                        lineHeight: '24px',
-                        letterSpacing: '-1%'
-                      }}>{tour.description}</p>
-                      <div className="flex justify-between items-center">
-                        <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
-                          Read more →
-                        </Button>
-                        <div className="flex">
-                          {Array.from({ length: tour.rating }).map((_, i) => (
-                            <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              )) : null
-            }
+                  </div>
+                </CardContent>
+                    </Card>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Discover Cities - Static (can stay as is) */}
+      {/* Discover Cities */}
       <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="mb-6 sm:mb-8 text-center sm:text-left">
@@ -489,227 +429,26 @@ export default function HomePage() {
                 futuristic capitals, sleepy desert towns to cultural and academic centers. Each has its own character,
                 rhythm, and reason to explore.
               </p>
-              <Link href="/categories/cities">
-                <Button 
-                  className="bg-[#009CBC] hover:bg-[#007a9a] text-white border-0 hover:scale-105 transition-all duration-200 w-full sm:w-auto"
-                  style={{
-                    height: '50px',
-                    borderRadius: '99px',
-                    padding: '0 24px'
-                  }}
-                >
-                  Discover
-                </Button>
-              </Link>
+              <Button 
+                className="bg-[#009CBC] hover:bg-[#007a9a] text-white border-0 hover:scale-105 transition-all duration-200 w-full sm:w-auto"
+                style={{
+                  height: '50px',
+                  borderRadius: '99px',
+                  padding: '0 24px'
+                }}
+              >
+                Discover
+              </Button>
             </div>
 
             <div className="relative order-first lg:order-last">
-              {/* Interactive Kazakhstan Vector Map */}
-              <div className="w-full max-w-md mx-auto lg:max-w-none h-[300px] bg-gray-50 rounded-lg flex items-center justify-center p-4">
-                <div className="relative w-full h-full flex items-center justify-center">
-                  <svg 
-                    width="100%" 
-                    height="100%" 
-                    viewBox="0 0 640 348" 
-                    fill="none" 
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="max-w-full max-h-full"
-                  >
-                    {/* Kazakhstan main territory */}
-                    <path 
-                      d="M383.443 313.276L374.494 317.155L353.916 331.673L347.088 346.414L341.279 346.547L337 336.803L317.161 336.136L313.984 319.113L306.382 318.969L307.545 297.817L288.87 282.197L262.11 283.878L243.813 286.999L228.911 267.534L216.145 259.276L191.961 243.489L189.045 241.564L148.879 254.624L149.497 333.237L141.489 334.249L130.571 317.934L120.026 312.057L102.313 316.426L95.4187 323.381L94.5451 318.29L98.3794 309.536L95.402 302.18L77.3225 294.94L70.2773 275.664L61.6633 270.183L61.1457 263.082L76.3209 265.158L76.9217 249.115L90.1879 245.52L103.821 248.825L106.632 227.084L103.849 213.094L88.2349 214.196L74.9685 208.637L56.9056 218.637L42.3481 223.372L34.4239 219.722L36.01 208.025L26.066 192.666L14.4859 193.312L1.24182 177.525L10.2454 159.634L5.68775 154.771L18.1418 128.227L34.1848 142.317L36.1269 124.549L68.3352 97.5654L92.7087 96.9145L127.099 114.176L145.573 124.142L162.129 113.748L186.864 113.252L206.819 126.007L211.354 118.717L233.268 119.78L237.18 108.061L211.894 90.8266L226.868 78.4563L223.947 71.4781L238.927 64.7782L227.664 46.9267L234.815 37.9229L293.2 28.6688L300.818 22.0468L339.86 12.0803L353.888 0.772949L381.929 6.66032L386.842 34.5508L403.13 28.0678L423.169 37.144L421.878 51.5175L436.842 50.0261L475.945 25.0184L470.235 33.3877L490.146 53.7489L525.009 118.166L533.323 105.184L554.819 119.457L577.239 113.113L585.853 117.56L593.36 131.727L604.267 136.446L610.911 146.702L631.011 143.48L639.286 158.137L627.411 173.891L614.451 176.084L613.71 199.377L605.029 209.728L574.078 202.199L562.821 242.61L554.836 247.54L523.924 256.343L537.969 293.927L527.262 299.464L528.509 311.512L518.899 308.424L511.069 300.828L487.92 298.607L462.05 298.023L456.379 300.366L434.16 291.412L425.3 295.831L422.88 308.334L397.204 301.05L386.937 304.038L383.443 313.276Z" 
-                      fill="#B7C6B4" 
-                      stroke="#ffffff" 
-                      strokeWidth="1" 
-                      className="transition-colors cursor-pointer"
-                    />
-                    
-                    {/* City Labels - Positioned based on actual lat/lon coordinates within map bounds */}
-                    <g style={{ fontFamily: 'Inter, Segoe UI, system-ui, -apple-system, sans-serif' }}>
-                      {/* Petropavl - lat: 54.8667, lon: 69.15 */}
-                      <rect x="350" y="37" width="80" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="390" y="58" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Petropavl
-                      </text>
-                      
-                      {/* Qostanai - lat: 53.2144, lon: 63.6246 */}
-                      <rect x="233" y="66" width="70" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="268" y="87" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Qostanai
-                      </text>
-                      
-                      {/* Oral - lat: 51.2333, lon: 51.3667 */}
-                      <rect x="71" y="105" width="50" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="96" y="126" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Oral
-                      </text>
-                      
-                      {/* Pavlodar - lat: 52.3, lon: 76.95 */}
-                      <rect x="459" y="81" width="70" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="494" y="102" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Pavlodar
-                      </text>
-                      
-                      {/* Astana - lat: 51.1694, lon: 71.4491 - CAPITAL, wider label */}
-                      <rect x="385" y="108" width="80" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="425" y="129" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Astana
-                      </text>
-                      
-                      {/* Aktobe - lat: 50.2839, lon: 57.1669 */}
-                      <rect x="157" y="126" width="60" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="187" y="147" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Aktobe
-                      </text>
-                      
-                      {/* Semey - lat: 50.4111, lon: 80.2275 - label ABOVE dot */}
-                      <rect x="474" y="98" width="60" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="504" y="119" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Semey
-                      </text>
-                      
-                      {/* Oskemen - lat: 49.9789, lon: 82.6144 */}
-                      <rect x="556" y="132" width="70" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="591" y="153" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Oskemen
-                      </text>
-                      
-                      {/* Karagandy - lat: 49.8047, lon: 73.1094 */}
-                      <rect x="405" y="134" width="80" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="445" y="155" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Karagandy
-                      </text>
-                      
-                      {/* Atyrau - lat: 47.1164, lon: 51.8833 */}
-                      <rect x="79" y="188" width="55" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="106" y="209" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Atyrau
-                      </text>
-                      
-                      {/* Qyzylorda - lat: 44.8479, lon: 65.5093 */}
-                      <rect x="291" y="235" width="80" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="331" y="256" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Qyzylorda
-                      </text>
-                      
-                      {/* Aktau - lat: 43.65, lon: 51.2 */}
-                      <rect x="61" y="254" width="55" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="88" y="275" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Aktau
-                      </text>
-                      
-                      {/* SOUTHERN CLUSTER - Strategic positioning */}
-                      
-                      {/* Turkistan - lat: 43.2978, lon: 68.2517 - label LEFT of dot */}
-                      <rect x="280" y="260" width="75" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="317" y="281" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Turkistan
-                      </text>
-                      
-                      {/* Taraz - lat: 42.9, lon: 71.3667 - label RIGHT of dot */}
-                      <rect x="405" y="264" width="50" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="430" y="285" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Taraz
-                      </text>
-                      
-                      {/* Shymkent - lat: 42.315, lon: 69.5901 - label BELOW dot */}
-                      <rect x="324" y="305" width="80" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="364" y="326" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Shymkent
-                      </text>
-                      
-                      {/* Almaty - lat: 43.2567, lon: 76.9286 - label RIGHT of dot */}
-                      <rect x="482" y="259" width="60" height="32" rx="16" fill="#ffffff" stroke="none"/>
-                      <text x="512" y="280" fontSize="14" fill="#000000" fontWeight="500" textAnchor="middle">
-                        Almaty
-                      </text>
-                    </g>
-                    
-                    {/* City markers - Positioned using real lat/lon coordinates within actual map bounds */}
-                    <g style={{ zIndex: 10 }}>
-                      {/* Petropavl - lat: 54.8667, lon: 69.15 */}
-                      <circle cx="330" cy="49" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Petropavl</title>
-                      </circle>
-                      
-                      {/* Qostanai - lat: 53.2144, lon: 63.6246 */}
-                      <circle cx="213" cy="78" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Qostanai</title>
-                      </circle>
-                      
-                      {/* Oral - lat: 51.2333, lon: 51.3667 */}
-                      <circle cx="51" cy="117" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Oral</title>
-                      </circle>
-                      
-                      {/* Pavlodar - lat: 52.3, lon: 76.95 */}
-                      <circle cx="439" cy="93" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Pavlodar</title>
-                      </circle>
-                      
-                      {/* Astana - lat: 51.1694, lon: 71.4491 - Capital */}
-                      <circle cx="365" cy="120" r="6" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Astana - Capital</title>
-                      </circle>
-                      
-                      {/* Aktobe - lat: 50.2839, lon: 57.1669 */}
-                      <circle cx="137" cy="138" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Aktobe</title>
-                      </circle>
-                      
-                      {/* Semey - lat: 50.4111, lon: 80.2275 */}
-                      <circle cx="454" cy="130" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Semey</title>
-                      </circle>
-                      
-                      {/* Oskemen - lat: 49.9789, lon: 82.6144 */}
-                      <circle cx="536" cy="144" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Oskemen</title>
-                      </circle>
-                      
-                      {/* Karagandy - lat: 49.8047, lon: 73.1094 */}
-                      <circle cx="385" cy="146" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Karagandy</title>
-                      </circle>
-                      
-                      {/* Atyrau - lat: 47.1164, lon: 51.8833 */}
-                      <circle cx="59" cy="200" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Atyrau</title>
-                      </circle>
-                      
-                      {/* Qyzylorda - lat: 44.8479, lon: 65.5093 */}
-                      <circle cx="271" cy="247" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Qyzylorda</title>
-                      </circle>
-                      
-                      {/* Aktau - lat: 43.65, lon: 51.2 */}
-                      <circle cx="41" cy="266" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Aktau</title>
-                      </circle>
-                      
-                      {/* Turkistan - lat: 43.2978, lon: 68.2517 */}
-                      <circle cx="360" cy="272" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Turkistan</title>
-                      </circle>
-                      
-                      {/* Almaty - lat: 43.2567, lon: 76.9286 */}
-                      <circle cx="462" cy="271" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Almaty</title>
-                      </circle>
-                      
-                      {/* Taraz - lat: 42.9, lon: 71.3667 */}
-                      <circle cx="385" cy="276" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Taraz</title>
-                      </circle>
-                      
-                      {/* Shymkent - lat: 42.315, lon: 69.5901 */}
-                      <circle cx="364" cy="289" r="5" fill="#00FFB3" className="cursor-pointer hover:fill-cyan-300 transition-colors">
-                        <title>Shymkent</title>
-                      </circle>
-                    </g>
-                  </svg>
-                </div>
-              </div>
+              <Image
+                src="/kz_map.png"
+                alt="Kazakhstan Map"
+                width={500}
+                height={300}
+                className="w-full h-auto max-w-md mx-auto lg:max-w-none"
+              />
             </div>
           </div>
 
@@ -769,6 +508,7 @@ export default function HomePage() {
               </Button>
             </div>
 
+            {/* Instagram Photos */}
             <div className="flex-1">
               <div className="overflow-x-auto scrollbar-hide">
                 <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
@@ -798,7 +538,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Blog Section - Dynamic from Database */}
+      {/* Blog Section */}
       <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -834,14 +574,39 @@ export default function HomePage() {
 
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
-              {featuredBlogs.length > 0 ? featuredBlogs.map((post) => (
-                <Card key={post.id} className="overflow-hidden flex-shrink-0 p-2 flex flex-col border-0" style={{ 
+              {[
+                {
+                  image: "/famile.jpg",
+                  title: "Almaty Creative Tour",
+                  description: "Street art, fashion studios, coffee culture, and live music — explore Almaty&apos;s youthful soul.",
+                  category: "Culture"
+                },
+                {
+                  image: "/baiterek.jpg",
+                  title: "Nur-Sultan Architecture",
+                  description: "Discover the futuristic architecture and modern landmarks of Kazakhstan&apos;s capital city.",
+                  category: "Architecture"
+                },
+                {
+                  image: "/mangystau.jpg",
+                  title: "Mangystau Adventures",
+                  description: "Explore the mystical landscapes and ancient formations of the Mangystau region.",
+                  category: "Adventure"
+                },
+                {
+                  image: "/kozha_akhmet_yassaui.jpg",
+                  title: "Historical Heritage",
+                  description: "Journey through Kazakhstan&apos;s rich historical sites and cultural monuments.",
+                  category: "History"
+                }
+              ].map((post, index) => (
+                <Card key={index} className="overflow-hidden flex-shrink-0 p-2 flex flex-col border-0" style={{ 
                   width: 'clamp(280px, 80vw, 384px)', 
                   height: 'clamp(400px, auto, 506px)' 
                 }}>
                   <div className="relative">
                     <Image
-                      src={post.featuredImage || "/placeholder.svg"}
+                      src={post.image}
                       alt={post.title}
                       width={368}
                       height={260}
@@ -849,8 +614,8 @@ export default function HomePage() {
                       style={{ width: '368px', height: '260px' }}
                     />
                     <div className="absolute top-3 left-3 flex gap-2">
-                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 {new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</Badge>
-                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{post.category || 'Blog'}</Badge>
+                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 20 may 2025</Badge>
+                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{post.category}</Badge>
                     </div>
                   </div>
                   <CardContent className="p-4 flex flex-col flex-1">
@@ -868,10 +633,10 @@ export default function HomePage() {
                       lineHeight: '24px',
                       letterSpacing: '-1%'
                     }}>
-                      {post.excerpt || post.title}
+                      {post.description}
                     </p>
                     <div className="mt-auto">
-                      <Link href={`/blog/${post.slug}`}>
+                      <Link href="/blog">
                         <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
                           Read more →
                         </Button>
@@ -879,14 +644,13 @@ export default function HomePage() {
                     </div>
                   </CardContent>
                 </Card>
-              )) : null
-            }
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Explore Events - Dynamic from Database */}
+      {/* Explore Events */}
       <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-6 sm:mb-8 space-y-6 lg:space-y-0">
@@ -917,46 +681,48 @@ export default function HomePage() {
                 Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
                 landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
               </p>
-              <Link href="/events">
-                <Button 
-                  className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200 w-full sm:w-auto"
-                  style={{
-                    height: '50px',
-                    borderRadius: '99px',
-                    padding: '0 24px'
-                  }}
-                >
-                  Show all Events
-                </Button>
-              </Link>
+              <Button 
+                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200 w-full sm:w-auto"
+                style={{
+                  height: '50px',
+                  borderRadius: '99px',
+                  padding: '0 24px'
+                }}
+              >
+                Show all Events
+              </Button>
             </div>
           </div>
 
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
-              {featuredEvents.length > 0 ? featuredEvents.map((event) => (
-                <Card key={event._id} className="relative overflow-hidden flex-shrink-0 border-0" style={{ 
+              {[
+                { name: "Kolsay & Kayindy", image: "/bao_contras.jpg?height=240&width=280" },
+                { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
+                { name: "Shymbulak", image: "/kanatnaya_doroga.jpg?height=240&width=280" },
+                { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
+              ].map((event, index) => (
+                <Card key={index} className="relative overflow-hidden flex-shrink-0 border-0" style={{ 
                   width: 'clamp(280px, 80vw, 384px)', 
                   height: 'clamp(300px, 60vh, 400px)' 
                 }}>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
                   <Image
                     src={event.image || "/placeholder.svg"}
-                    alt={event.title}
+                    alt={event.name}
                     width={384}
                     height={400}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-3 left-3 z-20">
-                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1 mr-2">📅 {new Date(event.date).toLocaleDateString()}</Badge>
-                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{event.category}</Badge>
+                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1 mr-2">📅 20 may 2025</Badge>
+                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">Nature</Badge>
                   </div>
                   <div className="absolute bottom-4 left-4 text-white z-20">
                     <h3 className="text-lg font-semibold">{event.name}</h3>
                   </div>
                 </Card>
-              )) : null
-            }
+              ))}
             </div>
           </div>
         </div>
@@ -978,17 +744,15 @@ export default function HomePage() {
               <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white text-center sm:text-left">
                 For <span className="text-[#009CBC]">Investors</span>
               </h2>
-              <Link href="/for-investors">
-                <Button className="bg-white text-gray-900 hover:bg-gray-100 rounded-full w-full sm:w-auto px-6">
-                  Learn More
-                </Button>
-              </Link>
+              <Button className="bg-white text-gray-900 hover:bg-gray-100 rounded-full w-full sm:w-auto px-6">
+                Show all tours
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* About Section - Static */}
+      {/* About Section */}
       <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">

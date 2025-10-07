@@ -48,11 +48,14 @@ interface BlogPost {
 
 interface Event {
   _id: string;
-  name: string;
+  title: string;
+  slug: string;
   image: string;
   category: string;
   date: string;
-  order: number;
+  location?: string;
+  featured: boolean;
+  status: string;
 }
 
 export default function HomePage() {
@@ -79,33 +82,140 @@ export default function HomePage() {
       try {
         setLoading(true);
         
-        // Start with empty array
-        setWhyVisitItems([]);
-
+        // Load homepage content from database only
         try {
-          console.log('Fetching homepage content from API...');
+          console.log('Fetching homepage content from database...');
           const homepageResponse = await homepageApi.getPublicHomepageContent();
-          console.log('Homepage response:', homepageResponse);
+          console.log('Homepage API response:', homepageResponse);
           
           if (homepageResponse.data.success && homepageResponse.data.data) {
             const data = homepageResponse.data.data;
-            console.log('Homepage data:', data);
+            console.log('Homepage data received:', data);
             
             if (data.whyVisit?.features && data.whyVisit.features.length > 0) {
-              console.log('SUCCESS: Setting features from database:', data.whyVisit.features);
+              console.log('✅ SUCCESS: Setting features from database:', data.whyVisit.features);
               setWhyVisitItems(data.whyVisit.features.sort((a: WhyVisitItem, b: WhyVisitItem) => a.order - b.order));
             } else {
-              console.log('No features found in database data');
+              console.log('❌ No features found in database data');
               setWhyVisitItems([]);
+            {
+              title: "Silk Road History",
+              description: "Explore ancient trade routes and historical significance that shaped Central Asia for centuries. Walk through the same paths where merchants, scholars, and travelers once journeyed between East and West.",
+              image: "/desert.jpg",
+              bgColor: "from-blue-400 to-blue-600",
+              order: 1
+            },
+            {
+              title: "Nomadic Soul", 
+              description: "Experience traditional nomadic culture and lifestyle that has been preserved for generations. Stay in authentic yurts, learn traditional crafts, and discover the wisdom of the steppe people.",
+              image: "/shanyrak.jpg",
+              bgColor: "from-amber-600 to-amber-800",
+              order: 2
+            },
+            {
+              title: "Modern Meets Traditional",
+              description: "Witness the blend of contemporary and ancient cultures in Kazakhstan's dynamic cities. From futuristic Nur-Sultan to historic Almaty, see how tradition and innovation coexist beautifully.",
+              image: "/baiterek.jpg",
+              bgColor: "from-orange-400 to-orange-600",
+              order: 3
+            },
+            {
+              title: "No Crowds, Just Space",
+              description: "Enjoy vast landscapes and peaceful environments away from mass tourism. Kazakhstan offers authentic experiences in pristine wilderness where you can truly connect with nature and yourself.",
+              image: "/kanatnaya_doroga.jpg",
+              bgColor: "from-red-400 to-red-600",
+              order: 4
+            },
+            {
+              title: "Unspoiled Nature",
+              description: "Discover pristine natural beauty and wildlife in one of the world's largest countries. From snow-capped peaks to endless steppes, Kazakhstan's landscapes remain largely untouched and spectacular.",
+              image: "/yurta.jpg",
+              bgColor: "from-green-400 to-green-600",
+              order: 5
+            }
+              ]);
             }
           } else {
-            console.log('No content in database, keeping empty');
-            setWhyVisitItems([]);
+            console.log('API response not successful, using defaults');
+            setWhyVisitItems([
+            {
+              title: "Silk Road History",
+              description: "Explore ancient trade routes and historical significance that shaped Central Asia for centuries. Walk through the same paths where merchants, scholars, and travelers once journeyed between East and West.",
+              image: "/desert.jpg",
+              bgColor: "from-blue-400 to-blue-600",
+              order: 1
+            },
+            {
+              title: "Nomadic Soul", 
+              description: "Experience traditional nomadic culture and lifestyle that has been preserved for generations. Stay in authentic yurts, learn traditional crafts, and discover the wisdom of the steppe people.",
+              image: "/shanyrak.jpg",
+              bgColor: "from-amber-600 to-amber-800",
+              order: 2
+            },
+            {
+              title: "Modern Meets Traditional",
+              description: "Witness the blend of contemporary and ancient cultures in Kazakhstan's dynamic cities. From futuristic Nur-Sultan to historic Almaty, see how tradition and innovation coexist beautifully.",
+              image: "/baiterek.jpg",
+              bgColor: "from-orange-400 to-orange-600",
+              order: 3
+            },
+            {
+              title: "No Crowds, Just Space",
+              description: "Enjoy vast landscapes and peaceful environments away from mass tourism. Kazakhstan offers authentic experiences in pristine wilderness where you can truly connect with nature and yourself.",
+              image: "/kanatnaya_doroga.jpg",
+              bgColor: "from-red-400 to-red-600",
+              order: 4
+            },
+            {
+              title: "Unspoiled Nature",
+              description: "Discover pristine natural beauty and wildlife in one of the world's largest countries. From snow-capped peaks to endless steppes, Kazakhstan's landscapes remain largely untouched and spectacular.",
+              image: "/yurta.jpg",
+              bgColor: "from-green-400 to-green-600",
+              order: 5
+            }
+            ]);
           }
         } catch (error) {
           console.error('Error fetching homepage content:', error);
-          console.log('API error, keeping empty');
-          setWhyVisitItems([]);
+          console.log('Using fallback defaults due to error');
+          // Use default content if not found
+          setWhyVisitItems([
+            {
+              title: "Silk Road History",
+              description: "Explore ancient trade routes and historical significance that shaped Central Asia for centuries. Walk through the same paths where merchants, scholars, and travelers once journeyed between East and West.",
+              image: "/desert.jpg",
+              bgColor: "from-blue-400 to-blue-600",
+              order: 1
+            },
+            {
+              title: "Nomadic Soul", 
+              description: "Experience traditional nomadic culture and lifestyle that has been preserved for generations. Stay in authentic yurts, learn traditional crafts, and discover the wisdom of the steppe people.",
+              image: "/shanyrak.jpg",
+              bgColor: "from-amber-600 to-amber-800",
+              order: 2
+            },
+            {
+              title: "Modern Meets Traditional",
+              description: "Witness the blend of contemporary and ancient cultures in Kazakhstan's dynamic cities. From futuristic Nur-Sultan to historic Almaty, see how tradition and innovation coexist beautifully.",
+              image: "/baiterek.jpg",
+              bgColor: "from-orange-400 to-orange-600",
+              order: 3
+            },
+            {
+              title: "No Crowds, Just Space",
+              description: "Enjoy vast landscapes and peaceful environments away from mass tourism. Kazakhstan offers authentic experiences in pristine wilderness where you can truly connect with nature and yourself.",
+              image: "/kanatnaya_doroga.jpg",
+              bgColor: "from-red-400 to-red-600",
+              order: 4
+            },
+            {
+              title: "Unspoiled Nature",
+              description: "Discover pristine natural beauty and wildlife in one of the world's largest countries. From snow-capped peaks to endless steppes, Kazakhstan's landscapes remain largely untouched and spectacular.",
+              image: "/yurta.jpg",
+              bgColor: "from-green-400 to-green-600",
+              order: 5
+            }
+          ]);
         }
         
         // Load featured tours
@@ -128,13 +238,11 @@ export default function HomePage() {
           console.error('Error loading featured blogs:', error);
         }
         
-        // Load featured events from homepage content
+        // Load featured events
         try {
-          console.log('Getting events from homepage data...');
-          const homepageResponse = await homepageApi.getPublicHomepageContent();
-          if (homepageResponse.data.success && homepageResponse.data.data?.events?.eventList) {
-            console.log('Events found in homepage:', homepageResponse.data.data.events.eventList);
-            setFeaturedEvents(homepageResponse.data.data.events.eventList.sort((a: any, b: any) => a.order - b.order));
+          const eventsResponse = await eventsApi.getPublicEvents({ featured: true, limit: 4 });
+          if (eventsResponse.data.success && eventsResponse.data.data?.events) {
+            setFeaturedEvents(eventsResponse.data.data.events);
           }
         } catch (error) {
           console.error('Error loading featured events:', error);
@@ -444,8 +552,82 @@ export default function HomePage() {
                     </CardContent>
                   </Card>
                 </Link>
-              )) : null
-            }
+              )) : (
+                // Fallback content if no tours are loaded
+                [
+                  {
+                    title: "Charyn Canyon & Kolsai Lakes Tour",
+                    description: "A classic multi-day trip from Almaty into the Tian Shan mountains — explore canyons, alpine lakes, and mountain villages.",
+                    image: "/bao_contras.jpg",
+                    date: "20 may 2025",
+                    location: "Almaty",
+                    rating: 5,
+                    slug: "charyn-canyon-kolsai-lakes-tour"
+                  },
+                  {
+                    title: "Mangystau Desert Expedition",
+                    description: "Visit Bozzhyra, Sherkala, and Torysh with local guides. Sleep in a yurt under the stars, explore sacred places.",
+                    image: "/mangystau.jpg",
+                    date: "20 may 2025",
+                    location: "",
+                    rating: 5,
+                    slug: "mangystau-desert-expedition"
+                  }
+                ].map((tour, index) => (
+                  <Link key={index} href={`/tours/${tour.slug}`}>
+                    <Card className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200" style={{
+                      width: 'clamp(280px, 80vw, 384px)',
+                      height: 'clamp(400px, auto, 506px)'
+                    }}>
+                      <div className="relative">
+                        <Image
+                          src={tour.image}
+                          alt={tour.title}
+                          width={368}
+                          height={260}
+                          className="w-full object-cover rounded-lg"
+                          style={{
+                            width: '368px',
+                            height: '260px'
+                          }}
+                        />
+                        <div className="absolute top-3 left-3 flex gap-2">
+                          <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 {tour.date}</Badge>
+                          {tour.location && (
+                            <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{tour.location}</Badge>
+                          )}
+                        </div>
+                      </div>
+                      <CardContent className="p-4">
+                        <h3 className="mb-2 text-[#202020]" style={{
+                          fontFamily: 'Manrope, sans-serif',
+                          fontWeight: 600,
+                          fontSize: '24px',
+                          lineHeight: '100%',
+                          letterSpacing: '-2%'
+                        }}>{tour.title}</h3>
+                        <p className="text-gray-600 mb-3 line-clamp-3" style={{
+                          fontFamily: 'Manrope, sans-serif',
+                          fontWeight: 400,
+                          fontSize: '14px',
+                          lineHeight: '24px',
+                          letterSpacing: '-1%'
+                        }}>{tour.description}</p>
+                        <div className="flex justify-between items-center">
+                          <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
+                            Read more →
+                          </Button>
+                          <div className="flex">
+                            {Array.from({ length: tour.rating }).map((_, i) => (
+                              <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -879,8 +1061,68 @@ export default function HomePage() {
                     </div>
                   </CardContent>
                 </Card>
-              )) : null
-            }
+              )) : (
+                // Fallback content if no blogs are loaded
+                [
+                  {
+                    image: "/famile.jpg",
+                    title: "Almaty Creative Tour",
+                    description: "Street art, fashion studios, coffee culture, and live music — explore Almaty's youthful soul.",
+                    category: "Culture"
+                  },
+                  {
+                    image: "/baiterek.jpg",
+                    title: "Nur-Sultan Architecture",
+                    description: "Discover the futuristic architecture and modern landmarks of Kazakhstan's capital city.",
+                    category: "Architecture"
+                  }
+                ].map((post, index) => (
+                  <Card key={index} className="overflow-hidden flex-shrink-0 p-2 flex flex-col border-0" style={{ 
+                    width: 'clamp(280px, 80vw, 384px)', 
+                    height: 'clamp(400px, auto, 506px)' 
+                  }}>
+                    <div className="relative">
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        width={368}
+                        height={260}
+                        className="w-full object-cover rounded-lg"
+                        style={{ width: '368px', height: '260px' }}
+                      />
+                      <div className="absolute top-3 left-3 flex gap-2">
+                        <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 20 may 2025</Badge>
+                        <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{post.category}</Badge>
+                      </div>
+                    </div>
+                    <CardContent className="p-4 flex flex-col flex-1">
+                      <h3 className="mb-2 text-[#202020]" style={{
+                        fontFamily: 'Manrope, sans-serif',
+                        fontWeight: 600,
+                        fontSize: '24px',
+                        lineHeight: '100%',
+                        letterSpacing: '-2%'
+                      }}>{post.title}</h3>
+                      <p className="text-gray-600 mb-3 flex-1" style={{
+                        fontFamily: 'Manrope, sans-serif',
+                        fontWeight: 400,
+                        fontSize: '14px',
+                        lineHeight: '24px',
+                        letterSpacing: '-1%'
+                      }}>
+                        {post.description}
+                      </p>
+                      <div className="mt-auto">
+                        <Link href="/blog">
+                          <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
+                            Read more →
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -952,11 +1194,38 @@ export default function HomePage() {
                     <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{event.category}</Badge>
                   </div>
                   <div className="absolute bottom-4 left-4 text-white z-20">
-                    <h3 className="text-lg font-semibold">{event.name}</h3>
+                    <h3 className="text-lg font-semibold">{event.title}</h3>
                   </div>
                 </Card>
-              )) : null
-            }
+              )) : (
+                // Fallback content if no events are loaded
+                [
+                  { name: "Kolsay & Kayindy", image: "/bao_contras.jpg?height=240&width=280" },
+                  { name: "Charyn Canyon", image: "/charyn.jpg?height=240&width=280" },
+                  { name: "Shymbulak", image: "/kanatnaya_doroga.jpg?height=240&width=280" },
+                ].map((event, index) => (
+                  <Card key={index} className="relative overflow-hidden flex-shrink-0 border-0" style={{ 
+                    width: 'clamp(280px, 80vw, 384px)', 
+                    height: 'clamp(300px, 60vh, 400px)' 
+                  }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+                    <Image
+                      src={event.image || "/placeholder.svg"}
+                      alt={event.name}
+                      width={384}
+                      height={400}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-3 left-3 z-20">
+                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1 mr-2">📅 20 may 2025</Badge>
+                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">Nature</Badge>
+                    </div>
+                    <div className="absolute bottom-4 left-4 text-white z-20">
+                      <h3 className="text-lg font-semibold">{event.name}</h3>
+                    </div>
+                  </Card>
+                ))
+              )}
             </div>
           </div>
         </div>

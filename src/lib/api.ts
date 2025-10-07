@@ -297,3 +297,71 @@ export const categoryPageInfoApi = {
 
   getCategoryPageInfoStats: () => api.get('/category-page-info/stats'),
 };
+
+// Events API
+export const eventsApi = {
+  getEvents: (params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    category?: string;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/events', { params }),
+
+  getPublicEvents: (params?: {
+    page?: number;
+    limit?: number;
+    category?: string;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/events/public', { params }),
+
+  getEvent: (id: string) => api.get(`/events/${id}`),
+
+  getPublicEvent: (id: string) => api.get(`/events/public/${id}`),
+
+  createEvent: (data: Record<string, unknown>) => api.post('/events', data),
+
+  updateEvent: (id: string, data: Record<string, unknown>) => api.put(`/events/${id}`, data),
+
+  deleteEvent: (id: string) => api.delete(`/events/${id}`),
+
+  getEventStats: () => api.get('/events/stats'),
+};
+
+// Homepage Content API
+export const homepageApi = {
+  getHomepageContent: () => api.get('/homepage'),
+
+  getPublicHomepageContent: () => api.get('/homepage'),
+
+  updateHomepageContent: (data: Record<string, unknown>) => api.put('/homepage', data),
+
+  updateHomepageSection: (section: string, data: Record<string, unknown>) => api.put(`/homepage/${section}`, data),
+
+  updateWhyVisitSection: (data: {
+    title?: string;
+    features: Array<{
+      title: string;
+      image: string;
+      bgColor: string;
+      order: number;
+    }>;
+  }) => api.put('/homepage/whyVisit', data),
+
+  updateHeroSection: (data: {
+    title: string;
+    subtitle?: string;
+    videoUrl?: string;
+    backgroundImage?: string;
+  }) => api.put('/homepage/hero', data),
+
+  createHomepageVersion: () => api.post('/homepage/version'),
+
+  getHomepageVersions: () => api.get('/homepage/versions'),
+
+  activateHomepageVersion: (id: string) => api.put(`/homepage/versions/${id}/activate`),
+
+  getHomepageStats: () => api.get('/homepage/stats'),
+};

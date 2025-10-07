@@ -434,7 +434,7 @@ export default function EditBlogPostPage() {
                   <Button
                     type="submit"
                     disabled={isSubmitting || updateMutation.isPending || !isDirty}
-                    className="flex-1"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <Save className="h-4 w-4 mr-2" />
                     {isSubmitting ? 'Saving...' : 'Save Changes'}

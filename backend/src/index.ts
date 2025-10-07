@@ -16,7 +16,11 @@ import tourRoutes from './routes/tours';
 import categoryRoutes from './routes/categories';
 import destinationRoutes from './routes/destinations';
 import categoryPageInfoRoutes from './routes/categoryPageInfo';
+import eventsRoutes from './routes/events';
 import migrateRoutes from './routes/migrate';
+
+// Import homepage routes
+import homepageRoutes from './routes/homepage';
 
 // Load environment variables
 dotenv.config();
@@ -73,7 +77,9 @@ app.use('/api/tours', tourRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/destinations', destinationRoutes);
 app.use('/api/category-page-info', categoryPageInfoRoutes);
+app.use('/api/events', eventsRoutes);
 app.use('/api/migrate', migrateRoutes);
+app.use('/api/homepage', homepageRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
