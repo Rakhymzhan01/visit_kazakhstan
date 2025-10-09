@@ -1,10 +1,43 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
+import { useQuery } from '@tanstack/react-query'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import { aboutUsApi } from '@/lib/api'
+
+// Types
+interface AboutUsData {
+  aboutDescription: string;
+  stats: Array<{
+    value: string;
+    description: string;
+    order: number;
+  }>;
+  teamMembers: Array<{
+    name: string;
+    position: string;
+    image: string;
+    order: number;
+  }>;
+  teamDescription: string;
+  contact: {
+    address: {
+      street: string;
+      city: string;
+      country: string;
+    };
+    phone: string;
+    email: string;
+    mapImage: string;
+  };
+}
 
 // About Section Component
-const AboutSection = () => {
+const AboutSection = ({ aboutData }: { aboutData?: AboutUsData }) => {
+  const sortedStats = aboutData?.stats?.sort((a, b) => a.order - b.order) || [];
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -12,6 +45,7 @@ const AboutSection = () => {
           
           {/* Text Content */}
           <div>
+            {/* Static heading "About Us" - Do not change */}
             <h2 className="mb-6 text-center sm:text-left">
               <span className="text-[#202020]" style={{
                 fontFamily: 'Montserrat, sans-serif',
@@ -34,72 +68,49 @@ const AboutSection = () => {
                 }}
               >us</span>
             </h2>
+            {/* Dynamic description */}
             <p className="text-lg text-gray-600 leading-relaxed">
-              Kazakhstan is vast and diverse — and so are the ways to experience 
-              it. Whether you&apos;re chasing landscapes, culture, adventure, or 
-              spiritual meaning, there&apos;s a route for every traveler.
+              {aboutData?.aboutDescription || "Loading about description..."}
             </p>
           </div>
 
-          {/* Stats Grid - Same as Home Page */}
+          {/* Stats Grid - Dynamic content */}
           <div className="w-full max-w-lg mx-auto lg:max-w-none lg:w-[588px] h-auto lg:h-[476px] relative">
             {/* Staggered layout */}
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0 lg:absolute lg:top-0 lg:left-0 w-full max-w-[282px] h-auto min-h-[196px]">
-              <div className="text-[#009CBC] mb-3 font-montserrat" style={{
-                fontWeight: 600,
-                fontSize: 'clamp(32px, 8vw, 50px)',
-                lineHeight: '100%',
-                letterSpacing: '-4%'
-              }}>2010</div>
-              <p className="text-gray-600 font-manrope" style={{
-                fontWeight: 400,
-                fontSize: '16px',
-                lineHeight: '150%',
-                letterSpacing: '-1%'
-              }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0 lg:absolute lg:top-[60px] lg:left-[306px] w-full max-w-[282px] h-auto min-h-[196px]">
-              <div className="text-[#009CBC] mb-3 font-montserrat" style={{
-                fontWeight: 600,
-                fontSize: 'clamp(32px, 8vw, 50px)',
-                lineHeight: '100%',
-                letterSpacing: '-4%'
-              }}>50+</div>
-              <p className="text-gray-600 font-manrope" style={{
-                fontWeight: 400,
-                fontSize: '16px',
-                lineHeight: '150%',
-                letterSpacing: '-1%'
-              }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0 lg:absolute lg:top-[220px] lg:left-0 w-full max-w-[282px] h-auto min-h-[196px]">
-              <div className="text-[#009CBC] mb-3 font-montserrat" style={{
-                fontWeight: 600,
-                fontSize: 'clamp(32px, 8vw, 50px)',
-                lineHeight: '100%',
-                letterSpacing: '-4%'
-              }}>1000+</div>
-              <p className="text-gray-600 font-manrope" style={{
-                fontWeight: 400,
-                fontSize: '16px',
-                lineHeight: '150%',
-                letterSpacing: '-1%'
-              }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:absolute lg:top-[280px] lg:left-[306px] w-full max-w-[282px] h-auto min-h-[196px]">
-              <div className="text-[#009CBC] mb-3 font-montserrat" style={{
-                fontWeight: 600,
-                fontSize: 'clamp(32px, 8vw, 50px)',
-                lineHeight: '100%',
-                letterSpacing: '-4%'
-              }}>20</div>
-              <p className="text-gray-600 font-manrope" style={{
-                fontWeight: 400,
-                fontSize: '16px',
-                lineHeight: '150%',
-                letterSpacing: '-1%'
-              }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </div>
+            {sortedStats.slice(0, 4).map((stat, index) => {
+              const positions = [
+                { top: 0, left: 0 },
+                { top: 60, left: 306 },
+                { top: 220, left: 0 },
+                { top: 280, left: 306 }
+              ];
+              
+              return (
+                <div 
+                  key={stat.order}
+                  className={`bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 lg:mb-0 ${
+                    index < 4 ? 'lg:absolute' : ''
+                  } w-full max-w-[282px] h-auto min-h-[196px]`}
+                  style={index < 4 ? {
+                    top: positions[index].top,
+                    left: positions[index].left
+                  } : {}}
+                >
+                  <div className="text-[#009CBC] mb-3 font-montserrat" style={{
+                    fontWeight: 600,
+                    fontSize: 'clamp(32px, 8vw, 50px)',
+                    lineHeight: '100%',
+                    letterSpacing: '-4%'
+                  }}>{stat.value}</div>
+                  <p className="text-gray-600 font-manrope" style={{
+                    fontWeight: 400,
+                    fontSize: '16px',
+                    lineHeight: '150%',
+                    letterSpacing: '-1%'
+                  }}>{stat.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -107,41 +118,15 @@ const AboutSection = () => {
   )
 }
 
-// Team Section Component - Exact Figma Match
-const TeamSection = () => {
-  const teamMembers = [
-    {
-      name: 'Darlene Robertson',
-      position: 'Marketing Coordinator',
-      image: '/team/4838ebf99f5d3b04e54d4bda4b727af5ea1e799c.png'
-    },
-    {
-      name: 'Annette Black',
-      position: 'President of Sales',
-      image: '/team/0d57fbe1ccda59febd767fcdce533d97448fc201.png'
-    },
-    {
-      name: 'Guy Hawkins',
-      position: 'Nursing Assistant',
-      image: '/team/772ad5a28014d2afa8904da5a2b103415f00c620.png'
-    },
-    {
-      name: 'Jane Cooper',
-      position: 'Medical Assistant',
-      image: '/team/87c4fa29ccd407339492099a0753c544ac923c3d.png'
-    },
-    {
-      name: 'Arlene McCoy',
-      position: 'Web Designer',
-      image: '/team/ac3097d85855fb2e2d9ee42dceff5f098abc3b17.png'
-    }
-  ]
+// Team Section Component
+const TeamSection = ({ aboutData }: { aboutData?: AboutUsData }) => {
+  const sortedTeamMembers = aboutData?.teamMembers?.sort((a, b) => a.order - b.order) || [];
 
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
+        {/* Static section header "Our Team" - Do not change */}
         <div className="text-center mb-12">
           <h2 className="mb-4">
             <span className="text-[#202020]" style={{
@@ -167,11 +152,11 @@ const TeamSection = () => {
           </h2>
         </div>
 
-        {/* Team Grid */}
+        {/* Dynamic Team Grid */}
         <div className="overflow-x-auto scrollbar-hide mb-12">
           <div className="flex gap-4 sm:gap-6 lg:gap-8 pb-4" style={{ width: 'max-content' }}>
-            {teamMembers.map((member, index) => (
-              <div key={index} className="group cursor-pointer flex-shrink-0">
+            {sortedTeamMembers.map((member, index) => (
+              <div key={`${member.name}-${index}`} className="group cursor-pointer flex-shrink-0">
                 <div className="relative overflow-hidden rounded-2xl">
                   <Image
                     src={member.image}
@@ -197,12 +182,10 @@ const TeamSection = () => {
           </div>
         </div>
 
-        {/* Description */}
+        {/* Dynamic team description */}
         <div className="text-center max-w-4xl mx-auto">
           <p className="text-lg text-gray-600 leading-relaxed">
-            Kazakhstan is vast and diverse — and so are the ways to experience it. Whether 
-            you&apos;re chasing landscapes, culture, adventure, or spiritual meaning, there&apos;s a 
-            route for every traveler.
+            {aboutData?.teamDescription || "Loading team description..."}
           </p>
         </div>
       </div>
@@ -210,8 +193,10 @@ const TeamSection = () => {
   )
 }
 
-// Visit Kazakhstan Location Section with Map - Exact Figma Match
-const VisitKazakhstanSection = () => {
+// Visit Kazakhstan Location Section with Map
+const VisitKazakhstanSection = ({ aboutData }: { aboutData?: AboutUsData }) => {
+  const contact = aboutData?.contact;
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -219,6 +204,7 @@ const VisitKazakhstanSection = () => {
           
           {/* Left side - Contact Info */}
           <div>
+            {/* Static heading "Visit Kazakhstan" - Do not change */}
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#202020] mb-8">
               Visit <span className="text-[#009CBC]">Kazakhstan</span>
             </h2>
@@ -226,30 +212,38 @@ const VisitKazakhstanSection = () => {
             {/* Address Section */}
             <div className="space-y-6">
               <div>
+                {/* Static "ADDRESS" heading - Do not change */}
                 <h3 className="text-xl font-semibold text-[#202020] mb-4">ADDRESS</h3>
+                {/* Dynamic address content */}
                 <p className="text-gray-600 leading-relaxed">
-                  4517 Washington Ave, Manchester,<br />
-                  Kentucky 39495
+                  {contact ? (
+                    <>
+                      {contact.address.street},<br />
+                      {contact.address.city}, {contact.address.country}
+                    </>
+                  ) : (
+                    "Loading address..."
+                  )}
                 </p>
               </div>
 
-              {/* Contact Info */}
+              {/* Dynamic contact info */}
               <div className="space-y-4">
                 <div>
                   <a 
-                    href="tel:+77078005060" 
+                    href={`tel:${contact?.phone || ''}`}
                     className="text-[#202020] font-semibold text-xl hover:text-[#009CBC] transition-colors"
                   >
-                    +77078005060
+                    {contact?.phone || "Loading phone..."}
                   </a>
                 </div>
                 
                 <div>
                   <a 
-                    href="mailto:info@visitkazakhstan.com"
+                    href={`mailto:${contact?.email || ''}`}
                     className="text-gray-600 hover:text-[#009CBC] transition-colors"
                   >
-                    info@visitkazakhstan.com
+                    {contact?.email || "Loading email..."}
                   </a>
                 </div>
               </div>
@@ -263,11 +257,11 @@ const VisitKazakhstanSection = () => {
             </div>
           </div>
 
-          {/* Right side - Map */}
+          {/* Right side - Dynamic Map */}
           <div className="relative">
             <div className="rounded-2xl overflow-hidden h-96">
               <Image
-                src="/map.png"
+                src={contact?.mapImage || "/map.png"}
                 alt="Kazakhstan Map"
                 width={600}
                 height={400}
@@ -283,12 +277,57 @@ const VisitKazakhstanSection = () => {
 
 // Main Page Component
 export default function AboutUsPage() {
+  // Fetch About Us content from API
+  const { 
+    data: aboutUsData, 
+    isLoading, 
+    error 
+  } = useQuery({
+    queryKey: ['aboutus'],
+    queryFn: async () => {
+      const response = await aboutUsApi.getPublicAboutUs();
+      return response.data.data;
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-lg text-gray-900">Loading about us content...</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="text-lg text-red-600 mb-2">Failed to load content</div>
+            <button 
+              onClick={() => window.location.reload()}
+              className="text-blue-600 hover:text-blue-700"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <AboutSection />
-      <TeamSection />
-      <VisitKazakhstanSection />
+      <AboutSection aboutData={aboutUsData} />
+      <TeamSection aboutData={aboutUsData} />
+      <VisitKazakhstanSection aboutData={aboutUsData} />
       <Footer />
     </div>
   )

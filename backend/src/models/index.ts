@@ -16,3 +16,7 @@ export { TourCard } from './TourCard';
 export type { ITourCard } from './TourCard';
 export { Destination } from './Destination';
 export type { IDestination } from './Destination';
+export { Event } from './Event';
+export type { IEvent } from './Event';
+export { AboutUs } from './AboutUs';
+export type { IAboutUs } from './AboutUs';

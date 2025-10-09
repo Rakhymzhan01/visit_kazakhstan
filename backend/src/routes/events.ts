@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticateToken, requireAdmin, AuthenticatedRequest } from '../middleware/auth';
-import { BlogPost } from '../models';
+import { Event } from '../models';
 
 const router = express.Router();
 
@@ -18,8 +18,7 @@ router.get('/public', async (req, res) => {
     } = req.query;
 
     const query: any = {
-      status: 'PUBLISHED',
-      category: 'EVENTS'
+      status: 'PUBLISHED'
     };
 
     if (featured === 'true') {
@@ -27,43 +26,32 @@ router.get('/public', async (req, res) => {
     }
 
     if (category) {
-      query.tags = { $in: [category] };
+      query.category = category;
     }
 
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
         { excerpt: { $regex: search, $options: 'i' } }
       ];
     }
 
     const skip = (Number(page) - 1) * Number(limit);
     
-    const events = await BlogPost.find(query)
-      .select('title slug excerpt featuredImage tags createdAt publishedAt featured')
-      .sort({ createdAt: -1 })
+    const events = await Event.find(query)
+      .select('title slug description excerpt image category date time location featured status views')
+      .sort({ date: 1 }) // Sort by event date ascending
       .skip(skip)
       .limit(Number(limit))
       .lean();
 
-    const total = await BlogPost.countDocuments(query);
-
-    // Transform blog posts to event format
-    const transformedEvents = events.map(event => ({
-      _id: event._id,
-      title: event.title,
-      slug: event.slug,
-      image: event.featuredImage || '/placeholder.svg',
-      category: event.tags?.[0] || 'Events',
-      date: event.publishedAt || event.createdAt,
-      featured: event.featured || false,
-      status: 'PUBLISHED'
-    }));
+    const total = await Event.countDocuments(query);
 
     res.json({
       success: true,
       data: {
-        events: transformedEvents,
+        events,
         pagination: {
           current: Number(page),
           pages: Math.ceil(total / Number(limit)),
@@ -94,9 +82,7 @@ router.get('/', authenticateToken, requireAdmin, async (req: AuthenticatedReques
       search
     } = req.query;
 
-    const query: any = {
-      category: 'EVENTS'
-    };
+    const query: any = {};
 
     if (status) {
       query.status = status;
@@ -107,42 +93,32 @@ router.get('/', authenticateToken, requireAdmin, async (req: AuthenticatedReques
     }
 
     if (category) {
-      query.tags = { $in: [category] };
+      query.category = category;
     }
 
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
         { excerpt: { $regex: search, $options: 'i' } }
       ];
     }
 
     const skip = (Number(page) - 1) * Number(limit);
     
-    const events = await BlogPost.find(query)
+    const events = await Event.find(query)
+      .populate('author', 'name email')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(Number(limit))
       .lean();
 
-    const total = await BlogPost.countDocuments(query);
-
-    // Transform blog posts to event format
-    const transformedEvents = events.map(event => ({
-      _id: event._id,
-      title: event.title,
-      slug: event.slug,
-      image: event.featuredImage || '/placeholder.svg',
-      category: event.tags?.[0] || 'Events',
-      date: event.publishedAt || event.createdAt,
-      featured: event.featured || false,
-      status: event.status
-    }));
+    const total = await Event.countDocuments(query);
 
     res.json({
       success: true,
       data: {
-        events: transformedEvents,
+        events,
         pagination: {
           current: Number(page),
           pages: Math.ceil(total / Number(limit)),
@@ -159,16 +135,44 @@ router.get('/', authenticateToken, requireAdmin, async (req: AuthenticatedReques
   }
 });
 
+// @desc    Get single event by slug (public)
+// @route   GET /api/events/public/slug/:slug
+// @access  Public
+router.get('/public/slug/:slug', async (req, res) => {
+  try {
+    const event = await Event.findOne({ 
+      slug: req.params.slug,
+      status: 'PUBLISHED'
+    }).lean();
+
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        error: 'Event not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: event
+    });
+  } catch (error) {
+    console.error('Error fetching event by slug:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch event'
+    });
+  }
+});
+
 // @desc    Get single event (public)
 // @route   GET /api/events/public/:id
 // @access  Public
 router.get('/public/:id', async (req, res) => {
   try {
-    const event = await BlogPost.findById(req.params.id)
+    const event = await Event.findById(req.params.id)
       .where('status')
       .equals('PUBLISHED')
-      .where('category')
-      .equals('EVENTS')
       .lean();
 
     if (!event) {
@@ -178,22 +182,9 @@ router.get('/public/:id', async (req, res) => {
       });
     }
 
-    const transformedEvent = {
-      _id: event._id,
-      title: event.title,
-      slug: event.slug,
-      image: event.featuredImage || '/placeholder.svg',
-      category: event.tags?.[0] || 'Events',
-      date: event.publishedAt || event.createdAt,
-      featured: event.featured || false,
-      status: 'PUBLISHED',
-      content: event.content,
-      excerpt: event.excerpt
-    };
-
     res.json({
       success: true,
-      data: transformedEvent
+      data: event
     });
   } catch (error) {
     console.error('Error fetching event:', error);
@@ -209,9 +200,8 @@ router.get('/public/:id', async (req, res) => {
 // @access  Private/Admin
 router.get('/:id', authenticateToken, requireAdmin, async (req: AuthenticatedRequest, res) => {
   try {
-    const event = await BlogPost.findById(req.params.id)
-      .where('category')
-      .equals('EVENTS')
+    const event = await Event.findById(req.params.id)
+      .populate('author', 'name email')
       .lean();
 
     if (!event) {
@@ -221,22 +211,9 @@ router.get('/:id', authenticateToken, requireAdmin, async (req: AuthenticatedReq
       });
     }
 
-    const transformedEvent = {
-      _id: event._id,
-      title: event.title,
-      slug: event.slug,
-      image: event.featuredImage || '/placeholder.svg',
-      category: event.tags?.[0] || 'Events',
-      date: event.publishedAt || event.createdAt,
-      featured: event.featured || false,
-      status: event.status,
-      content: event.content,
-      excerpt: event.excerpt
-    };
-
     res.json({
       success: true,
-      data: transformedEvent
+      data: event
     });
   } catch (error) {
     console.error('Error fetching event:', error);
@@ -254,27 +231,15 @@ router.post('/', authenticateToken, requireAdmin, async (req: AuthenticatedReque
   try {
     const eventData = {
       ...req.body,
-      category: 'EVENTS',
-      author: req.user!.id
+      authorId: req.user!.id
     };
 
-    const event = new BlogPost(eventData);
+    const event = new Event(eventData);
     await event.save();
-
-    const transformedEvent = {
-      _id: event._id,
-      title: event.title,
-      slug: event.slug,
-      image: event.featuredImage || '/placeholder.svg',
-      category: event.tags?.[0] || 'Events',
-      date: event.publishedAt || event.createdAt,
-      featured: event.featured || false,
-      status: event.status
-    };
 
     res.status(201).json({
       success: true,
-      data: transformedEvent
+      data: event
     });
   } catch (error) {
     console.error('Error creating event:', error);
@@ -290,8 +255,8 @@ router.post('/', authenticateToken, requireAdmin, async (req: AuthenticatedReque
 // @access  Private/Admin
 router.put('/:id', authenticateToken, requireAdmin, async (req: AuthenticatedRequest, res) => {
   try {
-    const event = await BlogPost.findOneAndUpdate(
-      { _id: req.params.id, category: 'EVENTS' },
+    const event = await Event.findByIdAndUpdate(
+      req.params.id,
       { ...req.body, updatedAt: new Date() },
       { new: true, runValidators: true }
     );
@@ -303,20 +268,9 @@ router.put('/:id', authenticateToken, requireAdmin, async (req: AuthenticatedReq
       });
     }
 
-    const transformedEvent = {
-      _id: event._id,
-      title: event.title,
-      slug: event.slug,
-      image: event.featuredImage || '/placeholder.svg',
-      category: event.tags?.[0] || 'Events',
-      date: event.publishedAt || event.createdAt,
-      featured: event.featured || false,
-      status: event.status
-    };
-
     res.json({
       success: true,
-      data: transformedEvent
+      data: event
     });
   } catch (error) {
     console.error('Error updating event:', error);
@@ -332,10 +286,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req: AuthenticatedReq
 // @access  Private/Admin
 router.delete('/:id', authenticateToken, requireAdmin, async (req: AuthenticatedRequest, res) => {
   try {
-    const event = await BlogPost.findOneAndDelete({
-      _id: req.params.id,
-      category: 'EVENTS'
-    });
+    const event = await Event.findByIdAndDelete(req.params.id);
 
     if (!event) {
       return res.status(404).json({
@@ -362,27 +313,20 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req: Authenticated
 // @access  Private/Admin  
 router.get('/stats', authenticateToken, requireAdmin, async (req: AuthenticatedRequest, res) => {
   try {
-    const totalEvents = await BlogPost.countDocuments({ category: 'EVENTS' });
-    const publishedEvents = await BlogPost.countDocuments({ 
-      category: 'EVENTS', 
-      status: 'PUBLISHED' 
-    });
-    const draftEvents = await BlogPost.countDocuments({ 
-      category: 'EVENTS', 
-      status: 'DRAFT' 
-    });
-    const featuredEvents = await BlogPost.countDocuments({ 
-      category: 'EVENTS', 
-      featured: true 
-    });
+    const totalEvents = await Event.countDocuments({});
+    const publishedEvents = await Event.countDocuments({ status: 'PUBLISHED' });
+    const draftEvents = await Event.countDocuments({ status: 'DRAFT' });
+    const featuredEvents = await Event.countDocuments({ featured: true });
 
     res.json({
       success: true,
       data: {
-        total: totalEvents,
-        published: publishedEvents,
-        drafts: draftEvents,
-        featured: featuredEvents
+        stats: {
+          totalEvents,
+          publishedEvents,
+          draftEvents,
+          featuredEvents
+        }
       }
     });
   } catch (error) {

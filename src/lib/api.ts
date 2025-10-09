@@ -321,6 +321,8 @@ export const eventsApi = {
 
   getPublicEvent: (id: string) => api.get(`/events/public/${id}`),
 
+  getPublicEventBySlug: (slug: string) => api.get(`/events/public/slug/${slug}`),
+
   createEvent: (data: Record<string, unknown>) => api.post('/events', data),
 
   updateEvent: (id: string, data: Record<string, unknown>) => api.put(`/events/${id}`, data),
@@ -364,4 +366,26 @@ export const homepageApi = {
   activateHomepageVersion: (id: string) => api.put(`/homepage/versions/${id}/activate`),
 
   getHomepageStats: () => api.get('/homepage/stats'),
+};
+
+// About Us API
+export const aboutUsApi = {
+  getPublicAboutUs: () => api.get('/aboutus/public'),
+
+  getAboutUsContent: (params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    version?: number;
+  }) => api.get('/aboutus', { params }),
+
+  getAboutUsById: (id: string) => api.get(`/aboutus/${id}`),
+
+  createAboutUs: (data: Record<string, unknown>) => api.post('/aboutus', data),
+
+  updateAboutUs: (id: string, data: Record<string, unknown>) => api.put(`/aboutus/${id}`, data),
+
+  deleteAboutUs: (id: string) => api.delete(`/aboutus/${id}`),
+
+  publishAboutUs: (id: string) => api.put(`/aboutus/${id}/publish`),
 };

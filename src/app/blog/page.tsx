@@ -162,7 +162,7 @@ export default function BlogPage() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                 <div className="absolute top-4 left-4">
-                  <span className="bg-blue-600 text-white text-sm px-4 py-2 rounded-full font-medium">
+                  <span className="text-black text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#FFE700' }}>
                     {featuredPost.category || 'Blog'}
                   </span>
                 </div>
@@ -329,7 +329,7 @@ export default function BlogPage() {
                     
                     {/* Category badge */}
                     <div className="absolute top-4 left-4">
-                      <span className="bg-blue-600 text-white text-sm px-4 py-2 rounded-full font-medium">
+                      <span className="text-black text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#FFE700' }}>
                         {post.category || 'Blog'}
                       </span>
                     </div>
