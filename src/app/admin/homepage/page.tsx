@@ -117,8 +117,8 @@ export default function HomepageContentEditor() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch homepage content
-  const { data: homepageResponse, isLoading, error } = useQuery({
+  // Fetch homepage content with proper cache invalidation
+  const { data: homepageResponse, isLoading, error, refetch } = useQuery({
     queryKey: ['homepageContent'],
     queryFn: async () => {
       console.log('🔄 Loading Homepage data...');
@@ -127,12 +127,39 @@ export default function HomepageContentEditor() {
       return response;
     },
     enabled: isAuthenticated,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    staleTime: 0,
   });
 
-  // Extract the actual data from response - try both possible structures
-  const homepageData = homepageResponse?.data?.data || 
-    (homepageResponse?.data?.success ? homepageResponse?.data?.data : null) ||
-    (homepageResponse?.data && homepageResponse?.data.hero ? homepageResponse?.data : null);
+  // Extract the actual data from response with proper error handling
+  let homepageData = null;
+  
+  if (homepageResponse?.data) {
+    console.log('🔍 EXTRACTION DEBUG - Response structure:', homepageResponse.data);
+    
+    // Check if it's the expected {success: true, data: {...}} format
+    if (homepageResponse.data.success && homepageResponse.data.data) {
+      homepageData = homepageResponse.data.data;
+      console.log('✅ EXTRACTION - Found data in response.data.data:', homepageData);
+    }
+    // Check if data is directly in response.data (backup)
+    else if (homepageResponse.data.hero || homepageResponse.data.whyVisit) {
+      homepageData = homepageResponse.data;
+      console.log('✅ EXTRACTION - Found data directly in response.data:', homepageData);
+    }
+    // Handle null/empty data
+    else if (homepageResponse.data.success && homepageResponse.data.data === null) {
+      console.log('⚠️ EXTRACTION - No homepage content in database');
+      homepageData = null;
+    }
+    else {
+      console.log('❌ EXTRACTION - Unexpected response structure:', homepageResponse.data);
+      homepageData = null;
+    }
+  } else {
+    console.log('❌ EXTRACTION - No response.data found');
+  }
 
   // Load data into form when received
   useEffect(() => {
@@ -200,6 +227,12 @@ export default function HomepageContentEditor() {
   const handleEdit = () => {
     console.log('📝 Starting edit mode');
     setIsEditing(true);
+  };
+
+  const handleRefresh = () => {
+    console.log('🔄 Manual refresh triggered');
+    queryClient.invalidateQueries({ queryKey: ['homepageContent'] });
+    refetch();
   };
 
   const handleSave = () => {
@@ -304,10 +337,15 @@ export default function HomepageContentEditor() {
         </div>
         
         {!isEditing ? (
-          <Button onClick={handleEdit} className="bg-blue-600 hover:bg-blue-700">
-            <Edit3 className="h-4 w-4 mr-2" />
-            Edit Content
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={handleRefresh} variant="outline">
+              🔄 Refresh Data
+            </Button>
+            <Button onClick={handleEdit} className="bg-blue-600 hover:bg-blue-700">
+              <Edit3 className="h-4 w-4 mr-2" />
+              Edit Content
+            </Button>
+          </div>
         ) : (
           <div className="flex gap-2">
             <Button
