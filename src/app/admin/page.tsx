@@ -4,18 +4,20 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from './contexts/AuthContext';
-import { blogApi, uploadApi } from '@/lib/api';
+import { blogApi, uploadApi, destinationsApi, eventsApi, toursApi } from '@/lib/api';
 import { Card, CardContent } from '@/app/components/ui/card';
 import { Button } from '@/app/components/ui/button';
 import {
   FileText,
-  Users,
-  Upload,
-  Eye,
   Plus,
   TrendingUp,
   Calendar,
-  Image,
+  MapPin,
+  Plane,
+  Mountain,
+  Edit3,
+  BarChart3,
+  Users,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -36,6 +38,27 @@ export default function AdminDashboard() {
     enabled: isAuthenticated,
   });
 
+  // Fetch destinations stats
+  const { data: destinationStats } = useQuery({
+    queryKey: ['destinationStats'],
+    queryFn: () => destinationsApi.getDestinationStats(),
+    enabled: isAuthenticated,
+  });
+
+  // Fetch events stats
+  const { data: eventStats } = useQuery({
+    queryKey: ['eventStats'],
+    queryFn: () => eventsApi.getEventStats(),
+    enabled: isAuthenticated,
+  });
+
+  // Fetch tours stats
+  const { data: tourStats } = useQuery({
+    queryKey: ['tourStats'],
+    queryFn: () => toursApi.getTourStats(),
+    enabled: isAuthenticated,
+  });
+
   // Fetch media stats
   const { data: mediaStats } = useQuery({
     queryKey: ['mediaStats'],
@@ -43,12 +66,67 @@ export default function AdminDashboard() {
     enabled: isAuthenticated,
   });
 
-  // Fetch recent blogs
-  const { data: recentBlogs, isLoading: recentBlogsLoading } = useQuery({
+  // Fetch recent content
+  const { data: recentBlogs } = useQuery({
     queryKey: ['recentBlogs'],
-    queryFn: () => blogApi.getBlogs({ limit: 5 }),
+    queryFn: async () => {
+      console.log('🔄 Admin Dashboard: Loading recent blogs...');
+      const result = await blogApi.getBlogs({ limit: 3 });
+      console.log('📰 Admin Dashboard: Recent blogs response:', result);
+      return result;
+    },
     enabled: isAuthenticated,
   });
+
+  const { data: recentDestinations, isLoading: recentDestinationsLoading } = useQuery({
+    queryKey: ['recentDestinations'],
+    queryFn: async () => {
+      console.log('🔄 Admin Dashboard: Loading recent destinations...');
+      const result = await destinationsApi.getDestinations({ limit: 3 });
+      console.log('🗺️ Admin Dashboard: Recent destinations response:', result);
+      console.log('📈 Admin Dashboard: Number of destinations:', result?.data?.data?.destinations?.length || 0);
+      return result;
+    },
+    enabled: isAuthenticated,
+  });
+
+  const { data: recentEvents, isLoading: recentEventsLoading } = useQuery({
+    queryKey: ['recentEvents'],
+    queryFn: async () => {
+      console.log('🔄 Admin Dashboard: Loading recent events...');
+      const result = await eventsApi.getEvents({ limit: 3 });
+      console.log('🎉 Admin Dashboard: Recent events response:', result);
+      return result;
+    },
+    enabled: isAuthenticated,
+  });
+
+  const blogStatsData = blogStats?.data?.stats || {};
+  const destinationStatsData = destinationStats?.data?.stats || {};
+  const eventStatsData = eventStats?.data?.stats || {};
+  const tourStatsData = tourStats?.data?.stats || {};
+  const media = mediaStats?.data?.data || {};
+  
+  const blogs = recentBlogs?.data?.blogs || [];
+  const destinations = recentDestinations?.data?.data?.destinations || [];
+  const events = recentEvents?.data?.events || [];
+
+  // Log all data for debugging
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log('🏠 Admin Dashboard: Current data state:', {
+        blogStatsTotal: blogStats?.data?.stats?.totalPosts || 0,
+        destinationsTotal: destinationStats?.data?.stats?.totalDestinations || 0,
+        eventsTotal: eventStats?.data?.stats?.totalEvents || 0,
+        toursTotal: tourStats?.data?.stats?.totalTours || 0,
+        mediaFiles: mediaStats?.data?.data?.totalFiles || 0,
+        blogsCount: blogs.length,
+        destinationsCount: destinations.length,
+        eventsCount: events.length,
+        isAuthenticated
+      });
+    }
+  }, [blogStats, destinationStats, eventStats, tourStats, mediaStats, blogs, destinations, events, isAuthenticated]);
 
   if (loading || !isAuthenticated) {
     return (
@@ -58,38 +136,38 @@ export default function AdminDashboard() {
     );
   }
 
-  const stats = blogStats?.data?.stats || {};
-  const media = mediaStats?.data?.data || {};
-  const blogs = recentBlogs?.data?.blogs || [];
-
   const quickStats = [
     {
-      name: 'Total Posts',
-      value: stats.totalPosts || 0,
-      icon: FileText,
+      name: 'Destinations',
+      value: destinationStatsData.totalDestinations || 0,
+      icon: MapPin,
       color: 'bg-blue-500',
-      href: '/admin/blog',
+      href: '/admin/destinations',
+      description: 'Cities, Nature & Culture'
     },
     {
-      name: 'Published',
-      value: stats.publishedPosts || 0,
-      icon: Eye,
+      name: 'Tours',
+      value: tourStatsData.totalTours || 0,
+      icon: Plane,
       color: 'bg-green-500',
-      href: '/admin/blog?status=published',
+      href: '/admin/tours',
+      description: 'Travel packages'
     },
     {
-      name: 'Draft Posts',
-      value: stats.draftPosts || 0,
+      name: 'Events',
+      value: eventStatsData.totalEvents || 0,
       icon: Calendar,
-      color: 'bg-yellow-500',
-      href: '/admin/blog?status=draft',
+      color: 'bg-purple-500',
+      href: '/admin/events',
+      description: 'Cultural events'
     },
     {
-      name: 'Media Files',
-      value: media.totalFiles || 0,
-      icon: Image,
-      color: 'bg-purple-500',
-      href: '/admin/media',
+      name: 'Blog Posts',
+      value: blogStatsData.totalPosts || 0,
+      icon: FileText,
+      color: 'bg-orange-500',
+      href: '/admin/blog',
+      description: 'Articles & stories'
     },
   ];
 
@@ -106,17 +184,29 @@ export default function AdminDashboard() {
           </p>
         </div>
         
-        <div className="flex space-x-3">
-          <Link href="/admin/blog/new">
+        <div className="flex flex-wrap gap-3">
+          <Link href="/admin/destinations">
             <Button className="bg-blue-600 hover:bg-blue-700">
               <Plus className="h-4 w-4 mr-2" />
-              New Post
+              New Destination
             </Button>
           </Link>
-          <Link href="/admin/media">
+          <Link href="/admin/events">
+            <Button className="bg-purple-600 hover:bg-purple-700">
+              <Plus className="h-4 w-4 mr-2" />
+              New Event
+            </Button>
+          </Link>
+          <Link href="/admin/tours">
+            <Button className="bg-green-600 hover:bg-green-700">
+              <Plus className="h-4 w-4 mr-2" />
+              New Tour
+            </Button>
+          </Link>
+          <Link href="/admin/blog/new">
             <Button variant="outline">
-              <Upload className="h-4 w-4 mr-2" />
-              Upload Media
+              <Plus className="h-4 w-4 mr-2" />
+              New Post
             </Button>
           </Link>
         </div>
@@ -136,6 +226,7 @@ export default function AdminDashboard() {
                       <p className="text-3xl font-bold text-gray-900">
                         {stat.value}
                       </p>
+                      <p className="text-xs text-gray-500 mt-1">{stat.description}</p>
                     </div>
                     <div className={`p-3 rounded-full ${stat.color}`}>
                       <Icon className="h-6 w-6 text-white" />
@@ -148,22 +239,24 @@ export default function AdminDashboard() {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Blog Posts */}
+      {/* Recent Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Recent Destinations */}
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Recent Blog Posts
-              </h3>
-              <Link href="/admin/blog">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-blue-500" />
+                <h3 className="text-lg font-semibold text-gray-900">Recent Destinations</h3>
+              </div>
+              <Link href="/admin/destinations">
                 <Button variant="outline" size="sm">
                   View All
                 </Button>
               </Link>
             </div>
 
-            {recentBlogsLoading ? (
+            {recentDestinationsLoading ? (
               <div className="space-y-3">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="animate-pulse">
@@ -172,32 +265,26 @@ export default function AdminDashboard() {
                   </div>
                 ))}
               </div>
-            ) : blogs.length > 0 ? (
+            ) : destinations.length > 0 ? (
               <div className="space-y-4">
-                {blogs.map((blog: { id: string; title: string; status: string; createdAt: string }) => (
-                  <div key={blog.id} className="flex items-center justify-between py-3 border-b border-gray-200 last:border-0">
+                {destinations.map((dest: { id: string; name: string; category: string; status: string; featured: boolean }) => (
+                  <div key={dest.id} className="flex items-center justify-between py-3 border-b border-gray-200 last:border-0">
                     <div className="flex-1">
-                      <h4 className="text-sm font-medium text-gray-900 truncate">
-                        {blog.title}
-                      </h4>
-                      <div className="flex items-center space-x-4 mt-1">
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          blog.status === 'PUBLISHED' 
-                            ? 'bg-green-100 text-green-800'
-                            : blog.status === 'DRAFT'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {blog.status}
+                      <h4 className="text-sm font-medium text-gray-900 truncate">{dest.name}</h4>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full capitalize">
+                          {dest.category}
                         </span>
-                        <span className="text-xs text-gray-500">
-                          {new Date(blog.createdAt).toLocaleDateString()}
-                        </span>
+                        {dest.featured && (
+                          <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+                            Featured
+                          </span>
+                        )}
                       </div>
                     </div>
-                    <Link href={`/admin/blog/${blog.id}`}>
+                    <Link href={`/admin/destinations?edit=${dest.id}`}>
                       <Button variant="ghost" size="sm">
-                        Edit
+                        <Edit3 className="h-4 w-4" />
                       </Button>
                     </Link>
                   </div>
@@ -205,11 +292,11 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No blog posts yet</p>
-                <Link href="/admin/blog/new">
+                <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 text-sm">No destinations yet</p>
+                <Link href="/admin/destinations">
                   <Button className="mt-4" size="sm">
-                    Create Your First Post
+                    Add First Destination
                   </Button>
                 </Link>
               </div>
@@ -217,54 +304,144 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
+        {/* Recent Events */}
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-purple-500" />
+                <h3 className="text-lg font-semibold text-gray-900">Recent Events</h3>
+              </div>
+              <Link href="/admin/events">
+                <Button variant="outline" size="sm">
+                  View All
+                </Button>
+              </Link>
+            </div>
+
+            {recentEventsLoading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                ))}
+              </div>
+            ) : events.length > 0 ? (
+              <div className="space-y-4">
+                {events.map((event: { id: string; name: string; status: string; featured: boolean; date: string }) => (
+                  <div key={event.id} className="flex items-center justify-between py-3 border-b border-gray-200 last:border-0">
+                    <div className="flex-1">
+                      <h4 className="text-sm font-medium text-gray-900 truncate">{event.name}</h4>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className="text-xs text-gray-500">
+                          {new Date(event.date).toLocaleDateString()}
+                        </span>
+                        {event.featured && (
+                          <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <Link href={`/admin/events?edit=${event.id}`}>
+                      <Button variant="ghost" size="sm">
+                        <Edit3 className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 text-sm">No events yet</p>
+                <Link href="/admin/events">
+                  <Button className="mt-4" size="sm">
+                    Add First Event
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* System Overview & Quick Actions */}
         <Card>
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">
-              Quick Actions
+              System Overview
             </h3>
             
-            <div className="space-y-4">
-              <Link href="/admin/blog/new">
-                <Button variant="outline" className="w-full justify-start">
-                  <Plus className="h-4 w-4 mr-3" />
-                  Create New Blog Post
-                </Button>
-              </Link>
-              
-              <Link href="/admin/media">
-                <Button variant="outline" className="w-full justify-start">
-                  <Upload className="h-4 w-4 mr-3" />
-                  Upload Media Files
-                </Button>
-              </Link>
-              
-              <Link href="/admin/content">
-                <Button variant="outline" className="w-full justify-start">
+            {/* Statistics */}
+            <div className="space-y-4 mb-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-3 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {destinationStatsData.citiesDestinations || 0}
+                  </div>
+                  <div className="text-xs text-gray-600">Cities</div>
+                </div>
+                <div className="text-center p-3 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">
+                    {destinationStatsData.natureDestinations || 0}
+                  </div>
+                  <div className="text-xs text-gray-600">Nature</div>
+                </div>
+                <div className="text-center p-3 bg-purple-50 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600">
+                    {destinationStatsData.cultureDestinations || 0}
+                  </div>
+                  <div className="text-xs text-gray-600">Culture</div>
+                </div>
+                <div className="text-center p-3 bg-orange-50 rounded-lg">
+                  <div className="text-2xl font-bold text-orange-600">
+                    {blogStatsData.publishedPosts || 0}
+                  </div>
+                  <div className="text-xs text-gray-600">Published</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="space-y-3">
+              <Link href="/admin/homepage">
+                <Button variant="outline" className="w-full justify-start text-sm">
                   <TrendingUp className="h-4 w-4 mr-3" />
-                  Manage Content
+                  Manage Homepage
                 </Button>
               </Link>
               
-              <Link href="/admin/users">
-                <Button variant="outline" className="w-full justify-start">
+              <Link href="/admin/categories">
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  <Mountain className="h-4 w-4 mr-3" />
+                  Manage Categories
+                </Button>
+              </Link>
+
+              <Link href="/admin/about-us">
+                <Button variant="outline" className="w-full justify-start text-sm">
                   <Users className="h-4 w-4 mr-3" />
-                  Manage Users
+                  Manage About Us
+                </Button>
+              </Link>
+              
+              <Link href="/admin/debug">
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  <BarChart3 className="h-4 w-4 mr-3" />
+                  System Analytics
                 </Button>
               </Link>
             </div>
 
             {/* System Status */}
-            <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-              <h4 className="text-sm font-medium text-gray-900 mb-3">
-                System Status
-              </h4>
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <h4 className="text-sm font-medium text-gray-900 mb-3">Storage & Performance</h4>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600">Total Views</span>
-                  <span className="text-xs font-medium">
-                    {stats.totalViews?.toLocaleString() || 0}
-                  </span>
+                  <span className="text-xs text-gray-600">Media Files</span>
+                  <span className="text-xs font-medium">{media.totalFiles || 0}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-600">Storage Used</span>
@@ -273,9 +450,9 @@ export default function AdminDashboard() {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600">Categories</span>
+                  <span className="text-xs text-gray-600">Active Content</span>
                   <span className="text-xs font-medium">
-                    {stats.categories?.length || 0}
+                    {(destinationStatsData.activeDestinations || 0) + (eventStatsData.activeEvents || 0)}
                   </span>
                 </div>
               </div>

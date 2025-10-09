@@ -13,11 +13,21 @@ export const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    console.log('API Request:', config.method?.toUpperCase(), config.url, config.data);
-    console.log('API Request - Full URL:', (config.baseURL || '') + (config.url || ''));
+    console.log('🌐 [FRONTEND] API Request Starting:', {
+      method: config.method?.toUpperCase(),
+      url: config.url,
+      fullURL: (config.baseURL || '') + (config.url || ''),
+      params: config.params,
+      dataSize: config.data ? JSON.stringify(config.data).length : 0
+    });
+    
+    if (config.data) {
+      console.log('📝 [FRONTEND] Request Data:', config.data);
+    }
+    
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('admin_token');
-      console.log('API Request - Token:', token ? 'present' : 'missing');
+      console.log('🔑 [FRONTEND] Auth Token:', token ? `present (${token.substring(0, 20)}...)` : 'missing');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -25,7 +35,7 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error('API Request Error:', error);
+    console.error('❌ [FRONTEND] API Request Setup Error:', error);
     return Promise.reject(error);
   }
 );
@@ -33,12 +43,64 @@ api.interceptors.request.use(
 // Response interceptor to handle auth errors
 api.interceptors.response.use(
   (response) => {
-    console.log('API Response:', response.status, response.config.url, response.data);
+    console.log('✅ [FRONTEND] API Response Received:', {
+      status: response.status,
+      url: response.config.url,
+      method: response.config.method?.toUpperCase(),
+      dataSize: response.data ? JSON.stringify(response.data).length : 0,
+      success: response.data?.success
+    });
+    
+    if (response.data) {
+      console.log('📦 [FRONTEND] Response Data:', response.data);
+    }
+    
     return response;
   },
   (error) => {
-    console.error('API Response Error:', error.response?.status, error.response?.data || error.message);
+    console.error('❌ [FRONTEND] API Response Error Details:', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      url: error.config?.url,
+      method: error.config?.method?.toUpperCase(),
+      baseURL: error.config?.baseURL,
+      fullURL: (error.config?.baseURL || '') + (error.config?.url || ''),
+      errorData: error.response?.data,
+      errorMessage: error.message,
+      errorCode: error.code,
+      errorStack: error.stack,
+      headers: error.response?.headers,
+      requestHeaders: error.config?.headers,
+      timeout: error.config?.timeout,
+      timestamp: new Date().toISOString()
+    });
+
+    // Additional debugging information
+    console.error('🔍 [FRONTEND] Full error object:', error);
+    console.error('🔍 [FRONTEND] Error response:', error.response);
+    console.error('🔍 [FRONTEND] Error config:', error.config);
+    console.error('🔍 [FRONTEND] Error request:', error.request);
+
+    // Log additional context for network errors
+    if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
+      console.error('🌐 [FRONTEND] Network Error - Backend server might be down:', {
+        expectedBackendURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api',
+        errorType: 'CONNECTION_FAILED',
+        suggestion: 'Check if backend server is running'
+      });
+    }
+
+    // Log CORS errors
+    if (error.message?.includes('CORS') || error.code === 'ERR_NETWORK') {
+      console.error('🚫 [FRONTEND] Possible CORS Error:', {
+        frontendOrigin: typeof window !== 'undefined' ? window.location.origin : 'unknown',
+        backendURL: error.config?.baseURL,
+        suggestion: 'Check CORS configuration on backend'
+      });
+    }
+    
     if (error.response?.status === 401) {
+      console.log('🔒 [FRONTEND] Authentication failed, redirecting to login');
       // Clear token and redirect to login
       if (typeof window !== 'undefined') {
         localStorage.removeItem('admin_token');
@@ -334,13 +396,32 @@ export const eventsApi = {
 
 // Homepage Content API
 export const homepageApi = {
-  getHomepageContent: () => api.get('/homepage'),
+  getHomepageContent: () => {
+    console.log('🏠 [FRONTEND] HOMEPAGE GET - Fetching data from backend');
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.get('/homepage');
+  },
 
-  getPublicHomepageContent: () => api.get('/homepage'),
+  getPublicHomepageContent: () => {
+    console.log('🏠 [FRONTEND] HOMEPAGE PUBLIC GET - Fetching public data from backend');
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.get('/homepage');
+  },
 
-  updateHomepageContent: (data: Record<string, unknown>) => api.put('/homepage', data),
+  updateHomepageContent: (data: Record<string, unknown>) => {
+    console.log('🏠 [FRONTEND] HOMEPAGE UPDATE - Sending request to backend');
+    console.log('📝 [FRONTEND] Homepage update data:', data);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.put('/homepage', data);
+  },
 
-  updateHomepageSection: (section: string, data: Record<string, unknown>) => api.put(`/homepage/${section}`, data),
+  updateHomepageSection: (section: string, data: Record<string, unknown>) => {
+    console.log('🏠 [FRONTEND] HOMEPAGE SECTION UPDATE - Sending request to backend');
+    console.log('📝 [FRONTEND] Section:', section);
+    console.log('📝 [FRONTEND] Section update data:', data);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.put(`/homepage/${section}`, data);
+  },
 
   updateWhyVisitSection: (data: {
     title?: string;
@@ -350,14 +431,24 @@ export const homepageApi = {
       bgColor: string;
       order: number;
     }>;
-  }) => api.put('/homepage/whyVisit', data),
+  }) => {
+    console.log('🏠 [FRONTEND] WHY VISIT SECTION UPDATE - Sending request to backend');
+    console.log('📝 [FRONTEND] Why Visit data:', data);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.put('/homepage/whyVisit', data);
+  },
 
   updateHeroSection: (data: {
     title: string;
     subtitle?: string;
     videoUrl?: string;
     backgroundImage?: string;
-  }) => api.put('/homepage/hero', data),
+  }) => {
+    console.log('🏠 [FRONTEND] HERO SECTION UPDATE - Sending request to backend');
+    console.log('📝 [FRONTEND] Hero section data:', data);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.put('/homepage/hero', data);
+  },
 
   createHomepageVersion: () => api.post('/homepage/version'),
 
@@ -370,24 +461,59 @@ export const homepageApi = {
 
 // About Us API
 export const aboutUsApi = {
-  getPublicAboutUs: () => api.get('/aboutus/public'),
+  getPublicAboutUs: () => {
+    console.log('👥 [FRONTEND] ABOUT US PUBLIC - Fetching data from backend');
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.get('/aboutus/public');
+  },
 
   getAboutUsContent: (params?: {
     page?: number;
     limit?: number;
     status?: string;
     version?: number;
-  }) => api.get('/aboutus', { params }),
+  }) => {
+    console.log('👥 [FRONTEND] ABOUT US ADMIN - Fetching admin data from backend');
+    console.log('📝 [FRONTEND] Params:', params);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.get('/aboutus', { params });
+  },
 
-  getAboutUsById: (id: string) => api.get(`/aboutus/${id}`),
+  getAboutUsById: (id: string) => {
+    console.log('👥 [FRONTEND] ABOUT US BY ID - Fetching specific about us');
+    console.log('📝 [FRONTEND] ID:', id);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.get(`/aboutus/${id}`);
+  },
 
-  createAboutUs: (data: Record<string, unknown>) => api.post('/aboutus', data),
+  createAboutUs: (data: Record<string, unknown>) => {
+    console.log('👥 [FRONTEND] ABOUT US CREATE - Creating new about us');
+    console.log('📝 [FRONTEND] Data:', data);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.post('/aboutus', data);
+  },
 
-  updateAboutUs: (id: string, data: Record<string, unknown>) => api.put(`/aboutus/${id}`, data),
+  updateAboutUs: (id: string, data: Record<string, unknown>) => {
+    console.log('👥 [FRONTEND] ABOUT US UPDATE - Updating about us');
+    console.log('📝 [FRONTEND] ID:', id);
+    console.log('📝 [FRONTEND] Data:', data);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.put(`/aboutus/${id}`, data);
+  },
 
-  deleteAboutUs: (id: string) => api.delete(`/aboutus/${id}`),
+  deleteAboutUs: (id: string) => {
+    console.log('👥 [FRONTEND] ABOUT US DELETE - Deleting about us');
+    console.log('📝 [FRONTEND] ID:', id);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.delete(`/aboutus/${id}`);
+  },
 
-  publishAboutUs: (id: string) => api.put(`/aboutus/${id}/publish`),
+  publishAboutUs: (id: string) => {
+    console.log('👥 [FRONTEND] ABOUT US PUBLISH - Publishing about us');
+    console.log('📝 [FRONTEND] ID:', id);
+    console.log('⏰ [FRONTEND] Timestamp:', new Date().toISOString());
+    return api.put(`/aboutus/${id}/publish`);
+  },
 };
 
 // Page Categories API (for the /categories page)

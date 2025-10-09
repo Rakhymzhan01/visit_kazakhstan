@@ -65,9 +65,13 @@ const ensureUniqueSlug = async (baseSlug: string, excludeId?: string): Promise<s
 
 // Get all destinations
 export const getDestinations = async (req: Request, res: Response): Promise<void> => {
+  console.log('📚 [BACKEND] GET DESTINATIONS - Request received');
+  console.log('🔍 [BACKEND] Query parameters:', req.query);
+  
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('❌ [BACKEND] GET validation errors:', errors.array());
       res.status(400).json({ errors: errors.array() });
       return;
     }
@@ -80,6 +84,10 @@ export const getDestinations = async (req: Request, res: Response): Promise<void
     const status = req.query.status as string || 'ACTIVE';
     const featured = req.query.featured === 'true' ? true : req.query.featured === 'false' ? false : undefined;
     const search = req.query.search as string;
+
+    console.log('📋 [BACKEND] Parsed parameters:', {
+      page, limit, skip, category, subcategory, status, featured, search
+    });
 
     // Build filter object
     const filter: any = { status };
@@ -100,7 +108,10 @@ export const getDestinations = async (req: Request, res: Response): Promise<void
       filter.$text = { $search: search };
     }
 
+    console.log('🔎 [BACKEND] Final MongoDB filter:', filter);
+
     // Get destinations with pagination
+    console.log('🗃️ [BACKEND] Querying database...');
     const [destinations, total] = await Promise.all([
       Destination.find(filter)
         .populate('createdBy', 'name email')
@@ -111,6 +122,12 @@ export const getDestinations = async (req: Request, res: Response): Promise<void
       Destination.countDocuments(filter),
     ]);
 
+    console.log('📊 [BACKEND] Database query results:', {
+      foundDestinations: destinations.length,
+      totalInDatabase: total,
+      destinationNames: destinations.map(d => d.name)
+    });
+
     // Transform destinations to include author info
     const transformedDestinations = destinations.map(destination => ({
       ...destination,
@@ -119,7 +136,9 @@ export const getDestinations = async (req: Request, res: Response): Promise<void
       createdBy: (destination.createdBy as any)?._id?.toString(),
     }));
 
-    res.json({
+    console.log('🔄 [BACKEND] Transformed destinations count:', transformedDestinations.length);
+
+    const responseData = {
       success: true,
       data: {
         destinations: transformedDestinations,
@@ -130,9 +149,19 @@ export const getDestinations = async (req: Request, res: Response): Promise<void
           pages: Math.ceil(total / limit),
         },
       },
+    };
+
+    console.log('📤 [BACKEND] Sending GET response:', {
+      success: responseData.success,
+      destinationsCount: responseData.data.destinations.length,
+      pagination: responseData.data.pagination
     });
+
+    res.json(responseData);
+    console.log('✅ [BACKEND] GET destinations response sent successfully');
   } catch (error) {
-    console.error('Get destinations error:', error);
+    console.error('❌ [BACKEND] Get destinations error:', error);
+    console.error('📍 [BACKEND] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -176,12 +205,22 @@ export const getDestination = async (req: Request, res: Response): Promise<void>
 
 // Create destination
 export const createDestination = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  console.log('🚀 [BACKEND] CREATE DESTINATION - Request received');
+  console.log('👤 [BACKEND] User:', req.user?.email);
+  console.log('📝 [BACKEND] Raw request body:', JSON.stringify(req.body, null, 2));
+  console.log('🔍 [BACKEND] Request headers:', req.headers);
+  
   try {
     const errors = validationResult(req);
+    console.log('✅ [BACKEND] Validation check completed');
+    
     if (!errors.isEmpty()) {
+      console.log('❌ [BACKEND] Validation errors found:', errors.array());
       res.status(400).json({ errors: errors.array() });
       return;
     }
+    
+    console.log('✅ [BACKEND] All validations passed');
 
     const {
       name,
@@ -215,11 +254,21 @@ export const createDestination = async (req: AuthenticatedRequest, res: Response
       founded,
     } = req.body;
 
+    console.log('📋 [BACKEND] Extracted data from request:', {
+      name, subtitle, description, content, image, category, location,
+      highlights: highlights?.length || 0,
+      coordinates, activities: activities?.length || 0
+    });
+
     // Generate unique slug
+    console.log('🔧 [BACKEND] Generating slug for name:', name);
     const baseSlug = generateSlug(name);
+    console.log('🔧 [BACKEND] Base slug generated:', baseSlug);
     const slug = await ensureUniqueSlug(baseSlug);
+    console.log('✅ [BACKEND] Final unique slug:', slug);
 
     // Create destination
+    console.log('💾 [BACKEND] Creating new destination document...');
     const destination = new Destination({
       name,
       slug,
@@ -254,10 +303,22 @@ export const createDestination = async (req: AuthenticatedRequest, res: Response
       createdBy: req.user!.id,
     });
 
-    await destination.save();
-    await destination.populate('createdBy', 'name email');
+    console.log('📄 [BACKEND] Destination document created in memory:', {
+      id: destination._id,
+      name: destination.name,
+      slug: destination.slug,
+      category: destination.category
+    });
 
-    res.status(201).json({
+    console.log('💾 [BACKEND] Saving destination to database...');
+    await destination.save();
+    console.log('✅ [BACKEND] Destination saved successfully to database!');
+    
+    console.log('👤 [BACKEND] Populating createdBy field...');
+    await destination.populate('createdBy', 'name email');
+    console.log('✅ [BACKEND] CreatedBy field populated');
+
+    const responseData = {
       success: true,
       data: {
         destination: {
@@ -267,9 +328,19 @@ export const createDestination = async (req: AuthenticatedRequest, res: Response
           createdBy: (destination.createdBy as any)._id.toString(),
         },
       },
+    };
+
+    console.log('📤 [BACKEND] Sending response to frontend:', {
+      success: responseData.success,
+      destinationId: responseData.data.destination.id,
+      destinationName: responseData.data.destination.name
     });
+
+    res.status(201).json(responseData);
+    console.log('✅ [BACKEND] Response sent successfully');
   } catch (error) {
-    console.error('Create destination error:', error);
+    console.error('❌ [BACKEND] Create destination error:', error);
+    console.error('📍 [BACKEND] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     res.status(500).json({ error: 'Internal server error' });
   }
 };

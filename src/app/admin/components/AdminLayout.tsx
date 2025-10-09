@@ -14,7 +14,7 @@ import {
   MapPin,
   Tag,
   Navigation,
-  BookOpen,
+  Users,
   Calendar,
 } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
@@ -29,7 +29,7 @@ const navigation = [
   { name: 'Homepage', href: '/admin/homepage', icon: Home },
   { name: 'Tours', href: '/admin/tours', icon: MapPin },
   { name: 'Tour Categories', href: '/admin/categories', icon: Tag },
-  { name: 'Category Pages', href: '/admin/category-pages', icon: BookOpen },
+  { name: 'About Us', href: '/admin/about-us', icon: Users },
   { name: 'Destinations', href: '/admin/destinations', icon: Navigation },
   { name: 'Events', href: '/admin/events', icon: Calendar },
   { name: 'Blog Posts', href: '/admin/blog', icon: FileText },

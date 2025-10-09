@@ -132,40 +132,90 @@ export default function DestinationsAdmin() {
   });
 
   const loadDestinations = useCallback(async () => {
+    console.log('🔄 Loading destinations from database...');
+    console.log('📝 Request params:', { selectedCategory });
+    
     setLoading(true);
     try {
       const params: { category?: string } = {};
       if (selectedCategory) params.category = selectedCategory;
       
+      console.log('🌐 Making API call to destinationsApi.getDestinations with params:', params);
       const response = await destinationsApi.getDestinations(params);
+      
+      console.log('📡 Raw API response:', response);
+      console.log('✅ Response status:', response.status);
+      console.log('📊 Response data structure:', response.data);
       
       if (response.data.success) {
         const destinationsData = response.data.data.destinations || [];
+        console.log('🎯 Extracted destinations data:', destinationsData);
+        console.log('📈 Number of destinations found:', destinationsData.length);
+        
+        if (destinationsData.length > 0) {
+          console.log('🔍 First destination example:', destinationsData[0]);
+          console.log('📋 All destination names:', destinationsData.map((d: { name: string }) => d.name));
+        } else {
+          console.log('⚠️ No destinations found in database');
+        }
+        
         setDestinations(destinationsData);
+        console.log('✅ Destinations state updated successfully');
+      } else {
+        console.log('❌ API response indicates failure:', response.data);
       }
     } catch (error) {
-      console.error('Error loading destinations:', error);
+      console.error('❌ Error loading destinations:', error);
+      console.error('📍 Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        response: (error as Error & { response?: { data: unknown } })?.response?.data
+      });
       toast.error('Failed to load destinations');
     } finally {
       setLoading(false);
+      console.log('🏁 Loading destinations completed');
     }
   }, [selectedCategory]);
 
   const loadStats = useCallback(async () => {
+    console.log('📊 Loading destination statistics...');
     try {
       const response = await destinationsApi.getDestinationStats();
+      console.log('📈 Stats API response:', response);
+      
       if (response.data.success) {
-        setStats(response.data.data.stats);
+        const statsData = response.data.data.stats;
+        console.log('📋 Statistics data:', statsData);
+        setStats(statsData);
+        console.log('✅ Stats state updated successfully');
+      } else {
+        console.log('❌ Stats API response indicates failure:', response.data);
       }
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error('❌ Error loading stats:', error);
+      console.error('📍 Stats error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        response: (error as Error & { response?: { data: unknown } })?.response?.data
+      });
     }
   }, []);
 
   useEffect(() => {
+    console.log('🚀 Admin Destinations page mounted, loading data...');
     loadDestinations();
     loadStats();
   }, [loadDestinations, loadStats]);
+
+  // Log current state whenever it changes
+  useEffect(() => {
+    console.log('🔄 Destinations state changed:', {
+      totalDestinations: destinations.length,
+      destinationNames: destinations.map(d => d.name),
+      loading,
+      stats
+    });
+  }, [destinations, loading, stats]);
 
   const resetForm = () => {
     setFormData({
@@ -203,8 +253,29 @@ export default function DestinationsAdmin() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.description.trim() || !formData.content.trim()) {
-      toast.error('Please fill in required fields (name, description, content)');
+    
+    // Enhanced validation
+    const errors: string[] = [];
+    
+    if (!formData.name.trim()) errors.push('Name is required');
+    if (!formData.description.trim()) errors.push('Description is required');
+    if (formData.description.trim().length < 10) errors.push('Description must be at least 10 characters');
+    if (!formData.content.trim()) errors.push('Content is required');
+    if (formData.content.trim().length < 10) errors.push('Content must be at least 10 characters');
+    if (!formData.location.trim()) errors.push('Location is required');
+    if (!formData.image.trim()) errors.push('Main image URL is required');
+    
+    // Basic URL validation for image
+    try {
+      if (formData.image.trim()) {
+        new URL(formData.image);
+      }
+    } catch {
+      errors.push('Main image must be a valid URL');
+    }
+    
+    if (errors.length > 0) {
+      toast.error(`Validation errors: ${errors.join(', ')}`);
       return;
     }
 
@@ -224,13 +295,17 @@ export default function DestinationsAdmin() {
         tips: formData.tips.filter(t => t.trim() !== ''),
       };
 
+      console.log('Submitting destination data:', submitData);
+
       if (editingDestination) {
         // Update existing destination
-        await destinationsApi.updateDestination(editingDestination._id, submitData);
+        const response = await destinationsApi.updateDestination(editingDestination._id, submitData);
+        console.log('Update response:', response);
         toast.success('Destination updated successfully');
       } else {
         // Create new destination
-        await destinationsApi.createDestination(submitData);
+        const response = await destinationsApi.createDestination(submitData);
+        console.log('Create response:', response);
         toast.success('Destination created successfully');
       }
       
@@ -239,9 +314,22 @@ export default function DestinationsAdmin() {
       setShowAddForm(false);
       loadDestinations();
       loadStats();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error saving destination:', error);
-      toast.error('Failed to save destination');
+      
+      // Better error handling
+      let errorMessage = 'Failed to save destination';
+      const errorWithResponse = error as Error & { response?: { data: { errors?: { msg: string }[]; error?: string } } };
+      if (errorWithResponse.response?.data?.errors) {
+        const validationErrors = errorWithResponse.response.data.errors.map((err: { msg: string }) => err.msg).join(', ');
+        errorMessage = `Validation errors: ${validationErrors}`;
+      } else if (errorWithResponse.response?.data?.error) {
+        errorMessage = errorWithResponse.response.data.error;
+      } else if (error instanceof Error && error.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -304,6 +392,40 @@ export default function DestinationsAdmin() {
     resetForm();
     setEditingDestination(null);
     setShowAddForm(true);
+  };
+
+  const fillTestData = () => {
+    setFormData({
+      name: 'Test Destination',
+      subtitle: 'A beautiful test location',
+      description: 'This is a test destination with amazing views and wonderful experiences for all visitors.',
+      content: 'This is detailed content about the test destination. It provides comprehensive information about what visitors can expect, including the natural beauty, cultural significance, and various activities available at this location.',
+      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4',
+      gallery: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4'],
+      category: 'nature',
+      subcategory: '',
+      location: 'Test Region, Kazakhstan',
+      highlights: ['Beautiful scenery', 'Great for photography', 'Perfect for families'],
+      featured: false,
+      status: 'ACTIVE',
+      displayOrder: 0,
+      seoTitle: 'Test Destination - Amazing Views',
+      seoDescription: 'Visit our test destination for incredible experiences',
+      price: '',
+      rating: 5,
+      coordinates: { lat: '43.2220', lng: '76.8512' },
+      activities: ['Hiking', 'Photography', 'Sightseeing'],
+      facilities: ['Parking', 'Restrooms', 'Visitor Center'],
+      tips: ['Bring camera', 'Wear comfortable shoes', 'Visit in morning'],
+      bestTime: 'Spring to Fall',
+      duration: '2-3 hours',
+      difficulty: 'Easy',
+      era: '',
+      type: '',
+      region: 'Test Region',
+      population: '',
+      founded: '',
+    });
   };
 
   const handleImportData = async () => {
@@ -439,7 +561,19 @@ export default function DestinationsAdmin() {
       {showAddForm && (
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>{editingDestination ? 'Edit Destination' : 'Add New Destination'}</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>{editingDestination ? 'Edit Destination' : 'Add New Destination'}</CardTitle>
+              {!editingDestination && (
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={fillTestData}
+                  className="text-sm"
+                >
+                  Fill Test Data
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -455,7 +589,11 @@ export default function DestinationsAdmin() {
                       onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="e.g., Lake Kaindy"
                       required
+                      className={!formData.name.trim() ? 'border-red-300' : ''}
                     />
+                    {!formData.name.trim() && (
+                      <p className="text-red-500 text-xs mt-1">Name is required</p>
+                    )}
                   </div>
                   <div>
                     <Label htmlFor="subtitle">Subtitle</Label>
@@ -493,27 +631,41 @@ export default function DestinationsAdmin() {
                 </div>
                 
                 <div className="mt-4">
-                  <Label htmlFor="description">Description *</Label>
+                  <Label htmlFor="description">Description * (min 10 chars)</Label>
                   <Textarea
                     id="description"
                     rows={3}
                     value={formData.description}
                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Brief description for cards..."
+                    placeholder="Brief description for cards... (minimum 10 characters)"
                     required
+                    className={formData.description.trim().length < 10 ? 'border-red-300' : ''}
                   />
+                  <div className="flex justify-between">
+                    <p className="text-xs text-gray-500">{formData.description.length}/1000 characters</p>
+                    {formData.description.trim().length < 10 && formData.description.length > 0 && (
+                      <p className="text-red-500 text-xs">Minimum 10 characters required</p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="mt-4">
-                  <Label htmlFor="content">Detailed Content *</Label>
+                  <Label htmlFor="content">Detailed Content * (min 10 chars)</Label>
                   <Textarea
                     id="content"
                     rows={6}
                     value={formData.content}
                     onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                    placeholder="Detailed content for the destination page..."
+                    placeholder="Detailed content for the destination page... (minimum 10 characters)"
                     required
+                    className={formData.content.trim().length < 10 ? 'border-red-300' : ''}
                   />
+                  <div className="flex justify-between">
+                    <p className="text-xs text-gray-500">{formData.content.length} characters</p>
+                    {formData.content.trim().length < 10 && formData.content.length > 0 && (
+                      <p className="text-red-500 text-xs">Minimum 10 characters required</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -530,7 +682,12 @@ export default function DestinationsAdmin() {
                       onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
                       placeholder="https://example.com/image.jpg"
                       required
+                      className={!formData.image.trim() ? 'border-red-300' : ''}
                     />
+                    {!formData.image.trim() && (
+                      <p className="text-red-500 text-xs mt-1">Valid image URL is required</p>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">Try: https://images.unsplash.com/photo-1506905925346-21bda4d32df4</p>
                   </div>
                   <div>
                     <Label htmlFor="gallery">Gallery Images (comma-separated URLs)</Label>
@@ -654,7 +811,10 @@ export default function DestinationsAdmin() {
         <CardContent>
           {destinations.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              No destinations found. Click &quot;Add New Destination&quot; to create your first destination.
+              <p>No destinations found. Click &quot;Add New Destination&quot; to create your first destination.</p>
+              <p className="text-xs mt-2 text-gray-400">
+                Check browser console for detailed loading logs
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
