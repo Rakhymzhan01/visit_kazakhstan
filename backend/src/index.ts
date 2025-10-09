@@ -19,6 +19,7 @@ import categoryPageInfoRoutes from './routes/categoryPageInfo';
 import eventsRoutes from './routes/events';
 import migrateRoutes from './routes/migrate';
 import aboutusRoutes from './routes/aboutus';
+import pageCategoriesRoutes from './routes/pageCategories';
 
 // Import homepage routes
 import homepageRoutes from './routes/homepage';
@@ -81,6 +82,7 @@ app.use('/api/category-page-info', categoryPageInfoRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/migrate', migrateRoutes);
 app.use('/api/aboutus', aboutusRoutes);
+app.use('/api/page-categories', pageCategoriesRoutes);
 app.use('/api/homepage', homepageRoutes);
 
 // 404 handler

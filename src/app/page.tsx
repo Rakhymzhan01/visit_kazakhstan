@@ -9,7 +9,7 @@ import { Badge } from "./components/ui/badge"
 import { Star, Instagram, Minus } from "lucide-react"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import { homepageApi, toursApi, blogApi, eventsApi } from '@/lib/api'
+import { homepageApi, toursApi, blogApi } from '@/lib/api'
 
 // Types
 interface WhyVisitItem {
@@ -63,7 +63,7 @@ export default function HomePage() {
   const [featuredTours, setFeaturedTours] = useState<Tour[]>([])
   const [featuredBlogs, setFeaturedBlogs] = useState<BlogPost[]>([])
   const [featuredEvents, setFeaturedEvents] = useState<Event[]>([])
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
 
   const toggleCard = (index: number) => {
     setExpandedCards(prev => 
@@ -134,7 +134,7 @@ export default function HomePage() {
           const homepageResponse = await homepageApi.getPublicHomepageContent();
           if (homepageResponse.data.success && homepageResponse.data.data?.events?.eventList) {
             console.log('Events found in homepage:', homepageResponse.data.data.events.eventList);
-            setFeaturedEvents(homepageResponse.data.data.events.eventList.sort((a: any, b: any) => a.order - b.order));
+            setFeaturedEvents(homepageResponse.data.data.events.eventList.sort((a: { order: number }, b: { order: number }) => a.order - b.order));
           }
         } catch (error) {
           console.error('Error loading featured events:', error);
@@ -391,7 +391,7 @@ export default function HomePage() {
 
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
-              {featuredTours.length > 0 ? featuredTours.map((tour, index) => (
+              {featuredTours.length > 0 ? featuredTours.map((tour) => (
                 <Link key={tour.id} href={`/tours/${tour.slug}`}>
                   <Card className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200" style={{
                     width: 'clamp(280px, 80vw, 384px)',
@@ -942,7 +942,7 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
                   <Image
                     src={event.image || "/placeholder.svg"}
-                    alt={event.title || "Featured event"}
+                    alt={event.name || "Featured event"}
                     width={384}
                     height={400}
                     className="w-full h-full object-cover"

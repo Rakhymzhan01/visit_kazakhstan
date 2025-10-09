@@ -20,3 +20,5 @@ export { Event } from './Event';
 export type { IEvent } from './Event';
 export { AboutUs } from './AboutUs';
 export type { IAboutUs } from './AboutUs';
+export { PageCategory } from './PageCategory';
+export type { IPageCategory } from './PageCategory';

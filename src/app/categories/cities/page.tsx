@@ -2,93 +2,34 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 
+// API client for destinations
+const destinationsApi = {
+  getDestinations: async (category?: string) => {
+    const searchParams = new URLSearchParams({
+      status: 'ACTIVE',
+      category: category || '',
+      limit: '50'
+    });
+    const response = await fetch(`http://localhost:5001/api/destinations/public?${searchParams.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch destinations');
+    return response.json();
+  }
+};
+
 const CitiesPage = () => {
-  const cities = [
-    {
-      id: 1,
-      name: 'Astana',
-      subtitle: 'Bold, Visionary, Futuristic',
-      description: 'Kazakhstan\'s capital rises from the steppe with ambition and style. Known for its striking architecture — the Bayterek Tower, Khan Shatyr, and Nur Alem Sphere — Astana is a hub for politics, business, and innovation. Museums, concert halls, and festivals make it a symbol of a forward-looking nation.',
-      image: '/baiterek.jpg',
-      category: 'Cities',
-      slug: 'astana'
-    },
-    {
-      id: 2,
-      name: 'Almaty',
-      subtitle: 'Green, Cultural, Creative',
-      description: 'The cultural and creative heart of Kazakhstan, nestled in the foothills of the majestic Tian Shan mountains. Former capital with rich history, vibrant arts scene, and gateway to natural wonders.',
-      image: '/almaty.jpg',
-      category: 'Cities',
-      slug: 'almaty'
-    },
-    {
-      id: 3,
-      name: 'Turkestan',
-      subtitle: 'Sacred & Historic',
-      description: 'Ancient spiritual center and UNESCO World Heritage site, home to the magnificent Mausoleum of Khoja Ahmed Yasawi and centuries of Islamic architecture.',
-      image: '/turkestan.jpg',
-      category: 'Cities',
-      slug: 'turkestan'
-    },
-    {
-      id: 4,
-      name: 'Shymkent',
-      subtitle: 'Southern Flavor & Tulip Capital',
-      description: 'Kazakhstan\'s southern gateway, rich in tradition and known as the tulip capital. A vibrant mix of modern development and traditional Central Asian culture.',
-      image: '/shym.jpg',
-      category: 'Cities',
-      slug: 'shymkent'
-    },
-    {
-      id: 5,
-      name: 'Aktau & Mangystau',
-      subtitle: 'Caspian Port & Martian Landscapes',
-      description: 'Coastal city on the Caspian Sea surrounded by otherworldly desert landscapes, underground mosques, and unique geological formations.',
-      image: '/aktau.jpg',
-      category: 'Cities',
-      slug: 'aktau-mangystau'
-    },
-    {
-      id: 6,
-      name: 'Oskemen',
-      subtitle: 'Mountain Gateway',
-      description: 'Eastern Kazakhstan\'s cultural center, gateway to the Altai Mountains and rich in mining heritage and natural beauty.',
-      image: '/city.png',
-      category: 'Cities',
-      slug: 'oskemen'
-    },
-    {
-      id: 7,
-      name: 'Taraz',
-      subtitle: 'Ancient City of Traders',
-      description: 'One of Kazakhstan\'s oldest cities, a key stop on the ancient Silk Road with rich archaeological heritage and trading history.',
-      image: '/tours.jpg',
-      category: 'Cities',
-      slug: 'taraz'
-    },
-    {
-      id: 8,
-      name: 'Karaganda',
-      subtitle: 'Industrial Heritage',
-      description: 'Major industrial center with a unique Soviet-era architecture and important role in Kazakhstan\'s mining and space program history.',
-      image: '/expo.jpg',
-      category: 'Cities',
-      slug: 'karaganda'
-    },
-    {
-      id: 9,
-      name: 'Pavlodar',
-      subtitle: 'Northern Industry',
-      description: 'Industrial city on the Irtysh River, known for its petrochemical industry and as a gateway to northern Kazakhstan\'s natural areas.',
-      image: '/desert.jpg',
-      category: 'Cities',
-      slug: 'pavlodar'
-    }
-  ]
+  // Fetch cities destinations from API
+  const { data: destinationsData, isLoading, error } = useQuery({
+    queryKey: ['destinations', 'cities'],
+    queryFn: () => destinationsApi.getDestinations('cities'),
+  });
+
+  const cities = destinationsData?.data?.destinations || [];
+  const featuredCity = cities.find((city: { featured?: boolean }) => city.featured) || cities[0];
+  const otherCities = cities.filter((city: { id: string }) => city.id !== featuredCity?.id)
 
   return (
     <>
@@ -212,105 +153,123 @@ const CitiesPage = () => {
               </h2>
             </div>
 
-            {/* Featured City - Astana */}
-            <div className="flex flex-col lg:flex-row gap-6 mb-12">
-              {/* Large landscape photo */}
-              <div className="relative overflow-hidden rounded-2xl w-full lg:w-[792px] h-[300px] sm:h-[400px]">
-                <Image
-                  src={cities[0].image}
-                  alt={cities[0].name}
-                  width={792}
-                  height={400}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4">
-                  <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#F59E0B' }}>
-                    {cities[0].category}
-                  </span>
-                </div>
-                <div className="absolute bottom-6 left-6 right-6">
-                  <h3 className="text-white text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
-                    {cities[0].name}
-                  </h3>
-                </div>
+            {/* Loading state */}
+            {isLoading && (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-pulse text-gray-500">Loading cities...</div>
               </div>
+            )}
 
-              {/* Text box on the right */}
-              <div className="bg-white rounded-2xl flex flex-col w-full lg:w-[384px] h-auto lg:h-[400px] p-6 lg:p-8">
-                <h3 className="font-montserrat" style={{
-                  fontWeight: 600,
-                  fontSize: 'clamp(18px, 4vw, 24px)',
-                  lineHeight: '130%',
-                  letterSpacing: '-2%',
-                  color: '#202020',
-                  marginBottom: 'clamp(16px, 4vw, 32px)'
-                }}>
-                  {cities[0].name} — {cities[0].subtitle}
-                </h3>
-                <p className="font-manrope flex-1" style={{
-                  fontWeight: 400,
-                  fontSize: 'clamp(13px, 2.5vw, 14px)',
-                  lineHeight: '24px',
-                  letterSpacing: '-1%',
-                  color: '#4F504F',
-                  marginBottom: 'clamp(24px, 6vw, 32px)'
-                }}>
-                  {cities[0].description}
-                </p>
-                <Link 
-                  href={`/cities/${cities[0].slug}`}
-                  className="text-white font-manrope rounded-full self-start flex items-center justify-center hover:bg-[#007a9a] transition-colors"
-                  style={{
-                    width: 'clamp(120px, 25vw, 124px)',
-                    height: '50px',
-                    backgroundColor: '#009CBC',
-                    padding: '13px 20px',
-                    borderRadius: '99px',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    lineHeight: '1',
-                    letterSpacing: '-2%'
-                  }}
-                >
-                  Show more
-                </Link>
+            {/* Error state */}
+            {error && (
+              <div className="text-center py-12">
+                <p className="text-red-500">Failed to load cities. Please try again later.</p>
               </div>
-            </div>
+            )}
+
+            {/* Featured City */}
+            {featuredCity && (
+              <div className="flex flex-col lg:flex-row gap-6 mb-12">
+                {/* Large landscape photo */}
+                <div className="relative overflow-hidden rounded-2xl w-full lg:w-[792px] h-[300px] sm:h-[400px]">
+                  <Image
+                    src={featuredCity.image}
+                    alt={featuredCity.name}
+                    width={792}
+                    height={400}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                  <div className="absolute top-4 left-4">
+                    <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#F59E0B' }}>
+                      Cities
+                    </span>
+                  </div>
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <h3 className="text-white text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
+                      {featuredCity.name}
+                    </h3>
+                  </div>
+                </div>
+
+                {/* Text box on the right */}
+                <div className="bg-white rounded-2xl flex flex-col w-full lg:w-[384px] h-auto lg:h-[400px] p-6 lg:p-8">
+                  <h3 className="font-montserrat" style={{
+                    fontWeight: 600,
+                    fontSize: 'clamp(18px, 4vw, 24px)',
+                    lineHeight: '130%',
+                    letterSpacing: '-2%',
+                    color: '#202020',
+                    marginBottom: 'clamp(16px, 4vw, 32px)'
+                  }}>
+                    {featuredCity.name} {featuredCity.subtitle && `— ${featuredCity.subtitle}`}
+                  </h3>
+                  <p className="font-manrope flex-1" style={{
+                    fontWeight: 400,
+                    fontSize: 'clamp(13px, 2.5vw, 14px)',
+                    lineHeight: '24px',
+                    letterSpacing: '-1%',
+                    color: '#4F504F',
+                    marginBottom: 'clamp(24px, 6vw, 32px)'
+                  }}>
+                    {featuredCity.description}
+                  </p>
+                  <Link 
+                    href={`/destinations/${featuredCity.slug}`}
+                    className="text-white font-manrope rounded-full self-start flex items-center justify-center hover:bg-[#007a9a] transition-colors"
+                    style={{
+                      width: 'clamp(120px, 25vw, 124px)',
+                      height: '50px',
+                      backgroundColor: '#009CBC',
+                      padding: '13px 20px',
+                      borderRadius: '99px',
+                      fontWeight: 600,
+                      fontSize: '14px',
+                      lineHeight: '1',
+                      letterSpacing: '-2%'
+                    }}
+                  >
+                    Show more
+                  </Link>
+                </div>
+              </div>
+            )}
 
             {/* Cities Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cities.slice(1).map((city) => (
-                <Link key={city.id} href={`/cities/${city.slug}`}>
-                  <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300 w-full h-[300px] sm:h-[350px] lg:h-[400px]">
-                    <Image
-                      src={city.image}
-                      alt={city.name}
-                      width={384}
-                      height={400}
-                      className="w-full h-full object-cover"
-                    />
-                    
-                    {/* Dark gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-                    
-                    {/* Cities badge */}
-                    <div className="absolute top-4 left-4">
-                      <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#F59E0B' }}>
-                        {city.category}
-                      </span>
+            {otherCities.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {otherCities.map((city: { id: string; slug: string; image: string; name: string; subtitle: string; description: string }) => (
+                  <Link key={city.id} href={`/destinations/${city.slug}`}>
+                    <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300 w-full h-[300px] sm:h-[350px] lg:h-[400px]">
+                      <Image
+                        src={city.image}
+                        alt={city.name}
+                        width={384}
+                        height={400}
+                        className="w-full h-full object-cover"
+                      />
+                      
+                      {/* Dark gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                      
+                      {/* Cities badge */}
+                      <div className="absolute top-4 left-4">
+                        <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#F59E0B' }}>
+                          Cities
+                        </span>
+                      </div>
+                      
+                      {/* Title at bottom */}
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <h3 className="text-white text-lg sm:text-xl lg:text-2xl font-bold leading-tight">
+                          {city.name} {city.subtitle && `— ${city.subtitle}`}
+                        </h3>
+                      </div>
                     </div>
-                    
-                    {/* Title at bottom */}
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <h3 className="text-white text-lg sm:text-xl lg:text-2xl font-bold leading-tight">
-                        {city.name} — {city.subtitle}
-                      </h3>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </div>

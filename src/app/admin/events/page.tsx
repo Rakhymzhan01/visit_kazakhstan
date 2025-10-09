@@ -524,7 +524,7 @@ export default function EventsAdmin() {
         <CardContent>
           {events.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              No events found. Click "Add New Event" to create your first event.
+              No events found. Click &quot;Add New Event&quot; to create your first event.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

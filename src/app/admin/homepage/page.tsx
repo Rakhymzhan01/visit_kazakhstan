@@ -127,7 +127,7 @@ export default function HomepageContentEditor() {
   const saveContent = async () => {
     setSaving(true);
     try {
-      await homepageApi.updateHomepageContent(content);
+      await homepageApi.updateHomepageContent(content as unknown as Record<string, unknown>);
       toast.success('Content saved successfully!');
     } catch (error) {
       console.error('Error saving content:', error);
@@ -141,7 +141,7 @@ export default function HomepageContentEditor() {
     setContent(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
+        ...(prev[section] as Record<string, unknown>),
         [key]: value
       }
     }));
@@ -151,7 +151,7 @@ export default function HomepageContentEditor() {
     setContent(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
+        ...(prev[section] as Record<string, unknown>),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [key]: ((prev[section] as any)[key] as any[]).map((item: any, i: number) => 
           i === index ? { ...item, [field]: value } : item
@@ -164,7 +164,7 @@ export default function HomepageContentEditor() {
     setContent(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
+        ...(prev[section] as Record<string, unknown>),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [key]: [...((prev[section] as any)[key] as any[]), newItem]
       }
@@ -175,7 +175,7 @@ export default function HomepageContentEditor() {
     setContent(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
+        ...(prev[section] as Record<string, unknown>),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [key]: ((prev[section] as any)[key] as any[]).filter((_: any, i: number) => i !== index)
       }

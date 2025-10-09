@@ -9,29 +9,26 @@ import Image from 'next/image';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-// Create a simple API client for public category endpoints
-const publicCategoryApi = {
-  getCategories: async (params?: { featured?: boolean; limit?: number }) => {
+// Create a simple API client for public page category endpoints
+const publicPageCategoryApi = {
+  getPageCategories: async (params?: { featured?: boolean; limit?: number }) => {
     const searchParams = new URLSearchParams();
-    
-    // Only get active categories for public view
-    searchParams.append('status', 'ACTIVE');
     
     if (params?.featured !== undefined) searchParams.append('featured', params.featured.toString());
     if (params?.limit) searchParams.append('limit', params.limit.toString());
     
-    const response = await fetch(`http://localhost:5001/api/categories/public?${searchParams.toString()}`);
-    if (!response.ok) throw new Error('Failed to fetch categories');
+    const response = await fetch(`http://localhost:5001/api/page-categories/public?${searchParams.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch page categories');
     return response.json();
   }
 };
 
-interface Category {
+interface PageCategory {
   id: string;
   name: string;
   slug: string;
-  description?: string;
-  image?: string;
+  description: string;
+  image: string;
   featured: boolean;
   status: string;
   displayOrder: number;
@@ -39,20 +36,20 @@ interface Category {
 }
 
 export default function CategoriesPage() {
-  // Fetch published categories
+  // Fetch published page categories
   const { 
     data: categoriesData, 
     isLoading, 
     error 
   } = useQuery({
-    queryKey: ['publicCategories'],
-    queryFn: () => publicCategoryApi.getCategories({
+    queryKey: ['publicPageCategories'],
+    queryFn: () => publicPageCategoryApi.getPageCategories({
       limit: 20
     }),
   });
 
   const categories = categoriesData?.data?.categories || [];
-  const featuredCategory = categories.find((category: Category) => category.featured);
+  const featuredCategory = categories.find((category: PageCategory) => category.featured);
 
   if (isLoading) {
     return (
@@ -222,7 +219,7 @@ export default function CategoriesPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {categories.map((category: Category) => (
+            {categories.map((category: PageCategory) => (
               <Link key={category.id} href={`/categories/${category.slug}`}>
                 <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer h-full">
                   <div className="relative">

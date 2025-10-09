@@ -1,69 +1,35 @@
+'use client'
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 
+// API client for destinations
+const destinationsApi = {
+  getDestinations: async (category?: string) => {
+    const searchParams = new URLSearchParams({
+      status: 'ACTIVE',
+      category: category || '',
+      limit: '50'
+    });
+    const response = await fetch(`http://localhost:5001/api/destinations/public?${searchParams.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch destinations');
+    return response.json();
+  }
+};
+
 const NaturePage = () => {
-  const destinations = [
-    {
-      id: 1,
-      name: 'Mangystau Region',
-      description: 'A surreal desert meets seas region in the west, filled with chalk mountains, underground mosques, and alien-like rock formations. Visit Bozzhyra, Torysh (Valley of Balls), and Sherkala Mountain for a journey into a land that feels untouched by time.',
-      image: '/mangystau.jpg',
-      category: 'Nature',
-      slug: 'mangystau-region',
-      featured: true
-    },
-    {
-      id: 2,
-      name: 'Charyn Canyon',
-      description: 'Kazakhstan\'s answer to the Grand Canyon, with dramatic red rock formations carved by millennia of erosion.',
-      image: '/charyn.jpg',
-      category: 'Nature',
-      slug: 'charyn-canyon'
-    },
-    {
-      id: 3,
-      name: 'Lake Kaindy & Kolsai Lakes',
-      description: 'Crystal-clear alpine lakes in the Tian Shan mountains, perfect for hiking and photography.',
-      image: '/bao_contras.jpg',
-      category: 'Nature',
-      slug: 'kolsai-lakes'
-    },
-    {
-      id: 4,
-      name: 'Big Almaty Lake',
-      description: 'Stunning turquoise lake nestled high in the mountains above Almaty city.',
-      image: '/almaty.jpg',
-      category: 'Nature',
-      slug: 'big-almaty-lake'
-    },
-    {
-      id: 5,
-      name: 'Altyn-Emel National Park',
-      description: 'Home to the famous Singing Dunes and diverse wildlife in a vast desert landscape.',
-      image: '/desert.jpg',
-      category: 'Nature',
-      slug: 'altyn-emel'
-    },
-    {
-      id: 6,
-      name: 'Borovoe (Burabay)',
-      description: 'Kazakhstan\'s "Switzerland" with pristine lakes, unique rock formations, and pine forests.',
-      image: '/kanatnaya_doroga.jpg',
-      category: 'Nature',
-      slug: 'borovoe'
-    },
-    {
-      id: 7,
-      name: 'Tulip Fields in South Kazakhstan (Taraz & Shymkent)',
-      description: 'Spectacular wildflower displays in spring, covering the steppes in vibrant colors.',
-      image: '/yurta.jpg',
-      category: 'Nature',
-      slug: 'tulip-fields'
-    }
-  ]
+  // Fetch nature destinations from API
+  const { data: destinationsData, isLoading, error } = useQuery({
+    queryKey: ['destinations', 'nature'],
+    queryFn: () => destinationsApi.getDestinations('nature'),
+  });
+
+  const destinations = destinationsData?.data?.destinations || [];
+  const featuredDestination = destinations.find((dest: { featured?: boolean }) => dest.featured);
+  const otherDestinations = destinations.filter((dest: { featured?: boolean }) => !dest.featured)
 
   return (
     <>
@@ -134,104 +100,123 @@ const NaturePage = () => {
             </h2>
           </div>
 
+          {/* Loading state */}
+          {isLoading && (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-pulse text-gray-500">Loading destinations...</div>
+            </div>
+          )}
+
+          {/* Error state */}
+          {error && (
+            <div className="text-center py-12">
+              <p className="text-red-500">Failed to load destinations. Please try again later.</p>
+            </div>
+          )}
+
           {/* Featured section with large photo and card */}
-          <div className="flex flex-col lg:flex-row gap-6 mb-12">
-            {/* Large landscape photo */}
-            <div className="relative overflow-hidden rounded-2xl w-full lg:w-[792px] h-[300px] sm:h-[400px]">
-              <Image
-                src="/mangystau.jpg"
-                alt="Kazakhstan Nature Landscape"
-                width={792}
-                height={400}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-              <div className="absolute top-4 left-4">
-                <span className="bg-green-600 text-white text-sm px-4 py-2 rounded-full font-medium">
-                  Nature
-                </span>
-              </div>
-              <div className="absolute bottom-6 left-6 right-6">
-                <h3 className="text-white text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
-                  Mangystau Region
-                </h3>
-              </div>
-            </div>
-
-            {/* Text box on the right */}
-            <div className="bg-white rounded-2xl flex flex-col w-full lg:w-[384px] h-auto lg:h-[400px] p-6 lg:p-8">
-              <h3 className="font-montserrat" style={{
-                fontWeight: 600,
-                fontSize: 'clamp(18px, 4vw, 24px)',
-                lineHeight: '130%',
-                letterSpacing: '-2%',
-                color: '#202020',
-                marginBottom: 'clamp(16px, 4vw, 32px)'
-              }}>
-                Mangystau Region
-              </h3>
-              <p className="font-manrope flex-1" style={{
-                fontWeight: 400,
-                fontSize: 'clamp(13px, 2.5vw, 14px)',
-                lineHeight: '24px',
-                letterSpacing: '-1%',
-                color: '#4F504F',
-                marginBottom: 'clamp(24px, 6vw, 48px)'
-              }}>
-                A surreal desert-meets-sea region in the west, filled with chalk mountains, underground mosques, and alien-like rock formations. Visit Bozzhyra, Torysh (Valley of Balls), and Sherkala Mountain for a journey into a land that feels untouched by time.
-              </p>
-              <Link
-                href="/plan-your-trip"
-                className="text-white font-manrope rounded-full self-start flex items-center justify-center hover:bg-[#007a9a] transition-colors"
-                style={{
-                  width: 'clamp(140px, 30vw, 160px)',
-                  height: '50px',
-                  backgroundColor: '#009CBC',
-                  padding: '13px 30px',
-                  borderRadius: '99px',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  lineHeight: '1',
-                  letterSpacing: '-2%'
-                }}
-              >
-                Plan your trip
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {destinations.slice(2).map((destination) => (
-              <Link key={destination.id} href={`/nature/${destination.slug}`}>
-                <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300 w-full h-[300px] sm:h-[350px] lg:h-[400px]">
-                  <Image
-                    src={destination.image}
-                    alt={destination.name}
-                    width={384}
-                    height={400}
-                    className="w-full h-full object-cover"
-                  />
-                  
-                  {/* Dark gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-                  
-                  {/* Nature badge */}
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-green-600 text-white text-sm px-4 py-2 rounded-full font-medium">
-                      {destination.category}
-                    </span>
-                  </div>
-                  
-                  {/* Title at bottom */}
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <h3 className="text-white text-lg sm:text-xl lg:text-2xl font-bold leading-tight">
-                      {destination.name}
-                    </h3>
-                  </div>
+          {featuredDestination && (
+            <div className="flex flex-col lg:flex-row gap-6 mb-12">
+              {/* Large landscape photo */}
+              <div className="relative overflow-hidden rounded-2xl w-full lg:w-[792px] h-[300px] sm:h-[400px]">
+                <Image
+                  src={featuredDestination.image}
+                  alt={featuredDestination.name}
+                  width={792}
+                  height={400}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                <div className="absolute top-4 left-4">
+                  <span className="bg-green-600 text-white text-sm px-4 py-2 rounded-full font-medium">
+                    Nature
+                  </span>
                 </div>
-              </Link>
-            ))}
-          </div>
+                <div className="absolute bottom-6 left-6 right-6">
+                  <h3 className="text-white text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
+                    {featuredDestination.name}
+                  </h3>
+                </div>
+              </div>
+
+              {/* Text box on the right */}
+              <div className="bg-white rounded-2xl flex flex-col w-full lg:w-[384px] h-auto lg:h-[400px] p-6 lg:p-8">
+                <h3 className="font-montserrat" style={{
+                  fontWeight: 600,
+                  fontSize: 'clamp(18px, 4vw, 24px)',
+                  lineHeight: '130%',
+                  letterSpacing: '-2%',
+                  color: '#202020',
+                  marginBottom: 'clamp(16px, 4vw, 32px)'
+                }}>
+                  {featuredDestination.name}
+                </h3>
+                <p className="font-manrope flex-1" style={{
+                  fontWeight: 400,
+                  fontSize: 'clamp(13px, 2.5vw, 14px)',
+                  lineHeight: '24px',
+                  letterSpacing: '-1%',
+                  color: '#4F504F',
+                  marginBottom: 'clamp(24px, 6vw, 48px)'
+                }}>
+                  {featuredDestination.description}
+                </p>
+                <Link
+                  href={`/destinations/${featuredDestination.slug}`}
+                  className="text-white font-manrope rounded-full self-start flex items-center justify-center hover:bg-[#007a9a] transition-colors"
+                  style={{
+                    width: 'clamp(140px, 30vw, 160px)',
+                    height: '50px',
+                    backgroundColor: '#009CBC',
+                    padding: '13px 30px',
+                    borderRadius: '99px',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    lineHeight: '1',
+                    letterSpacing: '-2%'
+                  }}
+                >
+                  Learn more
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Other destinations grid */}
+          {otherDestinations.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {otherDestinations.map((destination: { id: string; slug: string; image: string; name: string; subtitle: string; description: string }) => (
+                <Link key={destination.id} href={`/destinations/${destination.slug}`}>
+                  <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300 w-full h-[300px] sm:h-[350px] lg:h-[400px]">
+                    <Image
+                      src={destination.image}
+                      alt={destination.name}
+                      width={384}
+                      height={400}
+                      className="w-full h-full object-cover"
+                    />
+                    
+                    {/* Dark gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                    
+                    {/* Nature badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-green-600 text-white text-sm px-4 py-2 rounded-full font-medium">
+                        Nature
+                      </span>
+                    </div>
+                    
+                    {/* Title at bottom */}
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <h3 className="text-white text-lg sm:text-xl lg:text-2xl font-bold leading-tight">
+                        {destination.name}
+                      </h3>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
       </div>

@@ -97,7 +97,7 @@ const EventsPage = () => {
                 Discover Amazing Events in Kazakhstan
               </h1>
               <p className="text-sm lg:text-[14px] text-gray-600 leading-relaxed max-w-md">
-                From cultural festivals to adventure sports, explore the diverse events that showcase Kazakhstan's rich heritage and modern spirit.
+                From cultural festivals to adventure sports, explore the diverse events that showcase Kazakhstan&apos;s rich heritage and modern spirit.
               </p>
             </div>
             

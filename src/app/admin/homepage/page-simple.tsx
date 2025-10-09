@@ -90,7 +90,7 @@ export default function HomepageAdmin() {
     setSaving(true);
     try {
       await homepageApi.updateWhyVisitSection({
-        items: whyVisitItems
+        features: whyVisitItems
       });
       toast.success('Why Visit section updated successfully');
     } catch (error) {
@@ -165,7 +165,7 @@ export default function HomepageAdmin() {
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
             <h3 className="font-semibold text-blue-900 mb-2">Instructions:</h3>
             <p className="text-blue-800 text-sm">
-              Edit the "Why Visit Kazakhstan" cards that appear on the homepage. These cards showcase the main reasons to visit Kazakhstan. 
+              Edit the &quot;Why Visit Kazakhstan&quot; cards that appear on the homepage. These cards showcase the main reasons to visit Kazakhstan. 
               You can edit the title, description, image, and background color of each card.
             </p>
           </div>

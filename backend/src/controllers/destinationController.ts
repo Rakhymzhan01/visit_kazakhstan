@@ -140,15 +140,16 @@ export const getDestinations = async (req: Request, res: Response): Promise<void
 // Get single destination
 export const getDestination = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const { id, slug } = req.params;
+    const identifier = slug || id; // Use slug if available, otherwise id
 
     let destination;
     
     // Check if it's an ObjectId or slug
-    if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      destination = await Destination.findById(id).populate('createdBy', 'name email');
+    if (identifier.match(/^[0-9a-fA-F]{24}$/)) {
+      destination = await Destination.findById(identifier).populate('createdBy', 'name email');
     } else {
-      destination = await Destination.findOne({ slug: id, status: 'ACTIVE' }).populate('createdBy', 'name email');
+      destination = await Destination.findOne({ slug: identifier, status: 'ACTIVE' }).populate('createdBy', 'name email');
     }
 
     if (!destination) {

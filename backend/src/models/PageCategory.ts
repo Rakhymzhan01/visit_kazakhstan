@@ -8,7 +8,7 @@ export interface IPageCategory extends Document {
   featured: boolean;
   status: 'ACTIVE' | 'INACTIVE';
   displayOrder: number;
-  createdBy: mongoose.Types.ObjectId;
+  authorId: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -50,7 +50,7 @@ const PageCategorySchema = new Schema<IPageCategory>({
     type: Number,
     default: 0
   },
-  createdBy: {
+  authorId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true

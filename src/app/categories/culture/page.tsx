@@ -2,114 +2,41 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
+
+// API client for destinations
+const destinationsApi = {
+  getDestinations: async (category?: string, subcategory?: string) => {
+    const searchParams = new URLSearchParams({
+      status: 'ACTIVE',
+      category: category || '',
+      limit: '50'
+    });
+    if (subcategory) {
+      searchParams.append('subcategory', subcategory);
+    }
+    const response = await fetch(`http://localhost:5001/api/destinations/public?${searchParams.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch destinations');
+    return response.json();
+  }
+};
 
 const CulturePage = () => {
   const [activeTab, setActiveTab] = useState('Now')
 
   const tabs = ['Then', 'Now']
 
-  const cultureCategories = {
-    'Now': [
-      {
-        id: 1,
-        name: 'Astana — The Bold & Futuristic Capital',
-        description: 'Sleek skyscrapers and avant-garde architecture define Astana. Visit the Astana Opera, National Museum, and Nur Alem Sphere from EXPO 2017. The city hosts cultural forums, design events, and digital art festivals.',
-        image: '/baiterek.jpg',
-        category: 'Culture',
-        slug: 'astana-culture',
-        featured: true
-      },
-      {
-        id: 2,
-        name: 'Almaty — The Creative Soul',
-        description: 'Street art, fashion studios, coffee culture, and live music — explore Almaty\'s youthful soul.',
-        image: '/almaty.jpg',
-        category: 'Culture',
-        slug: 'almaty-creative'
-      },
-      {
-        id: 3,
-        name: 'Art, Fashion & Media',
-        description: 'Contemporary galleries, fashion weeks, and media production hubs across major cities.',
-        image: '/expo.jpg',
-        category: 'Culture',
-        slug: 'art-fashion-media'
-      },
-      {
-        id: 4,
-        name: 'Theater & Cinema',
-        description: 'Modern theater productions, film festivals, and cinematic experiences.',
-        image: '/city.png',
-        category: 'Culture',
-        slug: 'theater-cinema'
-      },
-      {
-        id: 5,
-        name: 'Modern Spirituality & Identity',
-        description: 'Contemporary expressions of faith and cultural identity in modern Kazakhstan.',
-        image: '/kozha_akhmet_yassaui.jpg',
-        category: 'Culture',
-        slug: 'modern-spirituality'
-      }
-    ],
-    'Then': [
-      {
-        id: 6,
-        name: 'Life in the Steppe',
-        description: 'The heart of Kazakh culture beats in the rhythms of nomadic life — yurt living, horse racing, eagle hunting, and deep-rooted hospitality.',
-        image: '/yurta.jpg',
-        category: 'Culture',
-        slug: 'life-in-steppe',
-        featured: true
-      },
-      {
-        id: 7,
-        name: 'Music & Instruments',
-        description: 'Traditional dombra music, epic songs, and the rich musical heritage of the nomadic peoples.',
-        image: '/nomad_girls.png',
-        category: 'Culture',
-        slug: 'music-instruments'
-      },
-      {
-        id: 8,
-        name: 'Cuisine',
-        description: 'Traditional Kazakh dishes like beshbarmak, kumys, and the art of nomadic cooking.',
-        image: '/famile.jpg',
-        category: 'Culture',
-        slug: 'cuisine'
-      },
-      {
-        id: 9,
-        name: 'Spiritual & Festive Life',
-        description: 'Ancient traditions, seasonal festivals, and spiritual practices of the Kazakh people.',
-        image: '/shanyrak.jpg',
-        category: 'Culture',
-        slug: 'spiritual-life'
-      },
-      {
-        id: 10,
-        name: 'Crafts & Textiles',
-        description: 'Traditional handicrafts, carpet weaving, and the intricate artistry of nomadic design.',
-        image: '/kanatka.jpg',
-        category: 'Culture',
-        slug: 'crafts-textiles'
-      },
-      {
-        id: 11,
-        name: 'Tulip Heritage',
-        description: 'The ancient connection between Kazakhstan and tulips, celebrated in spring festivals.',
-        image: '/couple-photo.jpg',
-        category: 'Culture',
-        slug: 'tulip-heritage'
-      }
-    ]
-  }
+  // Fetch culture destinations from API based on subcategory
+  const { data: destinationsData, isLoading, error } = useQuery({
+    queryKey: ['destinations', 'culture', activeTab.toLowerCase()],
+    queryFn: () => destinationsApi.getDestinations('culture', activeTab.toLowerCase()),
+  });
 
-  const currentCategories = cultureCategories[activeTab as keyof typeof cultureCategories] || []
-  const featuredCategory = currentCategories.find(cat => cat.featured)
-  const otherCategories = currentCategories.filter(cat => !cat.featured)
+  const currentCategories = destinationsData?.data?.destinations || []
+  const featuredCategory = currentCategories.find((cat: { featured?: boolean }) => cat.featured)
+  const otherCategories = currentCategories.filter((cat: { featured?: boolean }) => !cat.featured)
 
   return (
     <>
@@ -225,6 +152,20 @@ const CulturePage = () => {
             </div>
           </div>
 
+          {/* Loading state */}
+          {isLoading && (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-pulse text-gray-500">Loading cultural destinations...</div>
+            </div>
+          )}
+
+          {/* Error state */}
+          {error && (
+            <div className="text-center py-12">
+              <p className="text-red-500">Failed to load cultural destinations. Please try again later.</p>
+            </div>
+          )}
+
           {/* Featured Category */}
           {featuredCategory && (
             <div className="flex flex-col lg:flex-row gap-6 mb-12">
@@ -240,7 +181,7 @@ const CulturePage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                 <div className="absolute top-4 left-4">
                   <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#2563EB' }}>
-                    {featuredCategory.category}
+                    Culture
                   </span>
                 </div>
                 <div className="absolute bottom-6 left-6 right-6">
@@ -273,7 +214,7 @@ const CulturePage = () => {
                   {featuredCategory.description}
                 </p>
                 <Link
-                  href="/plan-your-trip"
+                  href={`/destinations/${featuredCategory.slug}`}
                   className="text-white font-manrope rounded-full self-start flex items-center justify-center hover:bg-[#007a9a] transition-colors"
                   style={{
                     width: 'clamp(140px, 30vw, 160px)',
@@ -287,45 +228,47 @@ const CulturePage = () => {
                     letterSpacing: '-2%'
                   }}
                 >
-                  Plan your trip
+                  Learn more
                 </Link>
               </div>
             </div>
           )}
 
           {/* Culture Categories Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {otherCategories.map((category) => (
-              <Link key={category.id} href={`/culture/${category.slug}`}>
-                <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300 w-full h-[300px] sm:h-[350px] lg:h-[400px]">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    width={384}
-                    height={400}
-                    className="w-full h-full object-cover"
-                  />
-                  
-                  {/* Dark gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-                  
-                  {/* Culture badge */}
-                  <div className="absolute top-4 left-4">
-                    <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#2563EB' }}>
-                      {category.category}
-                    </span>
+          {otherCategories.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {otherCategories.map((category: { id: string; slug: string; image: string; name: string; subtitle: string; description: string }) => (
+                <Link key={category.id} href={`/destinations/${category.slug}`}>
+                  <div className="relative overflow-hidden rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300 w-full h-[300px] sm:h-[350px] lg:h-[400px]">
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      width={384}
+                      height={400}
+                      className="w-full h-full object-cover"
+                    />
+                    
+                    {/* Dark gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                    
+                    {/* Culture badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="text-white text-sm px-4 py-2 rounded-full font-medium" style={{ backgroundColor: '#2563EB' }}>
+                        Culture
+                      </span>
+                    </div>
+                    
+                    {/* Title at bottom */}
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <h3 className="text-white text-2xl font-bold leading-tight">
+                        {category.name}
+                      </h3>
+                    </div>
                   </div>
-                  
-                  {/* Title at bottom */}
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <h3 className="text-white text-2xl font-bold leading-tight">
-                      {category.name}
-                    </h3>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
       </div>

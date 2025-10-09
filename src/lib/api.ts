@@ -389,3 +389,29 @@ export const aboutUsApi = {
 
   publishAboutUs: (id: string) => api.put(`/aboutus/${id}/publish`),
 };
+
+// Page Categories API (for the /categories page)
+export const pageCategoriesApi = {
+  getPublicPageCategories: (params?: {
+    page?: number;
+    limit?: number;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/page-categories/public', { params }),
+
+  getPageCategories: (params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    featured?: boolean;
+    search?: string;
+  }) => api.get('/page-categories', { params }),
+
+  getPageCategoryById: (id: string) => api.get(`/page-categories/${id}`),
+
+  createPageCategory: (data: Record<string, unknown>) => api.post('/page-categories', data),
+
+  updatePageCategory: (id: string, data: Record<string, unknown>) => api.put(`/page-categories/${id}`, data),
+
+  deletePageCategory: (id: string) => api.delete(`/page-categories/${id}`),
+};

@@ -66,7 +66,7 @@ export default function HomePage() {
   const [featuredTours, setFeaturedTours] = useState<Tour[]>([])
   const [featuredBlogs, setFeaturedBlogs] = useState<BlogPost[]>([])
   const [featuredEvents, setFeaturedEvents] = useState<Event[]>([])
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
 
   const toggleCard = (index: number) => {
     setExpandedCards(prev => 
@@ -97,7 +97,7 @@ export default function HomePage() {
               setWhyVisitItems(data.whyVisit.features.sort((a: WhyVisitItem, b: WhyVisitItem) => a.order - b.order));
             } else {
               console.log('❌ No features found in database data');
-              setWhyVisitItems([]);
+              setWhyVisitItems([
             {
               title: "Silk Road History",
               description: "Explore ancient trade routes and historical significance that shaped Central Asia for centuries. Walk through the same paths where merchants, scholars, and travelers once journeyed between East and West.",
@@ -499,7 +499,7 @@ export default function HomePage() {
 
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
-              {featuredTours.length > 0 ? featuredTours.map((tour, index) => (
+              {featuredTours.length > 0 ? featuredTours.map((tour) => (
                 <Link key={tour.id} href={`/tours/${tour.slug}`}>
                   <Card className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200" style={{
                     width: 'clamp(280px, 80vw, 384px)',

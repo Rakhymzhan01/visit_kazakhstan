@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { Calendar, Clock, User, Instagram } from 'lucide-react';
@@ -80,7 +80,7 @@ export default function BlogPage() {
     totalBlogs: blogs.length,
     featuredPost: featuredPost?.title,
     regularPostsCount: regularPosts.length,
-    allPosts: blogs.map(b => ({ title: b.title, featured: b.featured }))
+    allPosts: blogs.map((b: { title: string; featured: boolean }) => ({ title: b.title, featured: b.featured }))
   });
 
   return (

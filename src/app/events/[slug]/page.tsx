@@ -116,7 +116,7 @@ const EventDetailPage = () => {
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Event Not Found</h1>
             <p className="text-gray-600 mb-8">
-              The event you're looking for doesn't exist or has been removed.
+              The event you&apos;re looking for doesn&apos;t exist or has been removed.
             </p>
             <Link href="/events" className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -211,7 +211,7 @@ const EventDetailPage = () => {
                   <div className="md:col-span-2">
                     <h4 className="font-semibold text-gray-900 mb-2">Tags</h4>
                     <div className="flex flex-wrap gap-2">
-                      {eventData.tags.map((tag, index) => (
+                      {eventData.tags.map((tag: string, index: number) => (
                         <span 
                           key={index}
                           className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
