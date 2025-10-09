@@ -942,7 +942,7 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
                   <Image
                     src={event.image || "/placeholder.svg"}
-                    alt={event.title}
+                    alt={event.title || "Featured event"}
                     width={384}
                     height={400}
                     className="w-full h-full object-cover"

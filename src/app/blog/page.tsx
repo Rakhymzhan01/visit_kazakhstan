@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { Calendar, Clock, User, Instagram } from 'lucide-react';
@@ -68,10 +68,20 @@ export default function BlogPage() {
     }),
   });
 
+  console.log('📊 Blog page state:', { blogsData, isLoading, error, searchTerm, selectedCategory });
+
 
   const blogs = blogsData?.data?.blogs || [];
   const featuredPost = blogs.find((post: BlogPost) => post.featured);
-  const regularPosts = blogs.filter((post: BlogPost) => !post.featured);
+  // Show all posts except the featured one in Latest Articles section
+  const regularPosts = blogs.filter((post: BlogPost) => post.id !== featuredPost?.id);
+  
+  console.log('🔍 Blog data analysis:', {
+    totalBlogs: blogs.length,
+    featuredPost: featuredPost?.title,
+    regularPostsCount: regularPosts.length,
+    allPosts: blogs.map(b => ({ title: b.title, featured: b.featured }))
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -355,10 +365,10 @@ export default function BlogPage() {
       </section>
 
       {/* Instagram Section */}
-      <section className="py-12 bg-gray-50 overflow-hidden">
+      <section className="py-8 sm:py-12 bg-gray-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
-            <div className="w-full lg:w-[486px] pt-8 lg:pt-12">
+          <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-12">
+            <div className="text-center lg:text-left lg:max-w-md">
               <h2 className="mb-4">
                 <span 
                   className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
@@ -375,42 +385,46 @@ export default function BlogPage() {
                   }}
                 >@into.kazakhstan</span>
               </h2>
-              <p className="text-gray-600 mb-6 text-sm max-w-md">
+              <p className="text-gray-600 mb-6 text-sm sm:text-base">
                 Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
                 landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
               </p>
               <Button 
-                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200"
+                className="bg-white hover:bg-gray-50 text-[#009CBC] border-0 hover:scale-105 transition-all duration-200 w-full sm:w-auto"
                 style={{
-                  width: '145px',
                   height: '50px',
-                  borderRadius: '99px'
+                  borderRadius: '99px',
+                  padding: '0 24px'
                 }}
               >
                 See Instagram
               </Button>
             </div>
-          </div>
 
-          {/* Instagram Photos */}
-          <div className="w-full lg:flex-1 overflow-x-auto scrollbar-hide">
-            <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
-              {[
-                { image: "/nomad_girls.png", alt: "Nomad girls" },
-                { image: "/desert.jpg", alt: "Desert landscape" },
-                { image: "/yurta.jpg", alt: "Traditional yurt" }
-              ].map((post, index) => (
-                <div key={index} className="relative flex-shrink-0 w-60 h-60 sm:w-[282px] sm:h-[282px]">
-                  <Image
-                    src={post.image}
-                    alt={post.alt}
-                    width={282}
-                    height={282}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                  <Instagram className="absolute top-3 left-3 w-8 h-8 text-white" />
+            <div className="flex-1">
+              <div className="overflow-x-auto scrollbar-hide">
+                <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
+                  {[
+                    { image: "/nomad_girls.png", alt: "Nomad girls" },
+                    { image: "/desert.jpg", alt: "Desert landscape" },
+                    { image: "/yurta.jpg", alt: "Traditional yurt" }
+                  ].map((post, index) => (
+                    <div key={index} className="relative flex-shrink-0" style={{ 
+                      width: 'clamp(200px, 50vw, 282px)', 
+                      height: 'clamp(200px, 50vw, 282px)' 
+                    }}>
+                      <Image
+                        src={post.image}
+                        alt={post.alt}
+                        width={282}
+                        height={282}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      <Instagram className="absolute top-3 left-3 w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
