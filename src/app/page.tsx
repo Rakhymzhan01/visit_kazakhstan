@@ -59,6 +59,7 @@ export default function HomePage() {
   const [expandedCards, setExpandedCards] = useState<number[]>([])
   
   // State for dynamic content
+  const [heroContent, setHeroContent] = useState({ title: 'Your Next Best Trip,', subtitle: 'Return Inspired' })
   const [whyVisitItems, setWhyVisitItems] = useState<WhyVisitItem[]>([])
   const [featuredTours, setFeaturedTours] = useState<Tour[]>([])
   const [featuredBlogs, setFeaturedBlogs] = useState<BlogPost[]>([])
@@ -90,6 +91,15 @@ export default function HomePage() {
           if (homepageResponse.data.success && homepageResponse.data.data) {
             const data = homepageResponse.data.data;
             console.log('Homepage data:', data);
+            
+            // Set hero content from database
+            if (data.hero) {
+              console.log('SUCCESS: Setting hero content from database:', data.hero);
+              setHeroContent({
+                title: data.hero.title || 'Your Next Best Trip,',
+                subtitle: data.hero.subtitle || 'Return Inspired'
+              });
+            }
             
             if (data.whyVisit?.features && data.whyVisit.features.length > 0) {
               console.log('SUCCESS: Setting features from database:', data.whyVisit.features);
@@ -192,8 +202,8 @@ export default function HomePage() {
               textAlign: 'center'
             }}
           >
-            <h1>Your Next Best Trip,</h1>
-            <h1>Return Inspired</h1>
+            <h1>{heroContent.title}</h1>
+            <h1>{heroContent.subtitle}</h1>
           </div>
         </div>
       </section>

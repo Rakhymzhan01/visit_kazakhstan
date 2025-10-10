@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
@@ -117,131 +117,79 @@ export default function HomepageContentEditor() {
     }
   }, [isAuthenticated, loading, router]);
 
-  // Fetch homepage content with proper cache invalidation
+  // Fetch homepage content with no caching
   const { data: homepageResponse, isLoading, error, refetch } = useQuery({
     queryKey: ['homepageContent'],
     queryFn: async () => {
-      console.log('🔄 Loading Homepage data...');
       const response = await homepageApi.getHomepageContent();
-      console.log('📦 Homepage API Response:', response);
       return response;
     },
     enabled: isAuthenticated,
-    refetchOnMount: true,
+    refetchOnMount: 'always',
     refetchOnWindowFocus: false,
     staleTime: 0,
+    gcTime: 0,
+    retry: false,
   });
 
-  // Extract the actual data from response with proper error handling
-  let homepageData = null;
-  
-  if (homepageResponse?.data) {
-    console.log('🔍 EXTRACTION DEBUG - Response structure:', homepageResponse.data);
-    
-    // Check if it's the expected {success: true, data: {...}} format
-    if (homepageResponse.data.success && homepageResponse.data.data) {
-      homepageData = homepageResponse.data.data;
-      console.log('✅ EXTRACTION - Found data in response.data.data:', homepageData);
-    }
-    // Check if data is directly in response.data (backup)
-    else if (homepageResponse.data.hero || homepageResponse.data.whyVisit) {
-      homepageData = homepageResponse.data;
-      console.log('✅ EXTRACTION - Found data directly in response.data:', homepageData);
-    }
-    // Handle null/empty data
-    else if (homepageResponse.data.success && homepageResponse.data.data === null) {
-      console.log('⚠️ EXTRACTION - No homepage content in database');
-      homepageData = null;
-    }
-    else {
-      console.log('❌ EXTRACTION - Unexpected response structure:', homepageResponse.data);
-      homepageData = null;
-    }
-  } else {
-    console.log('❌ EXTRACTION - No response.data found');
-  }
+  // Extract the actual data from response - SAME AS ABOUT US PAGE
+  const homepageData = homepageResponse?.data?.data;
 
-  // Load data into form when received
+  // Load data into form when received - SAME PATTERN AS ABOUT US
   useEffect(() => {
-    console.log('🔍 DEBUG - useEffect triggered');
-    console.log('🔍 DEBUG - homepageResponse:', homepageResponse);
-    console.log('🔍 DEBUG - homepageResponse?.data:', homepageResponse?.data);
-    console.log('🔍 DEBUG - homepageData (extracted):', homepageData);
-    
     if (homepageData) {
-      console.log('📝 Loading homepage data into form:', homepageData);
-      // Ensure the data has the correct structure
-      const dataToSet = {
+      setContent({
         ...defaultContent,
         ...homepageData,
-        // Ensure nested objects exist
         hero: homepageData.hero || defaultContent.hero,
         whyVisit: homepageData.whyVisit || defaultContent.whyVisit,
         tourThemes: homepageData.tourThemes || defaultContent.tourThemes,
         instagram: homepageData.instagram || defaultContent.instagram,
         events: homepageData.events || defaultContent.events,
-      };
-      setContent(dataToSet);
-      console.log('✅ Homepage form data loaded successfully:', dataToSet);
-    } else if (homepageResponse?.data) {
-      console.log('🔍 DEBUG - No data.data found, checking response.data directly');
-      const directData = homepageResponse.data;
-      if (directData && typeof directData === 'object' && directData.hero) {
-        console.log('📝 Using direct data from response.data');
-        setContent({
-          ...defaultContent,
-          ...directData
-        });
-      } else if (directData && directData.success && directData.data === null) {
-        console.log('📝 No homepage content in database, using default content for first-time setup');
-        setContent(defaultContent);
-      } else {
-        console.log('📝 No valid data found, using default content');
-        setContent(defaultContent);
-      }
-    } else {
-      console.log('📝 No response data, using default content');
-      setContent(defaultContent);
+      });
     }
-  }, [homepageData, homepageResponse]);
+  }, [homepageData]);
 
   // Update mutation
   const updateMutation = useMutation({
     mutationFn: async (data: HomepageContent) => {
-      console.log('💾 Saving Homepage data:', data);
       const response = await homepageApi.updateHomepageContent(data as unknown as Record<string, unknown>);
-      console.log('✅ Save response:', response);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       toast.success('Homepage content updated successfully!');
+      
+      // Clear cache and refetch immediately
       queryClient.invalidateQueries({ queryKey: ['homepageContent'] });
+      queryClient.refetchQueries({ queryKey: ['homepageContent'] });
+      
+      // Update the form with the latest data from the response
+      if (response?.data?.data) {
+        setContent(response.data.data);
+      }
+      
       setIsEditing(false);
     },
     onError: (error) => {
-      console.error('❌ Save error:', error);
+      console.error('Save error:', error);
       toast.error('Failed to update content. Please try again.');
     },
   });
 
   const handleEdit = () => {
-    console.log('📝 Starting edit mode');
     setIsEditing(true);
   };
 
   const handleRefresh = () => {
-    console.log('🔄 Manual refresh triggered');
-    queryClient.invalidateQueries({ queryKey: ['homepageContent'] });
+    queryClient.removeQueries({ queryKey: ['homepageContent'] });
     refetch();
   };
 
   const handleSave = () => {
-    console.log('💾 Saving changes:', content);
     updateMutation.mutate(content);
   };
 
   const handleCancel = () => {
-    console.log('❌ Canceling edit');
     setIsEditing(false);
     // Reload original data
     if (homepageData) {
@@ -332,26 +280,33 @@ export default function HomepageContentEditor() {
             Homepage Content Management
           </h1>
           <p className="text-gray-600 mt-2">
-            Edit your website's homepage content including hero section, features, tours, and events.
+            Edit your website&apos;s homepage content including hero section, features, tours, and events.
           </p>
         </div>
         
         {!isEditing ? (
-          <div className="flex gap-2">
-            <Button onClick={handleRefresh} variant="outline">
+          <div className="flex gap-3">
+            <Button 
+              onClick={handleRefresh} 
+              variant="outline"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-4 py-2"
+            >
               🔄 Refresh Data
             </Button>
-            <Button onClick={handleEdit} className="bg-blue-600 hover:bg-blue-700">
+            <Button 
+              onClick={handleEdit} 
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 shadow-sm"
+            >
               <Edit3 className="h-4 w-4 mr-2" />
               Edit Content
             </Button>
           </div>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
               onClick={handleSave}
               disabled={updateMutation.isPending}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-2 shadow-sm disabled:opacity-50"
             >
               <Save className="h-4 w-4 mr-2" />
               {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
@@ -360,6 +315,7 @@ export default function HomepageContentEditor() {
               variant="outline"
               onClick={handleCancel}
               disabled={updateMutation.isPending}
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-4 py-2 disabled:opacity-50"
             >
               <X className="h-4 w-4 mr-2" />
               Cancel
@@ -368,32 +324,6 @@ export default function HomepageContentEditor() {
         )}
       </div>
 
-      {/* Debug Info */}
-      <Card>
-        <CardContent className="p-4">
-          <h3 className="text-sm font-semibold text-red-600 mb-2">🐛 DEBUG INFO</h3>
-          <div className="text-xs text-gray-600 space-y-1">
-            <div>API Response: {homepageResponse ? 'Present' : 'Missing'}</div>
-            <div>Homepage Data: {homepageData ? 'Present' : 'Missing'}</div>
-            <div>Hero Title: {homepageData?.hero?.title ? 'Has content' : 'Empty'}</div>
-            <div>Features Count: {homepageData?.whyVisit?.features?.length || 0}</div>
-            <div>Tours Count: {homepageData?.tourThemes?.tours?.length || 0}</div>
-            <div>Events Count: {homepageData?.events?.eventList?.length || 0}</div>
-            <div className="mt-2 p-2 bg-gray-100 rounded text-xs max-h-40 overflow-y-auto">
-              <strong>Raw API Response:</strong>
-              <pre>{JSON.stringify(homepageResponse, null, 2)}</pre>
-            </div>
-            <div className="mt-2 p-2 bg-yellow-50 rounded text-xs max-h-40 overflow-y-auto">
-              <strong>Response.data structure:</strong>
-              <pre>{JSON.stringify(homepageResponse?.data, null, 2)}</pre>
-            </div>
-            <div className="mt-2 p-2 bg-blue-50 rounded text-xs max-h-40 overflow-y-auto">
-              <strong>Extracted homepageData:</strong>
-              <pre>{JSON.stringify(homepageData, null, 2)}</pre>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Status */}
       {homepageData ? (
@@ -1078,11 +1008,11 @@ export default function HomepageContentEditor() {
 
       {/* Bottom Save Button */}
       {isEditing && (
-        <div className="mt-8">
+        <div className="mt-8 border-t pt-6">
           <Button 
             onClick={handleSave}
             disabled={updateMutation.isPending}
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 text-lg shadow-sm disabled:opacity-50"
           >
             {updateMutation.isPending ? 'Saving...' : 'Save All Changes'}
           </Button>

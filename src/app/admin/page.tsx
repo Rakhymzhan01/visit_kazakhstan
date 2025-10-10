@@ -66,25 +66,20 @@ export default function AdminDashboard() {
     enabled: isAuthenticated,
   });
 
-  // Fetch recent content
-  const { data: recentBlogs } = useQuery({
-    queryKey: ['recentBlogs'],
-    queryFn: async () => {
-      console.log('🔄 Admin Dashboard: Loading recent blogs...');
-      const result = await blogApi.getBlogs({ limit: 3 });
-      console.log('📰 Admin Dashboard: Recent blogs response:', result);
-      return result;
-    },
-    enabled: isAuthenticated,
-  });
+  // Fetch recent content (currently unused but kept for future feature)
+  // const { data: recentBlogs } = useQuery({
+  //   queryKey: ['recentBlogs'],
+  //   queryFn: async () => {
+  //     const result = await blogApi.getBlogs({ limit: 3 });
+  //     return result;
+  //   },
+  //   enabled: isAuthenticated,
+  // });
 
   const { data: recentDestinations, isLoading: recentDestinationsLoading } = useQuery({
     queryKey: ['recentDestinations'],
     queryFn: async () => {
-      console.log('🔄 Admin Dashboard: Loading recent destinations...');
       const result = await destinationsApi.getDestinations({ limit: 3 });
-      console.log('🗺️ Admin Dashboard: Recent destinations response:', result);
-      console.log('📈 Admin Dashboard: Number of destinations:', result?.data?.data?.destinations?.length || 0);
       return result;
     },
     enabled: isAuthenticated,
@@ -93,9 +88,7 @@ export default function AdminDashboard() {
   const { data: recentEvents, isLoading: recentEventsLoading } = useQuery({
     queryKey: ['recentEvents'],
     queryFn: async () => {
-      console.log('🔄 Admin Dashboard: Loading recent events...');
       const result = await eventsApi.getEvents({ limit: 3 });
-      console.log('🎉 Admin Dashboard: Recent events response:', result);
       return result;
     },
     enabled: isAuthenticated,
@@ -107,26 +100,9 @@ export default function AdminDashboard() {
   const tourStatsData = tourStats?.data?.stats || {};
   const media = mediaStats?.data?.data || {};
   
-  const blogs = recentBlogs?.data?.blogs || [];
   const destinations = recentDestinations?.data?.data?.destinations || [];
   const events = recentEvents?.data?.events || [];
 
-  // Log all data for debugging
-  useEffect(() => {
-    if (isAuthenticated) {
-      console.log('🏠 Admin Dashboard: Current data state:', {
-        blogStatsTotal: blogStats?.data?.stats?.totalPosts || 0,
-        destinationsTotal: destinationStats?.data?.stats?.totalDestinations || 0,
-        eventsTotal: eventStats?.data?.stats?.totalEvents || 0,
-        toursTotal: tourStats?.data?.stats?.totalTours || 0,
-        mediaFiles: mediaStats?.data?.data?.totalFiles || 0,
-        blogsCount: blogs.length,
-        destinationsCount: destinations.length,
-        eventsCount: events.length,
-        isAuthenticated
-      });
-    }
-  }, [blogStats, destinationStats, eventStats, tourStats, mediaStats, blogs, destinations, events, isAuthenticated]);
 
   if (loading || !isAuthenticated) {
     return (
@@ -186,25 +162,25 @@ export default function AdminDashboard() {
         
         <div className="flex flex-wrap gap-3">
           <Link href="/admin/destinations">
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 shadow-sm">
               <Plus className="h-4 w-4 mr-2" />
               New Destination
             </Button>
           </Link>
           <Link href="/admin/events">
-            <Button className="bg-purple-600 hover:bg-purple-700">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-2 shadow-sm">
               <Plus className="h-4 w-4 mr-2" />
               New Event
             </Button>
           </Link>
           <Link href="/admin/tours">
-            <Button className="bg-green-600 hover:bg-green-700">
+            <Button className="bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-2 shadow-sm">
               <Plus className="h-4 w-4 mr-2" />
               New Tour
             </Button>
           </Link>
           <Link href="/admin/blog/new">
-            <Button variant="outline">
+            <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-6 py-2">
               <Plus className="h-4 w-4 mr-2" />
               New Post
             </Button>
@@ -407,28 +383,28 @@ export default function AdminDashboard() {
             {/* Quick Actions */}
             <div className="space-y-3">
               <Link href="/admin/homepage">
-                <Button variant="outline" className="w-full justify-start text-sm">
+                <Button variant="outline" className="w-full justify-start text-sm border-gray-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 font-medium py-2">
                   <TrendingUp className="h-4 w-4 mr-3" />
                   Manage Homepage
                 </Button>
               </Link>
               
               <Link href="/admin/categories">
-                <Button variant="outline" className="w-full justify-start text-sm">
+                <Button variant="outline" className="w-full justify-start text-sm border-gray-300 hover:bg-green-50 hover:border-green-300 hover:text-green-700 font-medium py-2">
                   <Mountain className="h-4 w-4 mr-3" />
                   Manage Categories
                 </Button>
               </Link>
 
               <Link href="/admin/about-us">
-                <Button variant="outline" className="w-full justify-start text-sm">
+                <Button variant="outline" className="w-full justify-start text-sm border-gray-300 hover:bg-purple-50 hover:border-purple-300 hover:text-purple-700 font-medium py-2">
                   <Users className="h-4 w-4 mr-3" />
                   Manage About Us
                 </Button>
               </Link>
               
               <Link href="/admin/debug">
-                <Button variant="outline" className="w-full justify-start text-sm">
+                <Button variant="outline" className="w-full justify-start text-sm border-gray-300 hover:bg-gray-50 hover:border-gray-400 font-medium py-2">
                   <BarChart3 className="h-4 w-4 mr-3" />
                   System Analytics
                 </Button>

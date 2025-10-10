@@ -237,7 +237,7 @@ export default function BlogManagementPage() {
                 }
               </p>
               <Link href="/admin/blog/new">
-                <Button>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 shadow-sm">
                   <Plus className="h-4 w-4 mr-2" />
                   Create Post
                 </Button>

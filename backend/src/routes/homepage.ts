@@ -57,21 +57,34 @@ router.put('/', authenticateToken, requireAdmin, async (req: AuthenticatedReques
   try {
     console.log('✅ [BACKEND] Processing homepage content update...');
     
-    // First, deactivate all existing homepage content
-    console.log('🔄 [BACKEND] Deactivating existing homepage content...');
-    await HomepageContent.updateMany({}, { isActive: false });
+    // Find existing active content
+    console.log('🔍 [BACKEND] Looking for existing active content...');
+    let savedContent = await HomepageContent.findOne({ isActive: true });
     
-    // Create new homepage content with isActive: true
-    console.log('💾 [BACKEND] Creating new homepage content...');
-    const newContent = new HomepageContent({
-      ...req.body,
-      isActive: true,
-      updatedAt: new Date(),
-      createdAt: new Date()
-    });
-    
-    const savedContent = await newContent.save();
-    console.log('✅ [BACKEND] Homepage content saved with ID:', savedContent._id);
+    if (savedContent) {
+      // Update existing content using findOneAndUpdate for proper saving
+      console.log('📝 [BACKEND] Updating existing content with ID:', savedContent._id);
+      savedContent = await HomepageContent.findOneAndUpdate(
+        { _id: savedContent._id },
+        { 
+          ...req.body,
+          updatedAt: new Date()
+        },
+        { new: true }
+      );
+      console.log('✅ [BACKEND] Updated existing homepage content');
+    } else {
+      // Create new content only if none exists
+      console.log('💾 [BACKEND] Creating new homepage content...');
+      savedContent = new HomepageContent({
+        ...req.body,
+        isActive: true,
+        updatedAt: new Date(),
+        createdAt: new Date()
+      });
+      savedContent = await savedContent.save();
+      console.log('✅ [BACKEND] Created new homepage content with ID:', savedContent._id);
+    }
     
     console.log('📤 [BACKEND] Sending homepage update response');
     res.json({

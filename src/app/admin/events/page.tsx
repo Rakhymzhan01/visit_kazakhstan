@@ -496,7 +496,11 @@ export default function EventsAdmin() {
               </div>
 
               <div className="flex space-x-4">
-                <Button type="submit" disabled={saving}>
+                <Button 
+                  type="submit" 
+                  disabled={saving}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 shadow-sm disabled:opacity-50"
+                >
                   {saving ? 'Saving...' : (editingEvent ? 'Update Event' : 'Create Event')}
                 </Button>
                 <Button 
@@ -507,6 +511,7 @@ export default function EventsAdmin() {
                     setEditingEvent(null);
                     resetForm();
                   }}
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-4 py-2"
                 >
                   Cancel
                 </Button>

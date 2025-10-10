@@ -298,7 +298,7 @@ export default function NewBlogPostPage() {
                   <Button
                     type="submit"
                     disabled={isSubmitting || createMutation.isPending}
-                    className="flex-1"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 shadow-sm disabled:opacity-50"
                   >
                     <Save className="h-4 w-4 mr-2" />
                     {isSubmitting ? 'Creating...' : 'Create Post'}

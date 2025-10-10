@@ -18,8 +18,6 @@ import {
   Phone,
   Mail,
   MapPin,
-  Plus,
-  Trash2,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
@@ -67,9 +65,7 @@ export default function AboutUsAdminPage() {
   const { data: aboutUsResponse, isLoading, error } = useQuery({
     queryKey: ['publicAboutUs'],
     queryFn: async () => {
-      console.log('🔄 Loading About Us data...');
       const response = await aboutUsApi.getPublicAboutUs();
-      console.log('📦 About Us API Response:', response);
       return response;
     },
     enabled: isAuthenticated,
@@ -81,8 +77,6 @@ export default function AboutUsAdminPage() {
   // Load data into form when received
   useEffect(() => {
     if (aboutUsData) {
-      console.log('📝 Loading data into form:', aboutUsData);
-      
       setFormData({
         aboutDescription: aboutUsData.aboutDescription || '',
         teamDescription: aboutUsData.teamDescription || '',
@@ -106,15 +100,12 @@ export default function AboutUsAdminPage() {
           mapImage: '',
         },
       });
-      
-      console.log('✅ Form data loaded successfully');
     }
   }, [aboutUsData]);
 
   // Update mutation
   const updateMutation = useMutation({
-    mutationFn: async (data) => {
-      console.log('💾 Saving About Us data:', data);
+    mutationFn: async (data: typeof formData) => {
       // Use the ID from the current data
       const id = aboutUsData?._id;
       if (!id) {
@@ -122,7 +113,6 @@ export default function AboutUsAdminPage() {
       }
       
       const response = await aboutUsApi.updateAboutUs(id, data);
-      console.log('✅ Save response:', response);
       return response;
     },
     onSuccess: () => {
@@ -131,23 +121,20 @@ export default function AboutUsAdminPage() {
       setIsEditing(false);
     },
     onError: (error) => {
-      console.error('❌ Save error:', error);
+      console.error('Save error:', error);
       toast.error('Failed to update content. Please try again.');
     },
   });
 
   const handleEdit = () => {
-    console.log('📝 Starting edit mode');
     setIsEditing(true);
   };
 
   const handleSave = () => {
-    console.log('💾 Saving changes:', formData);
     updateMutation.mutate(formData);
   };
 
   const handleCancel = () => {
-    console.log('❌ Canceling edit');
     setIsEditing(false);
     // Reload original data
     if (aboutUsData) {
@@ -177,13 +164,13 @@ export default function AboutUsAdminPage() {
     }
   };
 
-  const updateStat = (index, field, value) => {
+  const updateStat = (index: number, field: string, value: string) => {
     const newStats = [...formData.stats];
     newStats[index] = { ...newStats[index], [field]: value };
     setFormData(prev => ({ ...prev, stats: newStats }));
   };
 
-  const updateTeamMember = (index, field, value) => {
+  const updateTeamMember = (index: number, field: string, value: string) => {
     const newTeamMembers = [...formData.teamMembers];
     newTeamMembers[index] = { ...newTeamMembers[index], [field]: value };
     setFormData(prev => ({ ...prev, teamMembers: newTeamMembers }));
@@ -225,21 +212,24 @@ export default function AboutUsAdminPage() {
             About Us Management
           </h1>
           <p className="text-gray-600 mt-2">
-            Edit your website's About Us content, team information, and contact details.
+            Edit your website&apos;s About Us content, team information, and contact details.
           </p>
         </div>
         
         {!isEditing ? (
-          <Button onClick={handleEdit} className="bg-blue-600 hover:bg-blue-700">
+          <Button 
+            onClick={handleEdit} 
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 shadow-sm"
+          >
             <Edit3 className="h-4 w-4 mr-2" />
             Edit Content
           </Button>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
               onClick={handleSave}
               disabled={updateMutation.isPending}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-2 shadow-sm disabled:opacity-50"
             >
               <Save className="h-4 w-4 mr-2" />
               {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
@@ -248,6 +238,7 @@ export default function AboutUsAdminPage() {
               variant="outline"
               onClick={handleCancel}
               disabled={updateMutation.isPending}
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-4 py-2 disabled:opacity-50"
             >
               <X className="h-4 w-4 mr-2" />
               Cancel
@@ -256,33 +247,6 @@ export default function AboutUsAdminPage() {
         )}
       </div>
 
-      {/* Debug Info */}
-      <Card>
-        <CardContent className="p-4">
-          <h3 className="text-sm font-semibold text-red-600 mb-2">🐛 DEBUG INFO</h3>
-          <div className="text-xs text-gray-600 space-y-1">
-            <div>API Response: {aboutUsResponse ? 'Present' : 'Missing'}</div>
-            <div>About Us Data: {aboutUsData ? 'Present' : 'Missing'}</div>
-            <div>About Description: {aboutUsData?.aboutDescription ? 'Has content' : 'Empty'}</div>
-            <div>Stats Count: {aboutUsData?.stats?.length || 0}</div>
-            <div>Team Members Count: {aboutUsData?.teamMembers?.length || 0}</div>
-            <div>Contact Present: {aboutUsData?.contact ? 'Yes' : 'No'}</div>
-            <div className="mt-2 p-2 bg-gray-100 rounded text-xs max-h-40 overflow-y-auto">
-              <strong>Raw API Response:</strong>
-              <pre>{JSON.stringify(aboutUsResponse, null, 2)}</pre>
-            </div>
-            <div className="mt-2 p-2 bg-blue-50 rounded text-xs max-h-40 overflow-y-auto">
-              <strong>Current Form Data:</strong>
-              <pre>{JSON.stringify({
-                aboutDescription: formData.aboutDescription.substring(0, 50) + '...',
-                statsCount: formData.stats.length,
-                teamMembersCount: formData.teamMembers.length,
-                contactPhone: formData.contact.phone
-              }, null, 2)}</pre>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Status */}
       {aboutUsData && (
