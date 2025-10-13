@@ -14,7 +14,7 @@ const destinationsApi = {
       category: category || '',
       limit: '50'
     });
-    const response = await fetch(`http://localhost:5001/api/destinations/public?${searchParams.toString()}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://intokazakhstan.com/api'}/destinations/public?${searchParams.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch destinations');
     return response.json();
   }

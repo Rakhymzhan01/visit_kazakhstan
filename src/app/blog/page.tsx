@@ -24,7 +24,7 @@ const publicBlogApi = {
     if (params?.limit) searchParams.append('limit', params.limit.toString());
     if (params?.page) searchParams.append('page', params.page.toString());
     
-    const response = await fetch(`http://localhost:5001/api/blog?${searchParams.toString()}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://intokazakhstan.com/api'}/blog?${searchParams.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch blogs');
     return response.json();
   }

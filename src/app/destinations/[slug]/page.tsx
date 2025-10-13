@@ -30,7 +30,7 @@ import toast from 'react-hot-toast';
 // API client for getting destination by slug and related destinations
 const destinationsApi = {
   getDestinationBySlug: async (slug: string) => {
-    const response = await fetch(`http://localhost:5001/api/destinations/public/slug/${slug}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://intokazakhstan.com/api'}/destinations/public/slug/${slug}`);
     if (!response.ok) throw new Error('Failed to fetch destination');
     return response.json();
   },
@@ -42,7 +42,7 @@ const destinationsApi = {
     });
     if (category) searchParams.append('category', category);
     
-    const response = await fetch(`http://localhost:5001/api/destinations/public?${searchParams.toString()}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://intokazakhstan.com/api'}/destinations/public?${searchParams.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch related destinations');
     const data = await response.json();
     

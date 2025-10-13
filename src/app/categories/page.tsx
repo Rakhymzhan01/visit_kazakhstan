@@ -17,7 +17,7 @@ const publicPageCategoryApi = {
     if (params?.featured !== undefined) searchParams.append('featured', params.featured.toString());
     if (params?.limit) searchParams.append('limit', params.limit.toString());
     
-    const response = await fetch(`http://localhost:5001/api/page-categories/public?${searchParams.toString()}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://intokazakhstan.com/api'}/page-categories/public?${searchParams.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch page categories');
     return response.json();
   }

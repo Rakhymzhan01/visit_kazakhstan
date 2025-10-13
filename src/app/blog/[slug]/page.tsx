@@ -26,7 +26,7 @@ import toast from 'react-hot-toast';
 // API client for getting blog post by slug
 const publicBlogApi = {
   getBlogBySlug: async (slug: string) => {
-    const response = await fetch(`http://localhost:5001/api/blog/${slug}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://intokazakhstan.com/api'}/blog/${slug}`);
     if (!response.ok) throw new Error('Failed to fetch blog post');
     return response.json();
   },
@@ -37,7 +37,7 @@ const publicBlogApi = {
     searchParams.append('limit', '3');
     if (category) searchParams.append('category', category);
     
-    const response = await fetch(`http://localhost:5001/api/blog?${searchParams.toString()}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://intokazakhstan.com/api'}/blog?${searchParams.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch related blogs');
     const data = await response.json();
     

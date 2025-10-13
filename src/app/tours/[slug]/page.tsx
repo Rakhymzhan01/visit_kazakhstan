@@ -23,7 +23,7 @@ import toast from 'react-hot-toast';
 // API client for getting tour by slug
 const publicTourApi = {
   getTourBySlug: async (slug: string) => {
-    const response = await fetch(`http://localhost:5001/api/tours/public/${slug}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://intokazakhstan.com/api'}/tours/public/${slug}`);
     if (!response.ok) throw new Error('Failed to fetch tour');
     return response.json();
   },
@@ -34,7 +34,7 @@ const publicTourApi = {
     searchParams.append('limit', '3');
     if (category) searchParams.append('category', category);
     
-    const response = await fetch(`http://localhost:5001/api/tours/public?${searchParams.toString()}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://intokazakhstan.com/api'}/tours/public?${searchParams.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch related tours');
     const data = await response.json();
     
