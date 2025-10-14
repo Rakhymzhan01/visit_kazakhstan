@@ -133,8 +133,8 @@ const Header = () => {
                       if (arrowSvg) {
                         const paths = arrowSvg.querySelectorAll('path, stroke');
                         paths.forEach(path => {
-                          path.style.stroke = 'white';
-                          path.style.fill = 'white';
+                          (path as HTMLElement).style.stroke = 'white';
+                          (path as HTMLElement).style.fill = 'white';
                         });
                       }
                     }}
@@ -150,8 +150,8 @@ const Header = () => {
                       if (arrowSvg) {
                         const paths = arrowSvg.querySelectorAll('path, stroke');
                         paths.forEach(path => {
-                          path.style.stroke = '#009CBC';
-                          path.style.fill = '#009CBC';
+                          (path as HTMLElement).style.stroke = '#009CBC';
+                          (path as HTMLElement).style.fill = '#009CBC';
                         });
                       }
                     }}
