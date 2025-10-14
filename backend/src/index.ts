@@ -118,7 +118,6 @@ async function startServer() {
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log(`📊 Environment: ${process.env.NODE_ENV}`);
       console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-      console.log(`🔑 Login: admin@visitkazakhstan.com / Admin123!`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
@@ -153,8 +152,6 @@ async function createDefaultAdmin() {
 
     await adminUser.save();
     console.log('✅ Default admin user created successfully');
-    console.log('📧 Email: admin@visitkazakhstan.com');
-    console.log('🔑 Password: Admin123!');
   } catch (error) {
     console.error('❌ Error creating admin user:', error);
   }

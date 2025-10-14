@@ -7,9 +7,6 @@ const createAdminDirectly = async () => {
     console.log('Please wait for the server to start, then press Ctrl+C to stop it.');
     console.log('');
     console.log('The server will create the admin user automatically.');
-    console.log('Login credentials:');
-    console.log('Email: admin@visitkazakhstan.com');
-    console.log('Password: Admin123!');
   } catch (error) {
     console.error('Error:', error);
   }

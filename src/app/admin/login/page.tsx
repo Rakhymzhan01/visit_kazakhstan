@@ -148,12 +148,6 @@ export default function LoginPage() {
                 </Button>
               </div>
             </form>
-
-            <div className="mt-6 text-center">
-              <p className="text-xs text-gray-500">
-                Default credentials: admin@visitkazakhstan.com / Admin123!
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>
