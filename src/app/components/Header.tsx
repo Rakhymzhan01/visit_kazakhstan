@@ -53,21 +53,20 @@ const Header = () => {
         className="bg-[#F5F5F5] relative z-50 w-full"
         style={{
           height: '82px',
-          justifyContent: 'space-between',
           opacity: 1,
           borderBottom: '0.7px solid #D3D3D3',
           paddingTop: '16px',
-          paddingRight: '40px',
+          paddingRight: '0px',
           paddingBottom: '16px',
           paddingLeft: '40px',
           backdropFilter: 'blur(50px)'
         }}
       >
-          <div className="flex items-center justify-between h-full w-full">
+          <div className="flex items-center h-full w-full">
             {/* Logo */}
             <Link href="/" className="flex items-center flex-shrink-0 mr-8 lg:mr-12 xl:mr-16">
               <Image
-                src="/Logo 2.png"
+                src="/Logo 1.svg"
                 alt="Visit Kazakhstan"
                 width={94}
                 height={38}
@@ -79,232 +78,267 @@ const Header = () => {
               />
             </Link>
 
-            {/* Desktop Navigation - Hide on actual mobile phones (< 480px), show for larger screens */}
-            <nav className="hidden min-[480px]:flex items-center space-x-1 sm:space-x-2 md:space-x-4 xl:space-x-8 flex-1 justify-center">
+            {/* Combined container: Menu and Buttons */}
+            <div className="hidden min-[480px]:flex items-center" style={{ gap: '8px', marginLeft: 'auto', marginRight: '40px' }}>
+              {/* Navigation menu items */}
+              <nav className="flex items-center">
+                <div 
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-evenly',
+                    padding: '2px',
+                    width: 'clamp(280px, 55vw, 740px)',
+                    height: '50px',
+                    background: '#FFFFFF',
+                    borderRadius: '99px',
+                    flex: 'none',
+                    order: 0,
+                    alignSelf: 'stretch',
+                    flexGrow: 0
+                  }}
+                >
+                {navigation.map((item) => (
+                  <div 
+                    key={item.name} 
+                    className="relative group"
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: '8px 18px',
+                      gap: '2px',
+                      width: `clamp(${Math.max(item.width - 10, 80)}px, auto, ${item.width + 20}px)`,
+                      height: '46px',
+                      borderRadius: '99px',
+                      flex: 'none',
+                      alignSelf: 'stretch',
+                      flexGrow: 0,
+                      margin: '0px -10px',
+                      background: 'transparent',
+                      transition: 'background-color 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      const container = e.currentTarget;
+                      const textElement = container.querySelector('span');
+                      const buttonElement = container.querySelector('button');
+                      const arrowSvg = container.querySelector('svg');
+                      
+                      container.style.background = '#009CBC';
+                      if (textElement) textElement.style.color = 'white';
+                      if (buttonElement) buttonElement.style.color = 'white';
+                      if (arrowSvg) {
+                        const paths = arrowSvg.querySelectorAll('path, stroke');
+                        paths.forEach(path => {
+                          path.style.stroke = 'white';
+                          path.style.fill = 'white';
+                        });
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      const container = e.currentTarget;
+                      const textElement = container.querySelector('span');
+                      const buttonElement = container.querySelector('button');
+                      const arrowSvg = container.querySelector('svg');
+                      
+                      container.style.background = 'transparent';
+                      if (textElement) textElement.style.color = '#333333';
+                      if (buttonElement) buttonElement.style.color = '#333333';
+                      if (arrowSvg) {
+                        const paths = arrowSvg.querySelectorAll('path, stroke');
+                        paths.forEach(path => {
+                          path.style.stroke = '#009CBC';
+                          path.style.fill = '#009CBC';
+                        });
+                      }
+                    }}
+                  >
+                    {item.name === 'PLAN YOUR TRIP' ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          padding: '0px',
+                          gap: '10px',
+                          width: `${item.textWidth}px`,
+                          height: '19px',
+                          flex: 'none',
+                          flexGrow: 0
+                        }}
+                      >
+                        <button
+                          onClick={handlePlanTripClick}
+                          style={{
+                            width: `${item.textWidth}px`,
+                            height: '19px',
+                            fontFamily: 'var(--font-manrope), Manrope, sans-serif',
+                            fontStyle: 'normal',
+                            fontWeight: 500,
+                            fontSize: 'clamp(10px, 2.5vw, 14px)',
+                            lineHeight: '19px',
+                            textTransform: 'uppercase',
+                            color: '#333333',
+                            flex: 'none',
+                            flexGrow: 0,
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {item.name}
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          padding: '0px',
+                          gap: '8px',
+                          width: 'auto',
+                          height: '19px',
+                          flex: 'none',
+                          flexGrow: 0
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: 'var(--font-manrope), Manrope, sans-serif',
+                            fontStyle: 'normal',
+                            fontWeight: 500,
+                            fontSize: 'clamp(10px, 2.5vw, 14px)',
+                            lineHeight: '19px',
+                            textTransform: 'uppercase',
+                            color: '#333333',
+                            flex: 'none',
+                            flexGrow: 0,
+                            textDecoration: 'none',
+                            whiteSpace: 'nowrap',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <Link
+                            href={item.href}
+                            style={{
+                              color: 'inherit',
+                              textDecoration: 'none'
+                            }}
+                          >
+                            {item.name}
+                          </Link>
+                        </span>
+                        {item.hasDropdown && (
+                          <DiagonalArrowIcon 
+                            size={16} 
+                            color="#009CBC"
+                            style={{
+                              width: '16px',
+                              height: '16px',
+                              opacity: 1,
+                              minWidth: '16px',
+                              minHeight: '16px',
+                              display: 'block'
+                            }}
+                          />
+                        )}
+                      </div>
+                    )}
+
+                    {/* Dropdown Menu */}
+                    {item.hasDropdown && item.dropdownItems && (
+                      <div className="absolute top-full left-0 mt-2 w-56 bg-white shadow-lg rounded-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <div className="py-2">
+                          {item.dropdownItems.map((dropdownItem) => (
+                            <Link
+                              key={dropdownItem.name}
+                              href={dropdownItem.href}
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+                            >
+                              {dropdownItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                </div>
+              </nav>
+              {/* Search and Language Container */}
               <div 
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'space-evenly',
                   padding: '2px',
-                  width: 'clamp(280px, 55vw, 740px)',
+                  gap: '2px',
+                  width: '140px',
                   height: '50px',
-                  background: '#FFFFFF',
+                  background: '#009CBC',
                   borderRadius: '99px',
                   flex: 'none',
-                  order: 0,
-                  alignSelf: 'stretch',
-                  flexGrow: 0
+                  alignSelf: 'stretch'
                 }}
               >
-              {navigation.map((item) => (
+                {/* Search */}
                 <div 
-                  key={item.name} 
-                  className="relative group"
+                  className="flex items-center bg-white"
                   style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    padding: 'clamp(4px, 1vw, 6px) clamp(4px, 1.5vw, 8px)',
-                    gap: '2px',
-                    width: `clamp(${Math.max(item.width - 30, 60)}px, auto, ${item.width}px)`,
+                    width: '86px',
                     height: '46px',
-                    borderRadius: '99px',
-                    flex: 'none',
-                    alignSelf: 'stretch',
-                    flexGrow: 0,
-                    margin: '0px -10px'
+                    opacity: 1,
+                    paddingTop: '6px',
+                    paddingRight: '12px',
+                    paddingBottom: '6px',
+                    paddingLeft: '6px',
+                    gap: '3px',
+                    borderRadius: '99px'
                   }}
                 >
-                  {item.name === 'PLAN YOUR TRIP' ? (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        padding: '0px',
-                        gap: '10px',
-                        width: `${item.textWidth}px`,
-                        height: '19px',
-                        flex: 'none',
-                        flexGrow: 0
-                      }}
-                    >
-                      <button
-                        onClick={handlePlanTripClick}
-                        style={{
-                          width: `${item.textWidth}px`,
-                          height: '19px',
-                          fontFamily: 'var(--font-manrope), Manrope, sans-serif',
-                          fontStyle: 'normal',
-                          fontWeight: 500,
-                          fontSize: 'clamp(10px, 2.5vw, 14px)',
-                          lineHeight: '19px',
-                          textTransform: 'uppercase',
-                          color: '#333333',
-                          flex: 'none',
-                          flexGrow: 0,
-                          background: 'transparent',
-                          border: 'none',
-                          cursor: 'pointer',
-                          whiteSpace: 'nowrap'
-                        }}
-                      >
-                        {item.name}
-                      </button>
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        padding: '0px',
-                        gap: '8px',
-                        width: 'auto',
-                        height: '19px',
-                        flex: 'none',
-                        flexGrow: 0
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontFamily: 'var(--font-manrope), Manrope, sans-serif',
-                          fontStyle: 'normal',
-                          fontWeight: 500,
-                          fontSize: 'clamp(10px, 2.5vw, 14px)',
-                          lineHeight: '19px',
-                          textTransform: 'uppercase',
-                          color: '#333333',
-                          flex: 'none',
-                          flexGrow: 0,
-                          textDecoration: 'none',
-                          whiteSpace: 'nowrap'
-                        }}
-                      >
-                        <Link
-                          href={item.href}
-                          style={{
-                            color: 'inherit',
-                            textDecoration: 'none'
-                          }}
-                        >
-                          {item.name}
-                        </Link>
-                      </span>
-                      {item.hasDropdown && (
-                        <DiagonalArrowIcon 
-                          size={16} 
-                          color="#009CBC"
-                          style={{
-                            width: '16px',
-                            height: '16px',
-                            opacity: 1,
-                            minWidth: '16px',
-                            minHeight: '16px',
-                            display: 'block'
-                          }}
-                        />
-                      )}
-                    </div>
-                  )}
-
-                  {/* Dropdown Menu */}
-                  {item.hasDropdown && item.dropdownItems && (
-                    <div className="absolute top-full left-0 mt-2 w-56 bg-white shadow-lg rounded-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                      <div className="py-2">
-                        {item.dropdownItems.map((dropdownItem) => (
-                          <Link
-                            key={dropdownItem.name}
-                            href={dropdownItem.href}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600"
-                          >
-                            {dropdownItem.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  <SearchIcon 
+                    size={16} 
+                    color="#6B7280" 
+                    strokeWidth={2}
+                    style={{ minWidth: '16px', minHeight: '16px' }}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="bg-transparent text-sm outline-none flex-1"
+                  />
                 </div>
-              ))}
-              </div>
-            </nav>
 
-            {/* Search and Language Container - Show only on desktop */}
-            <div 
-              className="hidden min-[480px]:flex"
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                padding: '2px',
-                gap: '2px',
-                width: '140px',
-                height: '50px',
-                background: '#009CBC',
-                borderRadius: '99px',
-                flex: 'none',
-                order: 1,
-                alignSelf: 'stretch',
-                flexGrow: 0
-              }}
-            >
-              {/* Search */}
-              <div 
-                className="flex items-center bg-white"
-                style={{
-                  width: '86px',
-                  height: '46px',
-                  opacity: 1,
-                  paddingTop: '6px',
-                  paddingRight: '12px',
-                  paddingBottom: '6px',
-                  paddingLeft: '6px',
-                  gap: '3px',
-                  borderRadius: '99px'
-                }}
-              >
-                <SearchIcon 
-                  size={16} 
-                  color="#6B7280" 
-                  strokeWidth={2}
-                  style={{ minWidth: '16px', minHeight: '16px' }}
-                />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-transparent text-sm outline-none flex-1"
-                />
+                {/* Language Toggle */}
+                <button className="text-white text-sm font-medium flex items-center gap-1">
+                  EN
+                  <DropdownArrowIcon 
+                    size={16} 
+                    color="white"
+                    strokeWidth={2}
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      transform: 'rotate(0deg)',
+                      opacity: 1
+                    }}
+                  />
+                </button>
               </div>
 
-              {/* Language Toggle */}
-              <button className="text-white text-sm font-medium flex items-center gap-1">
-                EN
-                <DropdownArrowIcon 
-                  size={16} 
-                  color="white"
-                  strokeWidth={2}
-                  style={{
-                    width: '16px',
-                    height: '16px',
-                    transform: 'rotate(0deg)',
-                    opacity: 1
-                  }}
-                />
-              </button>
-            </div>
-
-            {/* Actions Container */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Plan Your Trip Button - Hide on mobile, show from min-[480px] up */}
+              {/* Plan Your Trip Button */}
               <button
                 onClick={handlePlanTripClick}
-                className="hidden min-[480px]:flex bg-[#009CBC] hover:bg-[#007a9a] text-white items-center justify-center font-medium whitespace-nowrap"
+                className="bg-[#009CBC] hover:bg-[#007a9a] text-white flex items-center justify-center font-medium whitespace-nowrap"
                 style={{
                   width: '137px',
                   height: '50px',
@@ -319,15 +353,15 @@ const Header = () => {
               >
                 Plan your trip
               </button>
-
-              {/* Mobile Menu Button - Only show on screens smaller than 480px (actual mobile phones) */}
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="max-[479px]:block hidden p-2 text-gray-700"
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
             </div>
+
+            {/* Mobile Menu Button - Only show on screens smaller than 480px (actual mobile phones) */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="max-[479px]:block hidden p-2 text-gray-700"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
 
         {/* Mobile Menu - Only show on screens smaller than 480px (actual mobile phones) */}
