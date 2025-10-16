@@ -107,6 +107,20 @@ const ToursPage = () => {
 
       // Update tours
       if (toursResponse.data.success && toursResponse.data.data?.tours) {
+        console.log('📊 Tours data received:', toursResponse.data.data.tours);
+        
+        // Debug each tour's image URL
+        toursResponse.data.data.tours.forEach((tour: Tour, index: number) => {
+          console.log(`🖼️ Tour ${index + 1} Image URL:`, {
+            title: tour.title,
+            imageUrl: tour.image,
+            imageType: typeof tour.image,
+            isExternal: tour.image?.startsWith('http'),
+            isLocal: tour.image?.startsWith('/'),
+            urlValid: !!(tour.image && tour.image.length > 0)
+          });
+        });
+        
         setTours(toursResponse.data.data.tours);
       }
     } catch (error) {
@@ -218,15 +232,54 @@ const ToursPage = () => {
 
         {/* Tour Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTours.slice(0, 3).map((tour, index) => (
+          {filteredTours.slice(0, 3).map((tour, index) => {
+            console.log(`🎯 Tour ${index + 1}:`, {
+              title: tour.title,
+              date: tour.date,
+              location: tour.location,
+              hasLocation: !!tour.location,
+              image: tour.image,
+              imageType: typeof tour.image
+            });
+            return (
             <div key={tour.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="relative">
-                <Image 
-                  src={tour.image} 
+                <img 
+                  src={tour.image || 'https://via.placeholder.com/400x300/009CBC/white?text=No+Image'} 
                   alt={tour.title}
-                  width={400}
-                  height={300}
                   className="w-full h-[300px] object-cover"
+                  onError={(e) => {
+                    console.error(`❌ Tours page image failed to load for ${tour.title}:`, tour.image);
+                    console.log('🔍 Image type:', {
+                      isExternal: tour.image?.startsWith('http'),
+                      isLocal: tour.image?.startsWith('/'),
+                      originalUrl: tour.image
+                    });
+                    
+                    // Only try local alternatives if it's a local path
+                    if (tour.image?.startsWith('/')) {
+                      const alternatives = {
+                        '/mangystau-desert.jpg': '/mangystau.jpg',
+                        '/nomadic-life.jpg': '/nomad_girls.png',
+                        '/charyn-canyon.jpg': '/charyn.jpg',
+                        '/turkestan-route.jpg': '/turkestan.jpg'
+                      };
+                      
+                      const alternative = alternatives[tour.image as keyof typeof alternatives];
+                      if (alternative) {
+                        console.log(`🔄 Tours page trying alternative local image: ${alternative}`);
+                        (e.target as HTMLImageElement).src = alternative;
+                        return; // Exit here to prevent further fallback
+                      }
+                    }
+                    
+                    // Final fallback for any failed image
+                    console.log('🎯 Using final fallback image');
+                    (e.target as HTMLImageElement).src = '/tours.jpg';
+                  }}
+                  onLoad={() => {
+                    console.log(`✅ Image loaded successfully for ${tour.title}:`, tour.image);
+                  }}
                 />
                 
                 {/* Date and Location Badges */}
@@ -305,7 +358,8 @@ const ToursPage = () => {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
         </div>
       </section>

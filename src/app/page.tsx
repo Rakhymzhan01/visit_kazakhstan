@@ -9,7 +9,7 @@ import { Badge } from "./components/ui/badge"
 import { Star, Instagram, Minus } from "lucide-react"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import { homepageApi, toursApi, blogApi } from '@/lib/api'
+import { homepageApi, blogApi } from '@/lib/api'
 
 // Types
 interface WhyVisitItem {
@@ -64,6 +64,7 @@ export default function HomePage() {
   const [featuredTours, setFeaturedTours] = useState<Tour[]>([])
   const [featuredBlogs, setFeaturedBlogs] = useState<BlogPost[]>([])
   const [featuredEvents, setFeaturedEvents] = useState<Event[]>([])
+  const [tourThemesContent, setTourThemesContent] = useState({ title: 'Top Tour Themes', description: 'Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you\'re chasing landscapes, culture, adventure, or spiritual meaning, there\'s a route for every traveler.' })
   const [, setLoading] = useState(true)
 
   const toggleCard = (index: number) => {
@@ -118,14 +119,29 @@ export default function HomePage() {
           setWhyVisitItems([]);
         }
         
-        // Load featured tours
+        // Load tour themes from homepage content
         try {
-          const toursResponse = await toursApi.getPublicTours({ featured: true, limit: 4 });
-          if (toursResponse.data.success && toursResponse.data.data?.tours) {
-            setFeaturedTours(toursResponse.data.data.tours);
+          const homepageToursResponse = await homepageApi.getPublicHomepageContent();
+          if (homepageToursResponse.data.success && homepageToursResponse.data.data?.tourThemes) {
+            const tourThemes = homepageToursResponse.data.data.tourThemes;
+            console.log('🏠 Homepage Tour Themes:', tourThemes);
+            
+            // Set tour themes title and description
+            if (tourThemes.title || tourThemes.description) {
+              setTourThemesContent({
+                title: tourThemes.title || 'Top Tour Themes',
+                description: tourThemes.description || 'Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you\'re chasing landscapes, culture, adventure, or spiritual meaning, there\'s a route for every traveler.'
+              });
+            }
+            
+            // Set tour themes tours
+            if (tourThemes.tours && tourThemes.tours.length > 0) {
+              const sortedTours = tourThemes.tours.sort((a: { order: number }, b: { order: number }) => a.order - b.order);
+              setFeaturedTours(sortedTours);
+            }
           }
         } catch (error) {
-          console.error('Error loading featured tours:', error);
+          console.error('Error loading tour themes:', error);
         }
         
         // Load featured blog posts
@@ -350,7 +366,7 @@ export default function HomePage() {
                 fontSize: 'clamp(24px, 6vw, 48px)',
                 lineHeight: '100%',
                 letterSpacing: '-4%'
-              }}>Top Tour</span> <span 
+              }}>{tourThemesContent.title.split(' ').slice(0, -1).join(' ')}</span> <span 
                 className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
                 style={{
                   background: 'linear-gradient(90deg, #009CBC 0%, #FFE700 154.07%)',
@@ -363,7 +379,7 @@ export default function HomePage() {
                   lineHeight: '100%',
                   letterSpacing: '-4%'
                 }}
-              >Themes</span>
+              >{tourThemesContent.title.split(' ').slice(-1)[0]}</span>
             </h2>
             <div className="text-center lg:text-left lg:max-w-md">
               <p className="text-sm sm:text-base mb-4" style={{
@@ -373,8 +389,7 @@ export default function HomePage() {
                 letterSpacing: '-1%',
                 color: '#333333'
               }}>
-                Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
-                landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
+                {tourThemesContent.description}
               </p>
               
               <Link href="/tours">
@@ -401,22 +416,26 @@ export default function HomePage() {
 
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
-              {featuredTours.length > 0 ? featuredTours.map((tour) => (
-                <Link key={tour.id} href={`/tours/${tour.slug}`}>
-                  <Card className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200" style={{
-                    width: 'clamp(280px, 80vw, 384px)',
-                    height: 'clamp(400px, auto, 506px)'
-                  }}>
+              {featuredTours.length > 0 ? featuredTours.map((tour, index) => (
+                <Card key={tour.title || index} className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md hover:shadow-lg transition-shadow duration-200" style={{
+                  width: 'clamp(280px, 80vw, 384px)',
+                  height: 'clamp(400px, auto, 506px)'
+                }}>
                     <div className="relative">
-                      <Image
-                        src={tour.image || "/placeholder.svg"}
+                      <img
+                        src={tour.image || '/tours.jpg'}
                         alt={tour.title}
-                        width={368}
-                        height={260}
                         className="w-full object-cover rounded-lg"
                         style={{
                           width: '368px',
                           height: '260px'
+                        }}
+                        onError={(e) => {
+                          console.error(`❌ Homepage image failed to load for ${tour.title}:`, tour.image);
+                          (e.target as HTMLImageElement).src = '/tours.jpg';
+                        }}
+                        onLoad={() => {
+                          console.log(`✅ Homepage image loaded successfully for ${tour.title}:`, tour.image);
                         }}
                       />
                       <div className="absolute top-3 left-3 flex gap-2">
@@ -442,18 +461,19 @@ export default function HomePage() {
                         letterSpacing: '-1%'
                       }}>{tour.description}</p>
                       <div className="flex justify-between items-center">
-                        <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
-                          Read more →
-                        </Button>
+                        <Link href="/tours">
+                          <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
+                            Explore tours →
+                          </Button>
+                        </Link>
                         <div className="flex">
-                          {Array.from({ length: tour.rating }).map((_, i) => (
+                          {Array.from({ length: tour.rating || 5 }).map((_, i) => (
                             <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                           ))}
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                </Link>
               )) : null
             }
             </div>
