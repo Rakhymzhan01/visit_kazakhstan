@@ -416,7 +416,7 @@ export default function HomePage() {
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
               {featuredTours.length > 0 ? featuredTours.map((tour, index) => (
-                <Card key={tour.title || index} className="overflow-hidden flex-shrink-0 border-0 p-2 shadow-md hover:shadow-lg transition-shadow duration-200" style={{
+                <Card key={tour.title || index} className="relative overflow-hidden flex-shrink-0 border-0 p-2 shadow-md hover:shadow-lg transition-shadow duration-200" style={{
                   width: 'clamp(280px, 80vw, 384px)',
                   height: 'clamp(400px, auto, 506px)'
                 }}>
@@ -451,7 +451,7 @@ export default function HomePage() {
                         )}
                       </div>
                     </div>
-                    <CardContent className="p-4">
+                    <CardContent className="px-4 pt-4 pb-16 flex flex-col">
                       <h3 className="mb-2 text-[#202020]" style={{
                         fontFamily: 'Manrope, sans-serif',
                         fontWeight: 600,
@@ -459,26 +459,30 @@ export default function HomePage() {
                         lineHeight: '100%',
                         letterSpacing: '-2%'
                       }}>{tour.title}</h3>
-                      <p className="text-gray-600 mb-3 line-clamp-3" style={{
+                      <p className="text-gray-600 mb-6 line-clamp-3 flex-grow" style={{
                         fontFamily: 'Manrope, sans-serif',
                         fontWeight: 400,
                         fontSize: '14px',
                         lineHeight: '24px',
                         letterSpacing: '-1%'
                       }}>{tour.description}</p>
-                      <div className="flex justify-between items-center">
-                        <Link href="/tours">
-                          <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
-                            Explore tours →
-                          </Button>
-                        </Link>
-                        <div className="flex">
-                          {Array.from({ length: tour.rating || 5 }).map((_, i) => (
-                            <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          ))}
-                        </div>
-                      </div>
                     </CardContent>
+                    
+                    {/* Explore tours link - positioned to align with stars visually */}
+                    <div className="absolute bottom-[15px] left-[27px] flex items-center">
+                      <Link href="/tours">
+                        <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
+                          Explore tours →
+                        </Button>
+                      </Link>
+                    </div>
+                    
+                    {/* Star rating - positioned exactly 27px from right and bottom edges of card */}
+                    <div className="absolute bottom-[27px] right-[27px] flex">
+                      {Array.from({ length: tour.rating || 5 }).map((_, i) => (
+                        <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
                   </Card>
               )) : null
             }
@@ -896,7 +900,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <CardContent className="p-4 flex flex-col flex-1">
+                  <CardContent className="pl-[27px] pr-4 pt-4 pb-[27px] flex flex-col flex-1">
                     <h3 className="mb-2 text-[#202020]" style={{
                       fontFamily: 'Manrope, sans-serif',
                       fontWeight: 600,
