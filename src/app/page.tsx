@@ -875,7 +875,7 @@ export default function HomePage() {
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4 sm:gap-6 pb-4" style={{ width: 'max-content' }}>
               {featuredBlogs.length > 0 ? featuredBlogs.map((post) => (
-                <Card key={post.id} className="overflow-hidden flex-shrink-0 p-2 flex flex-col border-0" style={{ 
+                <Card key={post.id} className="relative overflow-hidden flex-shrink-0 p-2 flex flex-col border-0" style={{ 
                   width: 'clamp(280px, 80vw, 384px)', 
                   height: 'clamp(400px, auto, 506px)' 
                 }}>
@@ -900,7 +900,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  <CardContent className="pl-[27px] pr-4 pt-4 pb-[27px] flex flex-col flex-1">
+                  <CardContent className="px-4 pt-4 pb-16 flex flex-col flex-1">
                     <h3 className="mb-2 text-[#202020]" style={{
                       fontFamily: 'Manrope, sans-serif',
                       fontWeight: 600,
@@ -917,14 +917,16 @@ export default function HomePage() {
                     }}>
                       {post.excerpt || post.title}
                     </p>
-                    <div className="mt-auto">
-                      <Link href={`/blog/${post.slug}`}>
-                        <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
-                          Read more →
-                        </Button>
-                      </Link>
-                    </div>
                   </CardContent>
+                  
+                  {/* Read more link - positioned exactly 27px from left and bottom edges of card */}
+                  <div className="absolute bottom-[15px] left-[27px]">
+                    <Link href={`/blog/${post.slug}`}>
+                      <Button variant="link" className="text-[#009CBC] hover:text-[#007a9a] p-0 text-sm">
+                        Read more →
+                      </Button>
+                    </Link>
+                  </div>
                 </Card>
               )) : null
             }
