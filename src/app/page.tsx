@@ -5,7 +5,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "./components/ui/button"
 import { Card, CardContent } from "./components/ui/card"
-import { Badge } from "./components/ui/badge"
 import { Star, Instagram, Minus } from "lucide-react"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
@@ -438,10 +437,17 @@ export default function HomePage() {
                           console.log(`✅ Homepage image loaded successfully for ${tour.title}:`, tour.image);
                         }}
                       />
-                      <div className="absolute top-3 left-3 flex gap-2">
-                        <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 {tour.date || '20 may 2025'}</Badge>
+                      <div className="absolute top-4 left-4 flex gap-2">
+                        <div className="flex items-center bg-black/80 text-white px-3 py-1.5 rounded-md">
+                          <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-sm font-medium">{tour.date || '20 may 2025'}</span>
+                        </div>
                         {tour.location && (
-                          <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{tour.location}</Badge>
+                          <div className="flex items-center bg-black/80 text-white px-3 py-1.5 rounded-md">
+                            <span className="text-sm font-medium">{tour.location}</span>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -878,9 +884,16 @@ export default function HomePage() {
                       className="w-full object-cover rounded-lg"
                       style={{ width: '368px', height: '260px' }}
                     />
-                    <div className="absolute top-3 left-3 flex gap-2">
-                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">📅 {new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</Badge>
-                      <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{post.category || 'Blog'}</Badge>
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      <div className="flex items-center bg-black/80 text-white px-3 py-1.5 rounded-md">
+                        <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-sm font-medium">{new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center bg-black/80 text-white px-3 py-1.5 rounded-md">
+                        <span className="text-sm font-medium">{post.category || 'Blog'}</span>
+                      </div>
                     </div>
                   </div>
                   <CardContent className="p-4 flex flex-col flex-1">
@@ -977,9 +990,16 @@ export default function HomePage() {
                     height={400}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-3 left-3 z-20">
-                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1 mr-2">📅 {new Date(event.date).toLocaleDateString()}</Badge>
-                    <Badge className="bg-gray-800/80 text-white text-xs px-2 py-1">{event.category}</Badge>
+                  <div className="absolute top-4 left-4 z-20 flex gap-2">
+                    <div className="flex items-center bg-black/80 text-white px-3 py-1.5 rounded-md">
+                      <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-sm font-medium">{new Date(event.date).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center bg-black/80 text-white px-3 py-1.5 rounded-md">
+                      <span className="text-sm font-medium">{event.category}</span>
+                    </div>
                   </div>
                   <div className="absolute bottom-4 left-4 text-white z-20">
                     <h3 className="text-lg font-semibold">{event.name}</h3>
