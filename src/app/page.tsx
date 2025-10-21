@@ -753,19 +753,62 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-8 flex justify-center lg:justify-start">
-            <Card className="relative overflow-hidden w-full max-w-xs sm:max-w-sm">
+          <div className="flex justify-center lg:justify-start" style={{ marginTop: '-20px' }}>
+            <Card className="relative overflow-hidden w-full max-w-xs sm:max-w-sm border-0 shadow-none">
               <Image
-                src="/turkestan.jpg?height=160&width=280"
+                src="/turkestan.jpg"
                 alt="Turkestan"
-                width={280}
-                height={160}
-                className="w-full h-40 object-cover"
+                width={384}
+                height={271}
+                className="w-full object-cover"
+                style={{ width: '384px', height: '271px' }}
               />
-              <div className="absolute bottom-3 left-3 text-white">
-                <h3 className="text-lg font-semibold">Turkestan</h3>
-                <p className="text-sm opacity-90">31° Dry sunshine, 12:30</p>
-                <p className="text-xs opacity-75">LIGHT OVERCAST</p>
+              {/* Turkestan title - bottom left */}
+              <div className="absolute text-white" style={{ bottom: '20px', left: '20px' }}>
+                <h3 style={{
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  lineHeight: '130%',
+                  letterSpacing: '-2%'
+                }}>Turkestan</h3>
+              </div>
+              
+              {/* Weather info - bottom right with black transparent bg */}
+              <div 
+                className="absolute text-white px-3 py-2 rounded-md"
+                style={{
+                  background: '#00000080',
+                  backdropFilter: 'blur(20px)',
+                  bottom: '20px',
+                  right: '20px'
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <span style={{
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: 600,
+                    fontSize: '24px',
+                    lineHeight: '100%',
+                    letterSpacing: '-2%'
+                  }}>31°</span>
+                  <div className="flex flex-col">
+                    <span style={{
+                      fontFamily: 'Manrope, sans-serif',
+                      fontWeight: 400,
+                      fontSize: '10px',
+                      lineHeight: '150%',
+                      letterSpacing: '-1%'
+                    }}>понедельник 12:00</span>
+                    <span style={{
+                      fontFamily: 'Manrope, sans-serif',
+                      fontWeight: 400,
+                      fontSize: '10px',
+                      lineHeight: '150%',
+                      letterSpacing: '-1%'
+                    }}>Ясно, солнечно</span>
+                  </div>
+                </div>
               </div>
             </Card>
           </div>
