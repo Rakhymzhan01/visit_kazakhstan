@@ -380,7 +380,7 @@ export default function HomePage() {
                 }}
               >{tourThemesContent.title.split(' ').slice(-1)[0]}</span>
             </h2>
-            <div className="text-center lg:text-left lg:max-w-md">
+            <div className="text-center lg:text-left" style={{ maxWidth: '588px' }}>
               <p className="text-sm sm:text-base mb-4" style={{
                 fontFamily: 'Manrope, sans-serif',
                 fontWeight: 400,
@@ -818,8 +818,8 @@ export default function HomePage() {
       {/* Instagram Section */}
       <section className="py-8 sm:py-12 bg-gray-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-12">
-            <div className="text-center lg:text-left lg:max-w-md">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
+            <div className="text-center lg:text-left flex-1">
               <h2 className="mb-4">
                 <span 
                   className="bg-gradient-to-r from-[#009CBC] to-[#FFE700] bg-clip-text text-transparent"
@@ -1004,7 +1004,7 @@ export default function HomePage() {
                 }}
               >Events</span>
             </h2>
-            <div className="text-center lg:text-left lg:max-w-md">
+            <div className="text-center lg:text-left" style={{ maxWidth: '588px' }}>
               <p className="text-gray-600 text-sm sm:text-base mb-4">
                 Kazakhstan is vast and diverse — and so are the ways to experience it. Whether you&apos;re chasing
                 landscapes, culture, adventure, or spiritual meaning, there&apos;s a route for every traveler.
